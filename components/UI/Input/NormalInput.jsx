@@ -1,6 +1,16 @@
 import styled from "styled-components";
-import { useRecoilState } from "recoil";
-import { signUpState } from "../../../states/SignUp/signUpState";
+import { snapshot_UNSTABLE, useRecoilState, useRecoilValue } from "recoil";
+import {
+	birthdayState,
+	businessNumberState,
+	idState,
+	nameState,
+	passwordConfirmState,
+	passwordState,
+	phoneNumberState,
+	signUpSelector,
+	signUpState,
+} from "../../../states/SignUp/signUpState";
 
 const Box = styled.input`
 	font-size: 15px;
@@ -19,7 +29,19 @@ const Box = styled.input`
 
 export default function NormalInput(props) {
 	const { type, placeholder, name } = props;
-	const [signUp, setSignUpState] = useRecoilState(signUpState);
+
+	const [idData, setIdData] = useRecoilState(idState);
+	const [passwordData, setPasswordData] = useRecoilState(passwordState);
+	const [passwordConfirmData, setpasswordConfirmData] =
+		useRecoilState(passwordConfirmState);
+	const [nameData, setNameData] = useRecoilState(nameState);
+	const [phoneNumberData, setPhoneNumberData] =
+		useRecoilState(phoneNumberState);
+	const [birthdayData, setBirthdayData] = useRecoilState(birthdayState);
+	const [businessNumberData, setBusinessNumberData] =
+		useRecoilState(businessNumberState);
+
+	const signUpData = useRecoilValue(signUpSelector);
 
 	return (
 		<Box
@@ -28,12 +50,28 @@ export default function NormalInput(props) {
 			placeholder={placeholder}
 			name={name}
 			onChange={(event) => {
-				setSignUpState((prev) => {
-					console.log(prev);
-					prev[event.target.name] = event.target.value;
-					// signUp[event.target.name] = event.target.value;
-				});
-				console.log(signUp[event.target.name]);
+				if (event.target.name === "id") {
+					setIdData(event.target.value);
+				}
+				if (event.target.name === "password") {
+					setPasswordData(event.target.value);
+				}
+				if (event.target.name === "passwordConfirm") {
+					setpasswordConfirmData(event.target.value);
+				}
+				if (event.target.name === "name") {
+					setNameData(event.target.value);
+				}
+				if (event.target.name === "phoneNumber") {
+					setPhoneNumberData(event.target.value);
+				}
+				if (event.target.name === "businessNumber") {
+					setBusinessNumberData(event.target.value);
+				}
+				if (event.target.name === "birthday") {
+					setBirthdayData(event.target.value);
+				}
+				console.log(signUpData);
 			}}></Box>
 	);
 }
