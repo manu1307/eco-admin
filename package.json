@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "flowbite": "^1.5.3",
+    "flowbite-react": "^0.2.0",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -16,6 +18,7 @@
     "styled-components": "^5.3.6"
   },
   "devDependencies": {
+    "@svgr/webpack": "^6.5.0",
     "autoprefixer": "^10.4.12",
     "babel-plugin-styled-components": "^2.0.7",
     "eslint": "8.24.0",

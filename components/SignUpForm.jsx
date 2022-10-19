@@ -4,6 +4,7 @@ import { idState, signUpSelector } from "../states/SignUp/signUpState";
 import GenderInput from "./UI/Input/GenderInput";
 import NormalInput from "./UI/Input/NormalInput";
 import NumberInput from "./UI/Input/NumberInput";
+import { useRouter } from "next/router";
 
 const AuthButton = styled.button`
   border: 1px solid #00aea4;
@@ -34,8 +35,23 @@ const SubmitButton = styled.button`
     color: white;
   }
 `;
+const FormItemLayout = (props) => {
+  const { label, input, button } = props;
+  return (
+    <div className="w-full flex items-center" style={{ marginTop: "8px" }}>
+      <div id="label" style={{ width: "16%" }}>
+        {label}
+        <sup style={{ color: "red" }}>*</sup>
+      </div>
+      {input}
+      {button && button}
+    </div>
+  );
+};
 
 export default function SignUpForm() {
+  const router = useRouter();
+
   const SignUpData = useRecoilValue(signUpSelector);
   const [idInput, setIdInput] = useRecoilState(idState);
   const {
@@ -51,6 +67,10 @@ export default function SignUpForm() {
   const PhoneAuth = (event) => {
     event.preventDefault();
     console.log("phone auth start");
+  };
+
+  const goHome = () => {
+    router.push("localhost:3000/");
   };
 
   const signUpPost = async (event) => {
@@ -72,22 +92,25 @@ export default function SignUpForm() {
       gender
     );
 
-    const response = fetch("http://43.200.176.153:8080/api/members/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        loginId: id,
-        password: password,
-        confirmPassword: passwordConfirm,
-        businessNumber: phoneNumber,
-        phoneNumber: businessNumber,
-        birthday: birthday,
-        gender: gender,
-      }),
-    });
-    const statusCode = (await response).status;
+    const response = await fetch(
+      "http://43.200.176.153:8080/api/members/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          loginId: id,
+          password: password,
+          confirmPassword: passwordConfirm,
+          businessNumber: phoneNumber,
+          phoneNumber: businessNumber,
+          birthday: birthday,
+          gender: gender,
+        }),
+      }
+    );
+    const statusCode = response.status;
 
     console.log(statusCode);
   };
@@ -95,19 +118,22 @@ export default function SignUpForm() {
   const doubleCheckId = async () => {
     console.log(id);
     const response = await fetch(
-      `http://43.200.176.153:8080/api/members/check?loginId=${id}`,
-      { method: "GET" }
+      `http://43.200.176.153:8080/api/members/check?loginId=${id}`
     );
-    const fetchData = await response.json();
-    if (!fetchData.check) {
-      alert("중복된 아이디가 있습니다.");
-      setIdInput(idInput);
-    }
+    console.log(response);
+
+    // const fetchData = await response.json();
+    // if (!fetchData.check) {
+    //   alert("중복된 아이디가 있습니다.");
+    //   setIdInput(idInput);
+    // }
   };
 
   return (
     <>
-      <div className="font-bold text-3xl text-center mb-10">회원가입</div>
+      <div className="font-bold text-3xl text-center mb-10 max-w-screen-xl">
+        회원가입
+      </div>
       <form
         className="w-full"
         onSubmit={
@@ -117,106 +143,92 @@ export default function SignUpForm() {
           // signUpPost
         }
       >
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            아이디<sup className="text-rose-600">*</sup>
-          </label>
-          <NormalInput
-            placeholder="아이디를 입력하세요"
-            type="text"
-            onChange={(event) => {
-              console.log(event.target.value);
-            }}
-            name="id"
-          />
-          <AuthButton
-            onClick={(event) => {
-              event.preventDefault();
-              doubleCheckId();
-            }}
-          >
-            중복확인
-          </AuthButton>
-        </div>
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            비밀번호<sup className="text-rose-600">*</sup>
-          </label>
-          <NormalInput
-            placeholder="비밀번호를 입력하세요"
-            type="password"
-            name="password"
-          />
-        </div>
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            비밀번호 확인<sup className="text-rose-600">*</sup>
-          </label>
-          <NormalInput
-            placeholder="비밀번호를 한번 더 입력하세요"
-            type="password"
-            name="passwordConfirm"
-          />
-        </div>
+        <FormItemLayout
+          label="아이디"
+          input={
+            <NormalInput
+              placeholder="아이디를 입력하세요"
+              type="text"
+              onChange={(event) => {
+                console.log(event.target.value);
+              }}
+              name="id"
+            />
+          }
+          button={
+            <AuthButton
+              onClick={(event) => {
+                event.preventDefault();
+                doubleCheckId();
+              }}
+            >
+              중복확인
+            </AuthButton>
+          }
+        ></FormItemLayout>
+        <FormItemLayout
+          label="비밀번호"
+          input={
+            <NormalInput
+              placeholder="비밀번호를 입력하세요"
+              type="password"
+              name="password"
+            />
+          }
+        ></FormItemLayout>
+        <FormItemLayout
+          label="비밀번호 확인"
+          input={
+            <NormalInput
+              placeholder="비밀번호를 한번 더 입력하세요"
+              type="password"
+              name="passwordConfirm"
+            />
+          }
+        ></FormItemLayout>
 
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            이름<sup className="text-rose-600">*</sup>
-          </label>
-          <NormalInput
-            placeholder="이름을 입력해주세요"
-            type="text"
-            name="name"
-          />
-        </div>
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            전화번호<sup className="text-rose-600">*</sup>
-          </label>
-          <NormalInput
-            placeholder="숫자만 입력해주세요"
-            type="tel"
-            name="phoneNumber"
-          />
-          {/* <NumberInput
-						firstMaxLength={3}
-						secondMaxLength={4}
-						thirdMaxLength={4}
-					/> */}
-          <AuthButton onClick={PhoneAuth}>인증하기</AuthButton>
-        </div>
+        <FormItemLayout
+          label="이름"
+          input={
+            <NormalInput
+              placeholder="이름을 입력해주세요"
+              type="text"
+              name="name"
+            />
+          }
+        ></FormItemLayout>
+        <FormItemLayout
+          label="전화번호"
+          input={
+            <NormalInput
+              placeholder="숫자만 입력해주세요"
+              type="tel"
+              name="phoneNumber"
+            />
+          }
+          button={<AuthButton onClick={PhoneAuth}>인증하기</AuthButton>}
+        ></FormItemLayout>
+        <FormItemLayout
+          label="사업자번호"
+          input={
+            <NormalInput
+              placeholder="숫자만 입력해주세요"
+              type="tel"
+              name="businessNumber"
+            />
+          }
+          button={<AuthButton onClick={PhoneAuth}>인증하기</AuthButton>}
+        ></FormItemLayout>
+        <FormItemLayout
+          label="생년월일"
+          input={<NormalInput type="date" name="birthday" />}
+        ></FormItemLayout>
+        <FormItemLayout label="성별" input={<GenderInput />}></FormItemLayout>
 
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            사업자번호<sup className="text-rose-600">*</sup>
-          </label>
-          <NormalInput
-            placeholder="숫자만 입력해주세요"
-            type="tel"
-            name="businessNumber"
-          />
-          {/* <NumberInput
-						firstMaxLength={3}
-						secondMaxLength={2}
-						thirdMaxLength={5}
-					/> */}
-          <AuthButton onClick={PhoneAuth}>인증하기</AuthButton>
-        </div>
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            생년월일<sup className="text-rose-600">*</sup>
-          </label>
-          <NormalInput type="date" name="birthday" />
-        </div>
-        <div className="flex items-center w-full">
-          <label className="w-1/6">
-            성별<sup className="text-rose-600">*</sup>
-          </label>
-          <GenderInput />
-        </div>
         {/* <div>이용약관 동의 여러 개</div> */}
         <div className="w-full text-center mt-10">
-          <SubmitButton onSubmit={signUpPost}>회원가입</SubmitButton>
+          <SubmitButton onClick={goHome}>취소</SubmitButton>
+          <SubmitButton onClick={signUpPost}>회원가입</SubmitButton>
         </div>
       </form>
     </>
