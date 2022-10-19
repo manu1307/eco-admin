@@ -2,7 +2,7 @@ import styled from "styled-components";
 const SideBarWrapper = styled.div`
   width: 16.7%;
   background-color: #072f53;
-  height: 100vh;
+  height: 95vh;
   margin: 0;
 `;
 
@@ -22,10 +22,16 @@ const SideBarButton = styled.button`
   }
 `;
 
-export default function SideBar() {
+export default function SideBar({ items }) {
   return (
     <SideBarWrapper>
-      <SideBarButton href="#">sub1</SideBarButton>
+      {items.map((item, index) => {
+        return (
+          <SideBarButton key={index} href="#">
+            {item}
+          </SideBarButton>
+        );
+      })}
     </SideBarWrapper>
   );
 }

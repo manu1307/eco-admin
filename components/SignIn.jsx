@@ -53,6 +53,9 @@ export default function SignIn() {
   const Login = () => {
     window.location.href = "/dashboard";
   };
+  const SignUp = () => {
+    window.location.href = "/signup";
+  };
   return (
     <Wrapper className="flex flex-col justify-center items-center">
       <form
@@ -75,7 +78,7 @@ export default function SignIn() {
             <FindButton>비밀번호 찾기</FindButton>
           </div>
         </div>
-        <div className="w-full flex justify-around my-4 bg-slate-500">
+        <div className="w-full flex justify-center my-4 ">
           <LoginButton
             className="px-4 py-2 rounded-lg text-white text-lg"
             onClick={Login}
@@ -85,7 +88,7 @@ export default function SignIn() {
           <Link href="/signup">
             <LoginButton
               className="px-4 py-2 rounded-lg text-white text-lg"
-              onClick={Login}
+              onClick={SignUp}
             >
               회원가입
             </LoginButton>

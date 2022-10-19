@@ -61,7 +61,7 @@ export default function Header() {
     // <nav className="bg-white max-w-screen-xl border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
     <div className="w-full flex flex-wrap justify-between items-center mx-auto">
       <ImageWrapper href="./dashboard" className="flex items-center">
-        <Image src={Logo} alt="Ecomap Logo" />
+        <Image src={Logo} alt="Ecomap Logo" priority />
       </ImageWrapper>
       <NavButtonWrapper>
         <Link href="./dashboard">
