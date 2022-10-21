@@ -93,7 +93,7 @@ export default function SignUpForm() {
     );
 
     const response = await fetch(
-      "http://43.200.176.153:8080/api/members/signup",
+      "http://43.200.176.153:8080/api/v1/members/signup",
       {
         method: "POST",
         headers: {
@@ -118,7 +118,7 @@ export default function SignUpForm() {
   const doubleCheckId = async () => {
     console.log(id);
     const response = await fetch(
-      `http://43.200.176.153:8080/api/members/check?loginId=${id}`
+      `http://43.200.176.153:8080/api/v1/members/check?loginId=${id}`
     );
     console.log(response);
 
