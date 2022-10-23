@@ -6,17 +6,18 @@ import Box from "../components/DashBoard/Box";
 const DashBoardWrapper = styled.div`
 	padding-top: 20px;
 	width: 83.3%;
-	background-color: #fff;
+	background-color: #f6f6f6;
 `;
 
 const DashBoardHeader = styled.div`
-	width: 1140px;
+	width: 900px;
 	padding: 15px 20px;
 	border-radius: 15px;
-	box-shadow: 0 0 2px 2px #d8d8d8; ;
+	box-shadow: 0 0 2px 1.5px #d8d8d8;
+	background-color: #fff;
 `;
 const StoreNameWrapper = styled.div`
-	width: 1140px;
+	width: 900px;
 	margin-top: 20px;
 	height: 40px;
 `;
@@ -31,12 +32,14 @@ const EcoLevel = styled.div`
 	justify-content: center;
 	align-items: center;
 `;
-
 const StoreName = styled.div`
 	width: 190px;
 	margin-left: 15px;
 	font-size: 24px;
 	font-weight: bold;
+`;
+const BoxWrapper = styled.div`
+	width: 900px;
 `;
 
 export default function DashBoard() {
@@ -46,7 +49,7 @@ export default function DashBoard() {
 	const day = date.getUTCDate();
 	return (
 		<Layout sideItems={["통계"]}>
-			<DashBoardWrapper className=' flex flex-col items-center'>
+			<DashBoardWrapper className='flex flex-col items-center'>
 				<DashBoardHeader className='flex drop-shadow-lg'>
 					<div style={{ width: "3%" }}>
 						<Arrow />
@@ -70,13 +73,18 @@ export default function DashBoard() {
 						<StoreName>프랜치 갬성 카페</StoreName>
 					</div>
 				</StoreNameWrapper>
-				<div className='flex'>
+				<BoxWrapper className='flex gap-x-5 justify-center mt-5'>
 					<Box title='텀블러 적립금' data='300' unit='원' />
 					<Box title='텀블러 적립금' data='300' unit='원' />
 					<Box title='텀블러 적립금' data='300' unit='원' />
 					<Box title='텀블러 적립금' data='300' unit='원' />
-				</div>
-
+				</BoxWrapper>
+				<BoxWrapper className='flex gap-x-5 justify-center mt-5'>
+					<Box title='텀블러 적립금' data='300' unit='원' />
+					<Box title='텀블러 적립금' data='' unit='원' />
+					<Box title='텀블러 적립금' data='' unit='원' />
+					<Box title='텀블러 적립금' data='300' unit='원' />
+				</BoxWrapper>
 				<div>차트</div>
 			</DashBoardWrapper>
 		</Layout>
