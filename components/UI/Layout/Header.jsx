@@ -8,10 +8,11 @@ const HeaderWrapper = styled.div`
 	background-color: #072f53;
 `;
 const HeaderContent = styled.div`
-	max-width: 1280px;
+	/* max-width: 1280px; */
 `;
-const ImageWrapper = styled.a`
+const LogoWrapper = styled.a`
 	width: 16.7%;
+	max-width: 250px;
 	height: 100px;
 	background-color: #072f53;
 	display: flex;
@@ -28,6 +29,7 @@ const NavButtonWrapper = styled.ul`
 
 const NavButton = styled.li`
 	width: 15%;
+	max-width: 250px;
 	height: 100px;
 	background-color: #121533;
 	text-align: center;
@@ -50,6 +52,7 @@ const DropdownWrapper = styled.div`
 const SelectWrapper = styled.select`
 	width: 100%;
 	height: 100px;
+	max-width: 450px;
 	background-color: #072f53;
 	font-size: 20px;
 	color: white;
@@ -66,10 +69,15 @@ const SelectWrapper = styled.select`
 export default function Header() {
 	return (
 		<HeaderWrapper>
-			<HeaderContent className='w-full flex flex-wrap justify-between items-center mx-auto'>
-				<ImageWrapper href='./dashboard' className='flex items-center'>
-					<Image src={Logo} alt='Ecomap Logo' priority />
-				</ImageWrapper>
+			<HeaderContent className='w-full flex flex-wrap justify-left items-center mx-auto'>
+				<LogoWrapper href='./dashboard' className='flex items-center'>
+					<Image
+						style={{ marginTop: "10px" }}
+						src={Logo}
+						alt='Ecomap Logo'
+						priority
+					/>
+				</LogoWrapper>
 				<NavButtonWrapper>
 					<Link href='./dashboard'>
 						<NavButton>대시보드</NavButton>

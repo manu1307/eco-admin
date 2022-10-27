@@ -1,6 +1,6 @@
 import styled from "styled-components";
 const BoxWrapper = styled.div`
-	width: 270px;
+	width: 360px;
 	height: 200px;
 	text-align: left;
 	border-radius: 30px;
