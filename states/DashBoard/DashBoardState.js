@@ -1,9 +1,9 @@
 import { atom } from "recoil";
 
-export const isFirstState = atom({
-	key: "isFirstState",
-	default: true,
-});
+// export const isFirstState = atom({
+// 	key: "isFirstState",
+// 	default: true,
+// });
 
 // export const signUpSelector = selector({
 // 	key: "signUpSelector",

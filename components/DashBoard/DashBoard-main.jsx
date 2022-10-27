@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import Arrow from "../../assets/arrow-dashboard.svg";
-import isFirstState from "../../states/DashBoard/DashBoardState";
+// import isFirstState from "../../states/DashBoard/DashBoardState";
 import Box from "./Box";
 
 const DashBoardWrapper = styled.div`
@@ -88,7 +88,7 @@ const BoxWrapper = styled.div`
 `;
 
 export default function DashBoardMain() {
-	console.log(isFirstState);
+	// console.log(isFirstState);
 	const [isFirst, setIsFirst] = useState(true);
 
 	const confirmSetting = () => {
