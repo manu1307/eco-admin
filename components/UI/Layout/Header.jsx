@@ -65,6 +65,12 @@ const SelectWrapper = styled.select`
 		border: 0.4px solid #15c0b5;
 	}
 `;
+const SelectOption = styled.option`
+	padding: 5px 10px;
+	background-color: #072f53;
+	color: white;
+	font-weight: 700;
+`;
 
 export default function Header() {
 	return (
@@ -93,10 +99,10 @@ export default function Header() {
 					</Link>
 					<DropdownWrapper>
 						<SelectWrapper>
-							<option>스타벅스 1호점</option>
-							<option>스타벅스 2호점</option>
-							<option>스타벅스 3호점</option>
-							<option>스타벅스 4호점</option>
+							<SelectOption>스타벅스 1호점</SelectOption>
+							<SelectOption>스타벅스 2호점</SelectOption>
+							<SelectOption>스타벅스 3호점</SelectOption>
+							<SelectOption>스타벅스 4호점</SelectOption>
 						</SelectWrapper>
 					</DropdownWrapper>
 				</NavButtonWrapper>

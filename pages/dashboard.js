@@ -4,7 +4,11 @@ import DashBoardMain from "../components/DashBoard/DashBoard-main";
 
 export default function DashBoard() {
 	return (
-		<Layout sideItems={["통계"]}>
+		<Layout
+			sideItems={[
+				{ text: "통계", url: "/dashboard" },
+				{ text: "QR", url: "/dashboard-qrcode" },
+			]}>
 			<DashBoardMain />
 		</Layout>
 	);

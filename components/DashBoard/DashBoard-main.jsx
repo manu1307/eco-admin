@@ -104,12 +104,14 @@ export default function DashBoardMain() {
 	return (
 		<DashBoardWrapper className='flex flex-col items-left'>
 			<DashBoardHeader className='flex drop-shadow-lg'>
-				<div style={{ width: "3%" }}>
-					<Arrow />
-				</div>
-				<div style={{ width: "87%" }}>
-					<div className='font-bold'>오늘의 대시보드</div>
-					<div className='text-xs'>{`${year}-${month}-${day}`}</div>
+				<div style={{ width: "87%", fontSize: "20px" }}>
+					<div className='flex font-bold items-center'>
+						<span className='w-5'>
+							<Arrow />
+						</span>
+						오늘의 대시보드
+					</div>
+					<div className='text-xs ml-5'>{`${year}-${month}-${day}`}</div>
 				</div>
 				<div className='flex items-center'>사장님 이름 (logo)</div>
 			</DashBoardHeader>
@@ -147,6 +149,7 @@ export default function DashBoardMain() {
 					<Box title='텀블러 적립금' data={data} unit='원' />
 				</BoxWrapper>
 			</div>
+			<br />
 			<div>차트</div>
 		</DashBoardWrapper>
 	);
