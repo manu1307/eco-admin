@@ -118,11 +118,12 @@ export default function SignIn() {
           </div>
         </div>
         <div className="w-full flex justify-center my-4 ">
-          <Link onClick={Login}>
-            <LoginButton className="px-4 py-2 rounded-lg text-white text-lg">
-              로그인
-            </LoginButton>
-          </Link>
+          <LoginButton
+            className="px-4 py-2 rounded-lg text-white text-lg"
+            onClick={Login}
+          >
+            로그인
+          </LoginButton>
           <Link href="/signup">
             <LoginButton className="px-4 py-2 rounded-lg text-white text-lg">
               회원가입
