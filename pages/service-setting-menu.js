@@ -39,6 +39,35 @@ const MenuSettingBodyHeader = styled.div`
 	color: white;
 	font-size: 20px;
 	font-weight: 700;
+	display: flex;
+	align-items: center;
+`;
+const CheckContent = styled.div`
+	width: "15%";
+	text-align: center;
+`;
+const NumberContent = styled.div`
+	width: "10%";
+	text-align: center;
+`;
+const MenuContent = styled.div`
+	width: "25%";
+`;
+const PriceContent = styled.div`
+	width: "50%";
+`;
+const MenuSettingContent = styled.div`
+	width: 100%;
+	border-radius: 15px;
+	background-color: #d8d8d8;
+	height: 70px;
+	display: flex;
+	align-items: center;
+`;
+const CheckBox = styled.div`
+	width: 25px;
+	height: 25px;
+	border: 1px solid black;
 `;
 
 export default function DashBoard() {
@@ -72,12 +101,18 @@ export default function DashBoard() {
 					<div className='flex items-center'>사장님 이름(로고)</div>
 				</MenuSettingHeader>
 				<MenuSettingBody className='flex flex-col items-center'>
-					<MenuSettingBodyHeader className='flex items-center'>
-						<span style={{ width: "15%", textAlign: "center" }}>Check</span>
-						<span style={{ width: "10%", textAlign: "center" }}>No.</span>
-						<span style={{ width: "25%" }}>메뉴명</span>
-						<span style={{ width: "50%" }}>가격</span>
+					<MenuSettingBodyHeader>
+						<CheckContent>Check</CheckContent>
+						<NumberContent>No.</NumberContent>
+						<MenuContent>메뉴명</MenuContent>
+						<PriceContent>가격</PriceContent>
 					</MenuSettingBodyHeader>
+					<MenuSettingContent>
+						<CheckBox>v</CheckBox>
+						<div>1</div>
+						<div>메뉴입니다</div>
+						<div>15,000원</div>
+					</MenuSettingContent>
 				</MenuSettingBody>
 			</MenuSettingWrapper>
 		</Layout>
