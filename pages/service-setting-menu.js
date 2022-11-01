@@ -77,6 +77,16 @@ const dummyData = [
 ];
 export default function DashBoard() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState();
+
+  const openModal = (data) => {
+    setModalData(data);
+    setModalOpen((prev) => !prev);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   const editMenu = (data) => {
     console.log(data);
@@ -122,7 +132,7 @@ export default function DashBoard() {
             <PriceContent>가격</PriceContent>
           </MenuSettingBodyHeader>
 
-          {dummyData.map((data) => {
+          {dummyData.map((data, index) => {
             return (
               <MenuSettingBodyContent key={data.id}>
                 <CheckContent>
@@ -133,15 +143,17 @@ export default function DashBoard() {
                 <PriceContent>{data.price}원</PriceContent>
                 <button
                   onClick={() => {
-                    setModalOpen((prev) => !prev);
+                    openModal(data);
                   }}
                 >
                   edit
                 </button>
-                {modalOpen && <MenuModal data={data}></MenuModal>}
               </MenuSettingBodyContent>
             );
           })}
+          {modalOpen && (
+            <MenuModal data={modalData} onClick={closeModal}></MenuModal>
+          )}
         </MenuSettingBody>
       </MenuSettingWrapper>
     </Layout>
