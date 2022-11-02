@@ -65,7 +65,29 @@ const MenuContent = styled.div`
   width: 30%;
 `;
 const PriceContent = styled.div`
-  width: 40%;
+  width: 100%;
+  border-radius: 15px;
+  background-color: #242746;
+  height: 70px;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+`;
+
+const MenuSettingContent = styled.div`
+  width: 100%;
+  border-radius: 15px;
+  background-color: #d8d8d8;
+  height: 70px;
+  display: flex;
+  align-items: center;
+`;
+const CheckBox = styled.div`
+  width: 25px;
+  height: 25px;
+  border: 1px solid black;
 `;
 
 const dummyData = [

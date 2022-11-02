@@ -96,7 +96,7 @@ export default function SignUpForm() {
 		);
 		axios({
 			method: "post",
-			url: "http://43.200.176.153:8080/api/v1/members/signup",
+			url: "https://ecomap.kr/api/v1/members/signup",
 			headers: {
 				"Content-Type": "application/json",
 			},
