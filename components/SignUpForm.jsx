@@ -54,7 +54,6 @@ export default function SignUpForm() {
 	const router = useRouter();
 
 	const SignUpData = useRecoilValue(signUpSelector);
-	const [idInput, setIdInput] = useRecoilState(idState);
 	const {
 		id,
 		password,
@@ -78,14 +77,6 @@ export default function SignUpForm() {
 	const signUpPost = async (event) => {
 		event.preventDefault();
 		console.log(
-			typeof id,
-			typeof password,
-			typeof passwordConfirm,
-			typeof phoneNumber,
-			typeof businessNumber,
-			typeof birthday,
-			typeof gender,
-			typeof id,
 			password,
 			passwordConfirm,
 			phoneNumber,
@@ -110,42 +101,25 @@ export default function SignUpForm() {
 				birthday: birthday,
 				gender: gender,
 			}),
-		}).then((response) => console.log(response));
-		// const response = await fetch(
-		//   "http://43.200.176.153:8080/api/v1/members/signup",
-		//   {
-		//     method: "POST",
-		//     headers: {
-		//       "Content-Type": "application/json",
-		//     },
-		//     body: JSON.stringify({
-		//       loginId: id,
-		//       password: password,
-		//       confirmPassword: passwordConfirm,
-		//       businessNumber: phoneNumber,
-		//       phoneNumber: businessNumber,
-		//       birthday: birthday,
-		//       gender: gender,
-		//     }),
-		//   }
-		// );
-		// const statusCode = response.status;
-
-		// console.log(statusCode);
+		}).then((response) => {
+			if (response.status === 200) {
+				window.location.href = "/";
+			} else {
+				alert("입력을 확인해주세요");
+			}
+		});
 	};
 
 	const doubleCheckId = async () => {
-		console.log(id);
-		const response = await fetch(
-			`http://43.200.176.153:8080/api/v1/members/check?loginId=${id}`
-		);
-		console.log(response);
-
-		// const fetchData = await response.json();
-		// if (!fetchData.check) {
-		//   alert("중복된 아이디가 있습니다.");
-		//   setIdInput(idInput);
-		// }
+		axios
+			.get(`https://ecomap.kr/api/v1/members/check?loginId=${id}`)
+			.then((res) => {
+				if (res.data.check) {
+					alert("사용 가능한 아이디입니다.");
+				} else {
+					alert("이미 존재하는 아이디입니다.");
+				}
+			});
 	};
 
 	return (
@@ -155,12 +129,9 @@ export default function SignUpForm() {
 			</div>
 			<form
 				className='w-full'
-				onSubmit={
-					() => {
-						return false;
-					}
-					// signUpPost
-				}>
+				onSubmit={() => {
+					return false;
+				}}>
 				<FormItemLayout
 					label='아이디'
 					input={
@@ -171,6 +142,7 @@ export default function SignUpForm() {
 								console.log(event.target.value);
 							}}
 							name='id'
+							required
 						/>
 					}
 					button={

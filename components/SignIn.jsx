@@ -1,6 +1,6 @@
 import axios from "axios";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -54,7 +54,7 @@ const LoginButton = styled.a`
 export default function SignIn() {
 	const [loginId, setLoginId] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
-	const [loginToken, setLoginToken] = useState("");
+	const loginToken = useRef("");
 
 	const onChangeLoginId = (event) => {
 		setLoginId(() => event.target.value);
@@ -78,7 +78,7 @@ export default function SignIn() {
 			}),
 		})
 			.then(async (response) => {
-				setLoginToken(response.data.token);
+				loginToken.current = response.data.token;
 			})
 			.then(() => {
 				if (loginToken) {
