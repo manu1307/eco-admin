@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 
 const ModalWrapper = styled.div`
 	width: calc(100% - 250px);
@@ -28,8 +29,20 @@ const MenuInput = styled.input`
 	border-radius: 5px;
 `;
 
-const MenuEditItem = () => {
-	return;
+const MenuEditItem = (props) => {
+	const { label, inputValue } = props;
+	const [inputData, setInputData] = useState(inputValue);
+	return (
+		<div>
+			<div>{label}</div>
+			<MenuInput
+				value={inputData}
+				onChange={(event) => {
+					setInputData(event.target.value);
+				}}
+			/>
+		</div>
+	);
 };
 
 export default function MenuModal(props) {
@@ -48,18 +61,9 @@ export default function MenuModal(props) {
 						</button>
 					</div>
 					<div className='w-2/6 flex flex-col justify-start gap-6'>
-						<div>
-							<div>순서</div>
-							<MenuInput value={data.id} />
-						</div>
-						<div>
-							<div>메뉴</div>
-							<MenuInput value={data.menu} />
-						</div>
-						<div>
-							<div>가격</div>
-							<MenuInput value={data.price} />
-						</div>
+						<MenuEditItem label='순서' inputValue={data.id} />
+						<MenuEditItem label='메뉴' inputValue={data.menu} />
+						<MenuEditItem label='가격' inputValue={data.price} />
 					</div>
 				</div>
 				<div className='mt-5 flex justify-center'>

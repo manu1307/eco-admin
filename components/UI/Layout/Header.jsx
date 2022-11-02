@@ -18,6 +18,9 @@ const LogoWrapper = styled.a`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	@media screen and (max-width: 500px) {
+		display: none;
+	}
 `;
 
 const NavButtonWrapper = styled.ul`
@@ -25,6 +28,10 @@ const NavButtonWrapper = styled.ul`
 	width: 83.3%;
 	height: 100px;
 	border-collapse: collapse;
+	@media screen and (max-width: 500px) {
+		height: 50px;
+		width: 100%;
+	}
 `;
 
 const NavButton = styled.li`
@@ -43,10 +50,19 @@ const NavButton = styled.li`
 		background-color: #15c0b5;
 		color: #072f53;
 	}
+	@media screen and (max-width: 500px) {
+		width: 20%;
+		height: 50px;
+		line-height: 50px;
+		font-size: 10px;
+	}
 `;
 
 const DropdownWrapper = styled.div`
 	width: 40%;
+	@media screen and (max-width: 500px) {
+		width: 50%;
+	}
 `;
 
 const SelectWrapper = styled.select`
@@ -63,6 +79,10 @@ const SelectWrapper = styled.select`
 		box-sizing: border-box;
 		outline: 0;
 		border: 0.4px solid #15c0b5;
+	}
+	@media screen and (max-width: 500px) {
+		height: 50px;
+		font-size: 10px;
 	}
 `;
 const SelectOption = styled.option`
