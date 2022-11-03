@@ -11,6 +11,10 @@ const DashBoardWrapper = styled.div`
 	width: 100%;
 	background-color: #f6f6f6;
 	padding-left: 50px;
+	@media screen and (max-width: 640px) {
+		padding: 10px;
+		height: 95vh;
+	}
 `;
 
 const DashBoardHeader = styled.div`
@@ -22,7 +26,8 @@ const DashBoardHeader = styled.div`
 	background-color: #fff;
 `;
 const StoreNameWrapper = styled.div`
-	width: 900px;
+	width: 100%;
+	max-width: 900px;
 	margin-top: 20px;
 	height: 40px;
 `;
@@ -135,13 +140,23 @@ export default function DashBoardMain() {
 						<ModalButton onClick={confirmSetting}>매장 설정 가기</ModalButton>
 					</ModalWrapper>
 				)}
-				<BoxWrapper className='flex gap-x-5 justify-center mt-5'>
-					<Box title='텀블러 적립금' data={data} unit='원' />
-					<Box title='텀블러 적립금' data={data} unit='원' />
-					<Box title='텀블러 적립금' data={data} unit='원' />
-					<Box title='텀블러 적립금' data={data} unit='원' />
+				<BoxWrapper className='gap-x-5 justify-center mt-5 sm:flex  '>
+					<Box title='텀블러 적립금' data={data} unit='P' />
+					<Box title='최저 결제 금액' data={data} unit='원' />
+					<Box
+						className='hidden sm:inline'
+						title='포인트 현황'
+						data={data}
+						unit='원'
+					/>
+					<BoxWrapper
+						className='hidden sm:inline'
+						title='누적 텀블러 적립 횟수'
+						data={data}
+						unit='원'
+					/>
 				</BoxWrapper>
-				<BoxWrapper className='flex gap-x-5 justify-center mt-5'>
+				<BoxWrapper className='hidden gap-x-5 justify-center mt-5 sm:flex'>
 					<Box title='텀블러 적립금' data={data} unit='원' />
 					<Box title='텀블러 적립금' data={data} unit='원' />
 					<Box title='텀블러 적립금' data={data} unit='원' />
@@ -149,7 +164,7 @@ export default function DashBoardMain() {
 				</BoxWrapper>
 			</div>
 			<br />
-			<div>차트</div>
+			{/* <div>차트</div> */}
 		</DashBoardWrapper>
 	);
 }

@@ -6,6 +6,12 @@ const BoxWrapper = styled.div`
 	border-radius: 30px;
 	box-shadow: 0 0 2px 1.5px #d8d8d8;
 	background-color: #fff;
+	@media screen and (max-width: 640px) {
+		width: 90%;
+		height: 150px;
+		margin: 0 auto;
+		margin-bottom: 15px;
+	}
 `;
 const VerticalCenter = styled.div`
 	position: relative;
@@ -16,6 +22,9 @@ const Title = styled.div`
 	position: relative;
 	top: -20px;
 	padding-left: 20px;
+	@media screen and (max-width: 640px) {
+		top: 0px;
+	}
 `;
 const Data = styled.div`
 	position: relative;
