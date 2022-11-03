@@ -1,49 +1,52 @@
 import Link from "next/link";
 import styled from "styled-components";
+import Drawer from "./Drawer";
 const SideBarWrapper = styled.div`
-	width: 16.7%;
-	max-width: 250px;
-	background-color: #072f53;
-	height: 95vh;
-	margin: 0;
-	@media screen and (max-width: 500px) {
-		display: none;
-	}
+  width: 16.7%;
+  max-width: 250px;
+  background-color: #072f53;
+  height: 95vh;
+  margin: 0;
+  @media screen and (max-width: 500px) {
+    display: none;
+  }
 `;
 
 const SideBarButton = styled.button`
-	width: 250px;
-	height: 100px;
-	color: white;
-	font-size: 20px;
-	font-weight: 900;
-	background-color: #121533;
-	&:hover {
-		color: #9dffe1;
-	}
-	&:focus {
-		color: #242746;
-		background-color: #00e1d4;
-	}
-	&:active {
-		color: #242746;
-		background-color: #00e1d4;
-	}
+  width: 250px;
+  height: 100px;
+  color: white;
+  font-size: 20px;
+  font-weight: 900;
+  background-color: #121533;
+  &:hover {
+    color: #9dffe1;
+  }
+  &:focus {
+    color: #242746;
+    background-color: #00e1d4;
+  }
+  &:active {
+    color: #242746;
+    background-color: #00e1d4;
+  }
 `;
 
 export default function SideBar({ items }) {
-	const handleOnClick = (event) => {};
-	return (
-		<SideBarWrapper>
-			{items.map((item, index) => {
-				return (
-					<Link key={index} href={`${item.url}`}>
-						<SideBarButton onClick={handleOnClick} value={item.text}>
-							{item.text}
-						</SideBarButton>
-					</Link>
-				);
-			})}
-		</SideBarWrapper>
-	);
+  const handleOnClick = (event) => {};
+  return (
+    <>
+      <SideBarWrapper>
+        {items.map((item, index) => {
+          return (
+            <Link key={index} href={`${item.url}`}>
+              <SideBarButton onClick={handleOnClick} value={item.text}>
+                {item.text}
+              </SideBarButton>
+            </Link>
+          );
+        })}
+      </SideBarWrapper>
+    </>
+  );
 }
