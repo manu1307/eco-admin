@@ -5,17 +5,30 @@ import { SideBarToggleState } from "../../../states/ServiceSetting/ServiceSettin
 
 const ToggleButton = styled.label`
   background-color: #072f53;
+
   border: none;
 `;
 
 export default function Drawer() {
-  const [toggleState, useToggleState] = useRecoilState(SideBarToggleState);
-
+  const [toggleState, setToggleState] = useRecoilState(SideBarToggleState);
   return (
     <div className="drawer">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content">
-        <ToggleButton htmlFor="my-drawer" className="btn drawer-button">
+      <input
+        id="my-drawer"
+        type="checkbox"
+        className="drawer-toggle"
+        onChange={() => {
+          setToggleState((prev) => {
+            return !prev;
+          });
+        }}
+      />
+      <div className="drawer-content z-10">
+        <ToggleButton
+          htmlFor="my-drawer"
+          className="btn drawer-button z-20"
+          // onClick={}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -33,7 +46,7 @@ export default function Drawer() {
         </ToggleButton>
       </div>
       <div className="drawer-side">
-        <label htmlFor="my-drawer" className="drawer-overlay"></label>
+        <label htmlFor="my-drawer" className="drawer-overlay z-10"></label>
         <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
           <li>
             <Link href="/dashboard">

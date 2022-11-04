@@ -3,6 +3,8 @@ import Arrow from "../assets/arrow-dashboard.svg";
 import styled from "styled-components";
 import { useState } from "react";
 import MenuModal from "../components/UI/Modal/MenuModal";
+import { useRecoilState } from "recoil";
+import { SideBarToggleState } from "../states/ServiceSetting/ServiceSettingState";
 
 const MenuSettingWrapper = styled.div`
   padding-top: 20px;
@@ -94,6 +96,9 @@ const dummyData = [
 export default function DashBoard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState();
+  const [menuZIndex, setMenuZIndex] = useState("z-0");
+
+  const [toggleState, setToggleState] = useRecoilState(SideBarToggleState);
 
   const openModal = (data) => {
     setModalData(data);
@@ -116,7 +121,7 @@ export default function DashBoard() {
         { text: "댓글신고", url: "" },
       ]}
     >
-      <MenuSettingWrapper>
+      <MenuSettingWrapper className={toggleState ? "z-0" : "z-10"}>
         <MenuSettingHeader className="flex align-middle drop-shadow-lg">
           <div
             style={{ fontSize: "20px" }}
@@ -150,7 +155,7 @@ export default function DashBoard() {
 
           {dummyData.map((data, index) => {
             return (
-              <MenuSettingBodyContent className="z-10" key={data.id}>
+              <MenuSettingBodyContent key={data.id}>
                 <CheckContent>
                   <input type="checkbox" />
                 </CheckContent>

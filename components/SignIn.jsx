@@ -50,6 +50,7 @@ const FindButton = styled.button`
 const LoginButton = styled.a`
   background-color: #369efa;
   cursor: pointer;
+  -webkit-text-fill-color: rgb(255, 255, 255);
   &:hover {
     background-color: #168ff9;
   }

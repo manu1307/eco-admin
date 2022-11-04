@@ -2,15 +2,16 @@ import styled from "styled-components";
 
 const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.8);
-  width: 100%;
+  width: 90%;
   max-width: 1280px;
   height: 600px;
   border-radius: 30px;
   position: absolute;
   margin-top: 20px;
   z-index: 2;
-  text-align: center;
+  text-align: center; 
   @media screen and (max-width: 640px) {
+    width: 90%;
   }
 `;
 const ModalMessage = styled.div`
