@@ -3,12 +3,17 @@ import Arrow from "../assets/arrow-dashboard.svg";
 import styled from "styled-components";
 import { useState } from "react";
 import MenuModal from "../components/UI/Modal/MenuModal";
+import { useRecoilState } from "recoil";
+import { SideBarToggleState } from "../states/ServiceSetting/ServiceSettingState";
 
 const MenuSettingWrapper = styled.div`
   padding-top: 20px;
   width: 100%;
   background-color: #f6f6f6;
   padding-left: 50px;
+  @media screen and (max-width: 500px) {
+    padding: 10px;
+  }
 `;
 
 const MenuSettingHeader = styled.div`
@@ -19,6 +24,9 @@ const MenuSettingHeader = styled.div`
   border-radius: 15px;
   box-shadow: 0 0 2px 1.5px #d8d8d8;
   background-color: #fff;
+  @media screen and (max-width: 500px) {
+    padding: 10px;
+  }
 `;
 
 const MenuSettingBody = styled.div`
@@ -41,6 +49,11 @@ const MenuSettingBodyHeader = styled.div`
   color: white;
   font-size: 20px;
   font-weight: 700;
+  @media screen and (max-width: 500px) {
+    font-size: 12px;
+    height: 50px;
+    padding-left: 10px;
+  }
 `;
 const MenuSettingBodyContent = styled.div`
   width: 100%;
@@ -52,6 +65,11 @@ const MenuSettingBodyContent = styled.div`
   font-weight: 700;
   display: flex;
   align-items: center;
+  @media screen and (max-width: 500px) {
+    font-size: 12px;
+    height: 50px;
+    padding-left: 10px;
+  }
 `;
 const CheckContent = styled.div`
   width: 10%;
@@ -78,6 +96,9 @@ const dummyData = [
 export default function DashBoard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState();
+  const [menuZIndex, setMenuZIndex] = useState("z-0");
+
+  const [toggleState, setToggleState] = useRecoilState(SideBarToggleState);
 
   const openModal = (data) => {
     setModalData(data);
@@ -100,24 +121,29 @@ export default function DashBoard() {
         { text: "댓글신고", url: "" },
       ]}
     >
-      <MenuSettingWrapper>
+      <MenuSettingWrapper className={toggleState ? "z-0" : "z-10"}>
         <MenuSettingHeader className="flex align-middle drop-shadow-lg">
           <div
-            style={{ width: "87%", fontSize: "20px" }}
-            className="flex items-center"
+            style={{ fontSize: "20px" }}
+            className="flex items-center w-3/5 sm:w-4/5"
           >
             <span className="mx-3">
               <Arrow />
             </span>
-            <div style={{ color: "#00E1D4" }} className=" font-bold">
+            <div
+              style={{ color: "#00E1D4" }}
+              className="font-bold text-sm sm:text-lg"
+            >
               서비스 설정
             </div>
             <span className="mx-3">
               <Arrow />
             </span>
-            <div className=" font-bold">메뉴 설정</div>
+            <div className="font-bold text-sm sm:text-lg ">메뉴 설정</div>
           </div>
-          <div className="flex items-center">사장님 이름(로고)</div>
+          <div className="flex justify-end items-center text-xs  w-2/5  sm:text-lg sm:w-1/5">
+            사장님 이름(로고)
+          </div>
         </MenuSettingHeader>
         <MenuSettingBody className="flex flex-col items-center">
           <MenuSettingBodyHeader className="flex items-center">
