@@ -6,11 +6,17 @@ const ModalWrapper = styled.div`
   height: 100%;
   position: absolute;
   top: 100px;
-  background-color: rgba(220, 220, 220, 0.5);
+  background-color: hsla(0, 0%, 86.27450980392157%, 0.5);
   left: 250px;
   padding-top: 10%;
   display: flex;
   justify-content: center;
+  @media screen and (max-width: 500px) {
+    width: 100%;
+    left: 0px;
+    top: 50px;
+    padding-top: 20px;
+  }
 `;
 const ModalContent = styled.div`
   width: 90%;
@@ -21,6 +27,9 @@ const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
   padding: 15px 15px;
+  @media screen and (max-width: 500px) {
+    height: 70%;
+  }
 `;
 const MenuInput = styled.input`
   width: 100%;
@@ -51,9 +60,9 @@ export default function MenuModal(props) {
   return (
     <ModalWrapper>
       <ModalContent>
-        <div className="w-full h-5/6 flex gap-5">
-          <div className="w-4/6">
-            <div className="border-2 h-5/6">사진</div>
+        <div className="w-full h-5/6 gap-5 sm:flex sm:h-5/6">
+          <div className="w-4/6 h-2/5 sm:h-full">
+            <div className="border-2 h-4/6 sm:h-5/6">사진</div>
             <button
               type="button"
               className="text-white mt-3 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -61,7 +70,7 @@ export default function MenuModal(props) {
               사진 업로드
             </button>
           </div>
-          <div className="w-2/6 flex flex-col justify-start gap-6">
+          <div className="w-2/6 flex flex-col justify-start gap-1 sm:gap-6">
             <MenuEditItem label="순서" inputValue={data.id} />
             <MenuEditItem label="메뉴" inputValue={data.menu} />
             <MenuEditItem label="가격" inputValue={data.price} />

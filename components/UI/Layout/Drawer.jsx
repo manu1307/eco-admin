@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { SideBarToggleState } from "../../../states/ServiceSetting/ServiceSettingState";
+import { SideBarOpenState } from "../../../states/ServiceSetting/SideBarOpenState";
 
 const ToggleButton = styled.label`
   background-color: #072f53;
-
   border: none;
 `;
 
 export default function Drawer() {
-  const [toggleState, setToggleState] = useRecoilState(SideBarToggleState);
+  const [sideBarOpen, setSideBarOpen] = useRecoilState(SideBarOpenState);
+
   return (
     <div className="drawer">
       <input
@@ -18,9 +18,15 @@ export default function Drawer() {
         type="checkbox"
         className="drawer-toggle"
         onChange={() => {
-          setToggleState((prev) => {
-            return !prev;
-          });
+          if (sideBarOpen === true) {
+            setTimeout(() => {
+              setSideBarOpen((prev) => !prev);
+            }, 500);
+          } else {
+            setSideBarOpen((prev) => {
+              return !prev;
+            });
+          }
         }}
       />
       <div className="drawer-content z-10">

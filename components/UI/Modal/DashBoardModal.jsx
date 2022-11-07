@@ -9,7 +9,7 @@ const ModalWrapper = styled.div`
   position: absolute;
   margin-top: 20px;
   z-index: 2;
-  text-align: center; 
+  text-align: center;
   @media screen and (max-width: 640px) {
     width: 90%;
   }
@@ -24,7 +24,7 @@ const ModalMessage = styled.div`
   background-color: #000;
   @media screen and (max-width: 640px) {
     width: 90%;
-    font-size: 30px;
+    /* font-size: ${(props) => props.fontSize / 2}px; */
   }
 `;
 const ModalButton = styled.a`
