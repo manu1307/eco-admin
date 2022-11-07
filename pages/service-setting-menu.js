@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import MenuModal from "../components/UI/Modal/MenuModal";
 import { useRecoilState } from "recoil";
-import { SideBarToggleState } from "../states/ServiceSetting/ServiceSettingState";
+import { SideBarOpenState } from "../states/ServiceSetting/SideBarOpenState";
 
 const MenuSettingWrapper = styled.div`
   padding-top: 20px;
@@ -13,6 +13,7 @@ const MenuSettingWrapper = styled.div`
   padding-left: 50px;
   @media screen and (max-width: 500px) {
     padding: 10px;
+    height: 90vh;
   }
 `;
 
@@ -87,18 +88,18 @@ const PriceContent = styled.div`
 `;
 
 const dummyData = [
-  { id: 1, menu: "메뉴", price: 15000 },
-  { id: 2, menu: "메뉴", price: 15000 },
-  { id: 3, menu: "메뉴", price: 15000 },
-  { id: 4, menu: "메뉴", price: 15000 },
-  { id: 5, menu: "메뉴", price: 15000 },
+  { id: 1, menu: "아메리카노", price: 4000 },
+  { id: 2, menu: "카페라떼", price: 4500 },
+  { id: 3, menu: "초코 프라푸치노", price: 5000 },
+  { id: 4, menu: "아샷추", price: 3000 },
+  { id: 5, menu: "마카롱", price: 2000 },
 ];
 export default function DashBoard() {
+  console.log(SideBarOpenState);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState();
   const [menuZIndex, setMenuZIndex] = useState("z-0");
-
-  const [toggleState, setToggleState] = useRecoilState(SideBarToggleState);
+  const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 
   const openModal = (data) => {
     setModalData(data);
@@ -121,7 +122,7 @@ export default function DashBoard() {
         { text: "댓글신고", url: "" },
       ]}
     >
-      <MenuSettingWrapper className={toggleState ? "z-0" : "z-10"}>
+      <MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
         <MenuSettingHeader className="flex align-middle drop-shadow-lg">
           <div
             style={{ fontSize: "20px" }}

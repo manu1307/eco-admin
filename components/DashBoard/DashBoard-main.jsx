@@ -147,21 +147,19 @@ export default function DashBoardMain() {
             </ModalWrapper>
           </div>
         )}
-        <BoxWrapper className="gap-x-5 justify-center mt-5 sm:flex  ">
-          <Box title="텀블러 적립금" data={data} unit="P" />
-          <Box title="최저 결제 금액" data={data} unit="원" />
-          <Box
-            className="hidden sm:block"
-            title="포인트 현황"
-            data={data}
-            unit="원"
-          />
-          <Box
-            className="hidden sm:block"
-            title="누적 텀블러 적립 횟수"
-            data={data}
-            unit="원"
-          />
+        <BoxWrapper className="justify-center mt-5 sm:flex sm:gap-x-5">
+          <div className="w-full sm:inline-block">
+            <Box title="텀블러 적립금" data={data} unit="P" />{" "}
+          </div>
+          <div className="w-full  sm:inline">
+            <Box title="최저 결제 금액" data={data} unit="원" />{" "}
+          </div>
+          <div className="hidden w-full  sm:inline">
+            <Box title="포인트 현황" data={data} unit="원" />
+          </div>
+          <div className="hidden w-full  sm:inline">
+            <Box title="누적 텀블러 적립 횟수" data={data} unit="원" />
+          </div>
         </BoxWrapper>
         <BoxWrapper className="hidden gap-x-5 justify-center mt-5 sm:flex">
           <Box title="텀블러 적립금" data={data} unit="원" />
