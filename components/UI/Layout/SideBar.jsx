@@ -13,7 +13,8 @@ const SideBarWrapper = styled.div`
 `;
 
 const SideBarButton = styled.button`
-  width: 250px;
+  width: 100%;
+  max-width: 250px;
   height: 100px;
   color: white;
   font-size: 20px;

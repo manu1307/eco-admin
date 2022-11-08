@@ -3,8 +3,9 @@ import styled from "styled-components";
 const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.8);
   width: 90%;
-  max-width: 1280px;
-  height: 600px;
+  max-width: 1100px;
+  height: 50%;
+  max-height: 480px;
   border-radius: 30px;
   position: absolute;
   margin-top: 20px;
@@ -12,6 +13,7 @@ const ModalWrapper = styled.div`
   text-align: center;
   @media screen and (max-width: 640px) {
     width: 90%;
+    color: black;
   }
 `;
 const ModalMessage = styled.div`

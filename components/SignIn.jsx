@@ -86,6 +86,7 @@ export default function SignIn() {
       })
       .then(() => {
         if (loginToken) {
+          localStorage.setItem("token", loginToken.current);
           window.location.href = "/dashboard";
         } else {
           console.log("fail login");
@@ -125,7 +126,7 @@ export default function SignIn() {
             <FindButton>비밀번호 찾기</FindButton>
           </div>
         </div>
-        <div className="w-full flex justify-center my-4 ">
+        <div className="w-full flex justify-around my-4 ">
           <LoginButton
             className="px-4 py-2 rounded-lg text-white text-lg"
             onClick={Login}

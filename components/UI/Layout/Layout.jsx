@@ -10,10 +10,9 @@ const BodyWrapper = styled.div`
 export default function Layout({ children, sideItems }) {
   return (
     <>
-      <Header />
-      <BodyWrapper className="w-full flex justify-left">
+      <Header className="fixed" />
+      <BodyWrapper className="static w-full flex justify-left">
         <SideBar items={sideItems} />
-
         {children}
       </BodyWrapper>
     </>
