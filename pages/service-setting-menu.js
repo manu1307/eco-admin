@@ -27,6 +27,7 @@ const MenuSettingHeader = styled.div`
   background-color: #fff;
   @media screen and (max-width: 500px) {
     padding: 10px;
+    color: black;
   }
 `;
 
@@ -98,7 +99,6 @@ export default function DashBoard() {
   console.log(SideBarOpenState);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState();
-  const [menuZIndex, setMenuZIndex] = useState("z-0");
   const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 
   const openModal = (data) => {
