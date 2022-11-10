@@ -25,6 +25,10 @@ const Box = styled.input`
 		outline: none;
 		border: 1px solid black;
 	}
+
+	@media screen and (max-width: 768px) {
+		width: 100%;
+	}
 `;
 
 export default function NormalInput(props) {
@@ -46,7 +50,7 @@ export default function NormalInput(props) {
 	return (
 		<Box
 			type={type}
-			className='my-2'
+			className='my-2 '
 			placeholder={placeholder}
 			name={name}
 			onChange={(event) => {
