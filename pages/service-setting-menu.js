@@ -8,7 +8,7 @@ import { SideBarOpenState } from "../states/ServiceSetting/SideBarOpenState";
 
 const MenuSettingWrapper = styled.div`
   padding-top: 20px;
-  width: 100%;
+  width: 83.7%;
   background-color: #f6f6f6;
   padding-left: 50px;
   @media screen and (max-width: 500px) {

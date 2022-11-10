@@ -1,19 +1,34 @@
+import axios from "axios";
+import { useState } from "react";
 import Layout from "../components/UI/Layout/Layout";
 
 // {"name":"맘스터치",
 // "phoneNumber":"01012341234"
-// ,"basePrice":3000,
-// "basePoint":300,
 // "description":"가게 설명입니다",
 // "address":"서울시 동작구",
 // "latitude":37.5576984952347,
 // "longitude":127.079226104632,
 // "tagStores":[{"tagId":1,"tagName":"맛있는 아메리카노","check":true}]}
 
+const StoreOpenTime = [
+  { day: "월요일", openTime: "", closeTime: "" },
+  { day: "화요일", openTime: "", closeTime: "" },
+  { day: "수요일", openTime: "", closeTime: "" },
+  { day: "목요일", openTime: "", closeTime: "" },
+  { day: "금요일", openTime: "", closeTime: "" },
+  { day: "토요일", openTime: "", closeTime: "" },
+  { day: "일요일", openTime: "", closeTime: "" },
+];
+
 export default function MarketSetting() {
+  const [storeName, setStoreName] = useState("");
+  const [storePhoneNumber, setStorePhoneNumber] = useState("");
+  const [storeDescription, setStoreDescription] = useState("");
+  const [storeAddress, setStoreAddress] = useState("");
+
   return (
     <Layout sideItems={[{ text: "매장 설정", url: "/market-setting" }]}>
-      <form className="pl-5 pt-5">
+      <div className="pl-5 pt-5">
         <div className="grid gap-6 mb-2 md:grid-cols-2">
           <div>
             <label
@@ -28,6 +43,9 @@ export default function MarketSetting() {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="가게 이름"
               required=""
+              onChange={(event) => {
+                setStoreName(event.target.value);
+              }}
             />
           </div>
           <div>
@@ -41,9 +59,12 @@ export default function MarketSetting() {
               type="tel"
               id="phone"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="123-45-678"
-              pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+              placeholder="010-1234-5678"
+              pattern="[0-9]{3}[0-9]{4}[0-9]{4}"
               required=""
+              onChange={(event) => {
+                setStorePhoneNumber(event.target.value);
+              }}
             />
           </div>
         </div>
@@ -60,6 +81,9 @@ export default function MarketSetting() {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="가게 설명입니다."
             required=""
+            onChange={(event) => {
+              setStoreDescription(event.target.value);
+            }}
           />
         </div>
         <div className="mb-2">
@@ -75,93 +99,37 @@ export default function MarketSetting() {
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="서울시 강남구"
             required=""
+            onChange={(event) => {
+              setStoreAddress(event.target.value);
+            }}
           />
         </div>
-        <div className="mb-2">
-          <label for="appt">월요일 영업시간</label>
-          <input
-            className="rounded-lg"
-            type="time"
-            id="appt"
-            name="appt"
-            min="05:00"
-            max="24:00"
-            required
-          ></input>
-        </div>
-        <div className="mb-2">
-          <label for="appt">화요일 영업시간</label>
-          <input
-            className="rounded-lg"
-            type="time"
-            id="appt"
-            name="appt"
-            min="05:00"
-            max="24:00"
-            required
-          ></input>
-        </div>{" "}
-        <div className="mb-2">
-          <label for="appt">수요일 영업시간</label>
-          <input
-            className="rounded-lg"
-            type="time"
-            id="appt"
-            name="appt"
-            min="05:00"
-            max="24:00"
-            required
-          ></input>
-        </div>{" "}
-        <div className="mb-2">
-          <label for="appt">목요일 영업시간</label>
-          <input
-            className="rounded-lg"
-            type="time"
-            id="appt"
-            name="appt"
-            min="05:00"
-            max="24:00"
-            required
-          ></input>
-        </div>{" "}
-        <div className="mb-2">
-          <label for="appt">금요일 영업시간</label>
-          <input
-            className="rounded-lg"
-            type="time"
-            id="appt"
-            name="appt"
-            min="05:00"
-            max="24:00"
-            required
-          ></input>
-        </div>{" "}
-        <div className="mb-2">
-          <label for="appt">토요일 영업시간</label>
-          <input
-            className="rounded-lg"
-            type="time"
-            id="appt"
-            name="appt"
-            min="05:00"
-            max="24:00"
-            required
-          ></input>
-        </div>{" "}
-        <div className="mb-2">
-          <label for="appt">일요일 영업시간</label>
-          <input
-            className="rounded-lg"
-            type="time"
-            id="appt"
-            name="appt"
-            min="05:00"
-            max="24:00"
-            required
-          ></input>
-        </div>{" "}
-        <div className="mb-2">
+        <div>영업시간</div>
+        {StoreOpenTime.map((day, index) => {
+          return (
+            <div className="mb-2 flex items-center gap-2" key={index}>
+              <label for="appt">{day.day}</label>
+              <input
+                className="rounded-lg p-1"
+                type="time"
+                onChange={(event) => {
+                  day.openTime = event.target.value;
+                }}
+                required
+              ></input>
+              <div className="mx-3 font-bold">~</div>
+              <input
+                className="rounded-lg p-1"
+                type="time"
+                onChange={(event) => {
+                  day.closeTime = event.target.value;
+                }}
+                required
+              ></input>
+            </div>
+          );
+        })}
+        <div className="mb-2 hidden">
           <label
             htmlFor="tagIds"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
@@ -179,10 +147,44 @@ export default function MarketSetting() {
         <button
           type="submit"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          onClick={(event) => {
+            event.preventDefault();
+            const token = localStorage.getItem("token");
+            axios({
+              method: "post",
+              url: "https://ecomap.kr/api/v1/stores/1",
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+              data: {
+                name: storeName,
+                phoneNumber: storePhoneNumber,
+                description: storeDescription,
+                address: storeAddress,
+                mondayTime: `${StoreOpenTime[0].openTime} ~ ${StoreOpenTime[0].closeTime}`,
+                tuesdayTime: `${StoreOpenTime[1].openTime} ~ ${StoreOpenTime[1].closeTime}`,
+                wednesdayTime: `${StoreOpenTime[2].openTime} ~ ${StoreOpenTime[2].closeTime}`,
+                thursdayTime: `${StoreOpenTime[3].openTime} ~ ${StoreOpenTime[3].closeTime}`,
+                fridayTime: `${StoreOpenTime[4].openTime} ~ ${StoreOpenTime[4].closeTime}`,
+                saturdayTime: `${StoreOpenTime[5].openTime} ~ ${StoreOpenTime[5].closeTime}`,
+                sundayTime: `${StoreOpenTime[6].openTime} ~ ${StoreOpenTime[6].closeTime}`,
+              },
+            }).then((res) => {
+              console.log(res.status);
+            });
+            console.log(
+              storeName,
+              storePhoneNumber,
+              storeDescription,
+              storeAddress,
+              StoreOpenTime
+            );
+          }}
         >
           Submit
         </button>
-      </form>
+      </div>
     </Layout>
   );
 }
