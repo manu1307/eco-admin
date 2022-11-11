@@ -60,9 +60,14 @@ export default function Drawer() {
             </Link>
           </li>
           <li>
+            <Link href="/market-setting">
+              <a>매장 설정</a>
+            </Link>
+          </li>
+          <li>
             <a>서비스 설정</a>
             <a style={{ textIndent: "1rem" }}>- 텀블러 할인 설정</a>
-            <Link href="/service-setting-menu">
+            <Link href="/service-setting/menu">
               <a style={{ textIndent: "1rem" }}>- 메뉴 설정</a>
             </Link>
             <a style={{ textIndent: "1rem" }}>- 텀블러 할인 마감타임 설정</a>

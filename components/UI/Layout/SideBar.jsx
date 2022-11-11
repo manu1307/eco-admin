@@ -7,6 +7,8 @@ const SideBarWrapper = styled.div`
   background-color: #072f53;
   height: 95vh;
   margin: 0;
+  position: fixed;
+  top: 100px;
   @media screen and (max-width: 500px) {
     display: none;
   }
