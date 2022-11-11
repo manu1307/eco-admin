@@ -8,6 +8,12 @@ const Center = styled.div`
 	transform: translate(-50%, -50%);
 	max-width: 1120px;
 	width: 100%;
+	@media screen and (max-width: 960px) {
+		position: relative;
+		left: 0;
+		top: 0;
+		transform: translate(0%, 0%);
+	}
 `;
 
 export default function SignUp() {
