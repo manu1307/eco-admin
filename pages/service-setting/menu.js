@@ -55,10 +55,11 @@ const MenuSettingBodyHeader = styled.div`
 	color: white;
 	font-size: 20px;
 	font-weight: 700;
-	@media screen and (max-width: 500px) {
+	@media screen and (max-width: 640px) {
 		font-size: 12px;
 		height: 50px;
 		padding-left: 10px;
+		padding-right: 10px;
 	}
 `;
 const MenuSettingBodyContent = styled.div`
@@ -71,10 +72,11 @@ const MenuSettingBodyContent = styled.div`
 	font-weight: 700;
 	display: flex;
 	align-items: center;
-	@media screen and (max-width: 500px) {
+	@media screen and (max-width: 640px) {
 		font-size: 12px;
 		height: 50px;
 		padding-left: 10px;
+		padding-right: 10px;
 	}
 `;
 const CheckContent = styled.div`
@@ -87,9 +89,21 @@ const NumberContent = styled.div`
 `;
 const MenuContent = styled.div`
 	width: 30%;
+	@media screen and (max-width: 640px) {
+		width: 35%;
+	}
 `;
 const PriceContent = styled.div`
 	width: 40%;
+	@media screen and (max-width: 640px) {
+		width: 30%;
+	}
+`;
+const EditButton = styled.div`
+	width: 10%;
+	@media screen and (max-width: 640px) {
+		width: 15%;
+	}
 `;
 
 const dummyData = [
@@ -152,6 +166,13 @@ export default function ServiceSettingMenu() {
 						<NumberContent>No.</NumberContent>
 						<MenuContent>메뉴명</MenuContent>
 						<PriceContent>가격</PriceContent>
+						<EditButton>
+							<button
+								type='button'
+								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
+								등록
+							</button>
+						</EditButton>
 					</MenuSettingBodyHeader>
 
 					{dummyData.map((data, index) => {
@@ -162,13 +183,17 @@ export default function ServiceSettingMenu() {
 								</CheckContent>
 								<NumberContent>{data.id}</NumberContent>
 								<MenuContent>{data.menu}</MenuContent>
-								<PriceContent>{data.price}원</PriceContent>
-								<button
-									onClick={() => {
-										openModal(data);
-									}}>
-									edit
-								</button>
+								<PriceContent>{data.price}원</PriceContent>{" "}
+								<EditButton>
+									<button
+										onClick={() => {
+											openModal(data);
+										}}
+										type='button'
+										className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+										수정
+									</button>{" "}
+								</EditButton>
 							</MenuSettingBodyContent>
 						);
 					})}
@@ -177,6 +202,7 @@ export default function ServiceSettingMenu() {
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
+			<BackgroundColor />
 		</Layout>
 	);
 }

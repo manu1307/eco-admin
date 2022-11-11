@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Background = styled.div`
-	width: 100vw;
+	width: 90vw;
 	height: 100vh;
 	background-color: #f6f6f6;
 	z-index: -1;
