@@ -12,7 +12,6 @@ const MenuSettingWrapper = styled.div`
 	width: 83.7%;
 	background-color: #f6f6f6;
 	padding-left: 50px;
-	height: 100%;
 	@media screen and (max-width: 640px) {
 		width: 100%;
 		padding: 10px;
@@ -125,7 +124,7 @@ export default function ServiceSettingMenu() {
 				{ text: "알림 설정", url: "" },
 				{ text: "댓글신고", url: "" },
 			]}>
-			<MenuSettingWrapper className={sideBarOpen ? "z-10" : "z-0"}>
+			<MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
 				<MenuSettingHeader className='flex align-middle drop-shadow-lg'>
 					<div
 						style={{ fontSize: "20px" }}
@@ -178,7 +177,6 @@ export default function ServiceSettingMenu() {
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
-			<BackgroundColor />
 		</Layout>
 	);
 }

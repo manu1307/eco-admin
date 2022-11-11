@@ -10,7 +10,6 @@ const ToggleButton = styled.label`
 
 export default function Drawer() {
 	const [sideBarOpen, setSideBarOpen] = useRecoilState(SideBarOpenState);
-
 	return (
 		<div className='drawer'>
 			<input
@@ -29,8 +28,12 @@ export default function Drawer() {
 					}
 				}}
 			/>
-			<div className='drawer-content'>
-				<ToggleButton htmlFor='my-drawer' className='btn drawer-button'>
+			<div className='drawer-content z-10'>
+				<ToggleButton
+					htmlFor='my-drawer'
+					className='btn drawer-button z-20'
+					// onClick={}
+				>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
 						fill='none'
@@ -52,6 +55,11 @@ export default function Drawer() {
 					<li>
 						<Link href='/dashboard'>
 							<a>대시보드</a>
+						</Link>
+					</li>
+					<li>
+						<Link href='/market-setting'>
+							<a>매장 설정</a>
 						</Link>
 					</li>
 					<li>
