@@ -32,7 +32,7 @@ export default function MarketSetting() {
 				{ text: "매장 설정", url: "/market-setting" },
 				{ text: "태그 설정", url: "/market-setting/tag" },
 			]}>
-			<div className='pl-5 pt-5'>
+			<div className='p-5'>
 				<div className='grid gap-6 mb-2 md:grid-cols-2'>
 					<div>
 						<label

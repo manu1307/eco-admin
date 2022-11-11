@@ -5,13 +5,16 @@ import { useState } from "react";
 import MenuModal from "../../components/UI/Modal/MenuModal";
 import { useRecoilState } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
+import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
 
 const MenuSettingWrapper = styled.div`
 	padding-top: 20px;
 	width: 83.7%;
 	background-color: #f6f6f6;
 	padding-left: 50px;
+	height: 100%;
 	@media screen and (max-width: 640px) {
+		width: 100%;
 		padding: 10px;
 		height: 90vh;
 	}
@@ -122,7 +125,7 @@ export default function ServiceSettingMenu() {
 				{ text: "알림 설정", url: "" },
 				{ text: "댓글신고", url: "" },
 			]}>
-			<MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
+			<MenuSettingWrapper className={sideBarOpen ? "z-10" : "z-0"}>
 				<MenuSettingHeader className='flex align-middle drop-shadow-lg'>
 					<div
 						style={{ fontSize: "20px" }}
@@ -175,6 +178,7 @@ export default function ServiceSettingMenu() {
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
+			<BackgroundColor />
 		</Layout>
 	);
 }
