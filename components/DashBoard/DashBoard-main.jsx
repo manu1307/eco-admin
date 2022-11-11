@@ -66,14 +66,13 @@ const StoreName = styled.div`
 `;
 const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.8);
-  width: 80%;
+  width: 90%;
   max-width: 1180px;
   height: 80%;
-  max-height: 480px;
+  max-height: 420px;
   border-radius: 30px;
   position: absolute;
   margin-top: 20px;
-  z-index: 2;
   text-align: center;
   @media screen and (max-width: 640px) {
     width: 90%;
