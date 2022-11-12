@@ -6,6 +6,7 @@ import MenuModal from "../../components/UI/Modal/MenuModal";
 import { useRecoilState } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
+import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
 
 const MenuSettingWrapper = styled.div`
 	padding-top: 20px;
@@ -114,17 +115,18 @@ const dummyData = [
 	{ id: 5, menu: "마카롱", price: 2000 },
 ];
 export default function ServiceSettingMenu() {
-	const [modalOpen, setModalOpen] = useState(false);
+	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
 	const [modalData, setModalData] = useState();
+	const [menuRegisterModalOpen, setMenuRegisterModalOpen] = useState(false);
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 
 	const openModal = (data) => {
 		setModalData(data);
-		setModalOpen((prev) => !prev);
+		setMenuEditModalOpen((prev) => !prev);
 	};
 
 	const closeModal = () => {
-		setModalOpen(false);
+		setMenuEditModalOpen(false);
 	};
 
 	return (
@@ -169,9 +171,11 @@ export default function ServiceSettingMenu() {
 						<EditButton>
 							<button
 								type='button'
-								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
+								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'
+								data-modal-toggle='defaultModal'>
 								등록
 							</button>
+							<MenuRegisterModal />
 						</EditButton>
 					</MenuSettingBodyHeader>
 
@@ -197,7 +201,7 @@ export default function ServiceSettingMenu() {
 							</MenuSettingBodyContent>
 						);
 					})}
-					{modalOpen && (
+					{menuEditModalOpen && (
 						<MenuModal data={modalData} onClick={closeModal}></MenuModal>
 					)}
 				</MenuSettingBody>
