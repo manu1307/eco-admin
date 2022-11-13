@@ -171,14 +171,18 @@ export default function ServiceSettingMenu() {
 						<EditButton>
 							<button
 								type='button'
-								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'
-								data-modal-toggle='defaultModal'>
+								onClick={() => {
+									setMenuRegisterModalOpen(true);
+								}}
+								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
 								등록
 							</button>
-							<MenuRegisterModal />
+							<MenuRegisterModal
+								open={menuRegisterModalOpen}
+								changeOpen={setMenuRegisterModalOpen}
+							/>
 						</EditButton>
 					</MenuSettingBodyHeader>
-
 					{dummyData.map((data, index) => {
 						return (
 							<MenuSettingBodyContent key={data.id}>
