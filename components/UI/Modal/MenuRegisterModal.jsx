@@ -9,11 +9,13 @@ const MenuRegisterModalWrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+  @media screen and (max-width: 640px) {
+    width: 100vw;
+  }
 `;
 const MenuRegisterModalContainer = styled.div`
   width: 800px;
-  height: 800px;
-  /* max-height: 500px; */
+  height: 500px;
   padding: 10px;
   background-color: white;
   color: black;
@@ -21,12 +23,31 @@ const MenuRegisterModalContainer = styled.div`
   position: relative;
   top: 10%;
   left: 10%;
+  @media screen and (max-width: 1140px) {
+    height: 90vh;
+  }
+  @media screen and (max-width: 640px) {
+    width: 90%;
+    top: 20px;
+    left: 0%;
+    height: 360px;
+    margin: 0 auto;
+    overflow-y: scroll;
+  }
 `;
 const MenuRegisterModalItemContainer = styled.div`
   width: 100%;
 `;
+const MenuRegisterModalItemLabel = styled.label`
+  @media screen and (max-width: 640px) {
+    font-size: 11px;
+  }
+`;
 const MenuRegisterModalItemInput = styled.input`
   border: 2px solid #00000038;
+  @media screen and (max-width: 640px) {
+    font-size: 10px;
+  }
 `;
 
 const MenuTagWrapper = styled.div`
@@ -40,6 +61,14 @@ const MenuTagItem = styled.div`
   background-color: #dedede;
   padding: 2px 4px;
   border-radius: 5px;
+  @media screen and (max-width: 640px) {
+    font-size: 10px;
+  }
+`;
+const MenuTagItemInput = styled.input`
+  @media screen and (max-width: 640px) {
+    font-size: 10px;
+  }
 `;
 
 const MenuRegisterModalItem = (props) => {
@@ -47,11 +76,13 @@ const MenuRegisterModalItem = (props) => {
 
   return (
     <MenuRegisterModalItemContainer className="flex items-center mt-3">
-      <label className="w-2/6 text-sm">{label}</label>
+      <MenuRegisterModalItemLabel className="w-2/6 text-sm">
+        {label}
+      </MenuRegisterModalItemLabel>
       <MenuRegisterModalItemInput
         type={type}
         placeholder={placeholder}
-        className="input input-bordered rounded-xl w-5/6 max-w-lg font-normal"
+        className="input-bordered rounded-xl w-5/6 max-w-lg font-normal"
         onChange={onChange}
       />
     </MenuRegisterModalItemContainer>
@@ -174,7 +205,9 @@ export default function MenuRegisterModal(props) {
           }}
         />
         <MenuRegisterModalItemContainer className="flex items-center mt-3">
-          <label className="w-2/6 text-sm">태그 (최대 3개)</label>
+          <MenuRegisterModalItemLabel className="w-2/6 text-sm">
+            태그 (최대 3개)
+          </MenuRegisterModalItemLabel>
           <MenuTagWrapper className="w-4/6 max-w-lg rounded-xl">
             <div className="flex items-center w-full">
               {menuTagList.map((tag, index) => {
@@ -185,10 +218,10 @@ export default function MenuRegisterModal(props) {
                   </MenuTagItem>
                 );
               })}
-              <input
+              <MenuTagItemInput
                 type="text"
                 placeholder="#태그 입력"
-                className="input border-0 rounded-xl w-1/3 font-normal"
+                className="border-0 rounded-xl w-1/3 font-normal"
                 value={menuTagItem}
                 onChange={(event) => {
                   setMenuTagItem(event.target.value);
@@ -198,16 +231,23 @@ export default function MenuRegisterModal(props) {
             </div>
           </MenuTagWrapper>
         </MenuRegisterModalItemContainer>
-        <div className="w-full my-5">
-          <label for="menu" className="w-2/6 text-sm">
-            메뉴 사진 업로드
-          </label>
+        <div className="my-3">
+          <MenuRegisterModalItemLabel
+            className="block mb-2 text-sm  text-gray-900 dark:text-gray-300"
+            htmlFor="file_input"
+          >
+            매장 사진 업로드
+          </MenuRegisterModalItemLabel>
           <input
+            className="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            id="file_input"
             type="file"
-            id="menu"
-            name="menu"
-            accept="image/png, image/jpeg"
-          ></input>
+            onChange={(event) => {
+              setStoreImage(() => {
+                return event.target.files[0];
+              });
+            }}
+          />
         </div>
         <button
           type="button"
