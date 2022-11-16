@@ -34,12 +34,6 @@ const MenuTagItemInput = styled.input`
 export default function MarketSettingTag() {
   const [menuTagItem, setMenuTagItem] = useState("");
   const [menuTagList, setMenuTagList] = useState([]);
-  const onKeyPress = (event) => {
-    const currentTag = event.target.value;
-    if (currentTag.length !== 0 && event.key === "Enter") {
-      submitTagItem();
-    }
-  };
 
   const submitTagItem = () => {
     if (menuTagList.length >= 3) {
@@ -68,7 +62,6 @@ export default function MarketSettingTag() {
   };
   const deleteItem = (event) => {
     const deleteTarget = event.target.parentElement.firstChild.innerText;
-    console.log(deleteTarget);
     const filteredTagList = menuTagList.filter((tag) => tag !== deleteTarget);
     setMenuTagList(filteredTagList);
   };
@@ -85,20 +78,6 @@ export default function MarketSettingTag() {
           매장 태그 (최대 3개)
         </StoreRegisterModalItemLabel>
         <div className="w-4/6 max-w-lg rounded-xl">
-          <MenuTagWrapper>
-            <div className="flex items-center w-full">
-              <MenuTagItemInput
-                type="text"
-                placeholder="#태그 입력"
-                className="border-0 rounded-xl w-1/3 font-normal"
-                value={menuTagItem}
-                onChange={(event) => {
-                  setMenuTagItem(event.target.value);
-                }}
-                onKeyPress={onKeyPress}
-              />
-            </div>
-          </MenuTagWrapper>
           {menuTagList.map((tag, index) => {
             return (
               <MenuTagItem className="flex gap-1" key={index}>
