@@ -2,7 +2,7 @@ import Layout from "../../components/UI/Layout/Layout";
 import Arrow from "../../assets/arrow-dashboard.svg";
 import styled from "styled-components";
 import { useState } from "react";
-import MenuModal from "../../components/UI/Modal/MenuModal";
+import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
 import { useRecoilState } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
@@ -206,7 +206,9 @@ export default function ServiceSettingMenu() {
 						);
 					})}
 					{menuEditModalOpen && (
-						<MenuModal data={modalData} onClick={closeModal}></MenuModal>
+						<MenuEditModal
+							data={modalData}
+							onClick={closeModal}></MenuEditModal>
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
