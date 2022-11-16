@@ -101,7 +101,7 @@ const MenuTagExample = [
 ];
 
 export default function MenuEditModal(props) {
-	const { data, onClick } = props;
+	const { data, changeOpen } = props;
 
 	const [menuName, setMenuName] = useState(data.menu);
 	const [menuPrice, setMenuPrice] = useState(data.price);
