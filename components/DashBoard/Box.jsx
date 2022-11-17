@@ -6,6 +6,7 @@ const BoxWrapper = styled.div`
   border-radius: 30px;
   box-shadow: 0 0 2px 1.5px #d8d8d8;
   background-color: #fff;
+  color: black;
   @media screen and (max-width: 640px) {
     width: 90%;
     height: 150px;

@@ -1,7 +1,7 @@
 import Drawer from "../../components/UI/Layout/Drawer";
 import Layout from "../../components/UI/Layout/Layout";
 
-export default function ServiceSetting() {
+export default function ClosingSale() {
   return (
     <Layout
       sideItems={[
@@ -13,6 +13,8 @@ export default function ServiceSetting() {
         { text: "알림 설정", url: "" },
         { text: "댓글신고", url: "" },
       ]}
-    ></Layout>
+    >
+      <div>마감타임 세일</div>
+    </Layout>
   );
 }
