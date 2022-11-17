@@ -150,7 +150,7 @@ export default function ServiceSettingMenu() {
         { text: "단골 스탬프 설정", url: "" },
         { text: "단골 리스트", url: "" },
         { text: "메뉴 설정", url: "/service-setting/menu" },
-        { text: "마감타임 설정", url: "" },
+        { text: "마감타임 설정", url: "/service-setting/closingsale" },
         { text: "알림 설정", url: "" },
         { text: "댓글신고", url: "" },
       ]}
