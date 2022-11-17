@@ -1,9 +1,8 @@
-import axios from "axios";
-import Image from "next/image";
-import { useState } from "react";
 import styled from "styled-components";
+import { useState } from "react";
+import Image from "next/image";
 
-const MenuRegisterModalWrapper = styled.div`
+const MenuEditModalWrapper = styled.div`
 	width: 90vw;
 	height: 100vh;
 	background-color: #80808073;
@@ -14,7 +13,7 @@ const MenuRegisterModalWrapper = styled.div`
 		width: 100vw;
 	}
 `;
-const MenuRegisterModalContainer = styled.div`
+const MenuEditModalContainer = styled.div`
 	width: 800px;
 	height: 500px;
 	padding: 10px;
@@ -36,15 +35,15 @@ const MenuRegisterModalContainer = styled.div`
 		overflow-y: scroll;
 	}
 `;
-const MenuRegisterModalItemContainer = styled.div`
+const MenuEditModalItemContainer = styled.div`
 	width: 100%;
 `;
-const MenuRegisterModalItemLabel = styled.label`
+const MenuEditModalItemLabel = styled.label`
 	@media screen and (max-width: 640px) {
 		font-size: 11px;
 	}
 `;
-const MenuRegisterModalItemInput = styled.input`
+const MenuEditModalItemInput = styled.input`
 	border: 2px solid #00000038;
 	@media screen and (max-width: 640px) {
 		font-size: 10px;
@@ -72,21 +71,23 @@ const MenuTagSelected = styled.div`
 		color: black;
 	}
 `;
-const MenuRegisterModalItem = (props) => {
-	const { label, type, placeholder, onChange } = props;
+
+const MenuEditModalItem = (props) => {
+	const { label, type, value, placeholder, onChange } = props;
 
 	return (
-		<MenuRegisterModalItemContainer className='flex items-center mt-3'>
-			<MenuRegisterModalItemLabel className='w-2/6 text-sm'>
+		<MenuEditModalItemContainer className='flex items-center mt-3'>
+			<MenuEditModalItemLabel className='w-2/6 text-sm'>
 				{label}
-			</MenuRegisterModalItemLabel>
-			<MenuRegisterModalItemInput
+			</MenuEditModalItemLabel>
+			<MenuEditModalItemInput
 				type={type}
+				value={value && value}
 				placeholder={placeholder}
 				className='input-bordered rounded-xl w-5/6 max-w-lg font-normal'
 				onChange={onChange}
 			/>
-		</MenuRegisterModalItemContainer>
+		</MenuEditModalItemContainer>
 	);
 };
 
@@ -99,16 +100,14 @@ const MenuTagExample = [
 	"얼음 많이",
 ];
 
-export default function MenuRegisterModal({ open, changeOpen }) {
-	//   console.log(tagData);
-	//   const { open, changeOpen } = props;
+export default function MenuEditModal(props) {
+	const { data, changeOpen } = props;
 
-	const [menuName, setMenuName] = useState("");
-	const [menuPrice, setMenuPrice] = useState("");
+	const [menuName, setMenuName] = useState(data.menu);
+	const [menuPrice, setMenuPrice] = useState(data.price);
 	const [menuDescription, setMenuDescription] = useState("");
-	const [menuOrder, setMenuOrder] = useState("");
+	const [menuOrder, setMenuOrder] = useState(data.id);
 
-	const [menuTagItem, setMenuTagItem] = useState("");
 	const [menuTagList, setMenuTagList] = useState([]);
 
 	const [menuImage, setMenuImage] = useState("");
@@ -159,27 +158,29 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 		setMenuSelectedImage("");
 	};
 	return (
-		<MenuRegisterModalWrapper className={!open && "hidden"}>
-			<MenuRegisterModalContainer>
+		<MenuEditModalWrapper>
+			<MenuEditModalContainer>
 				<div className='flex flex-col sm:flex-row gap-4 '>
 					<div className='w-full sm:w-1/2'>
-						<MenuRegisterModalItem
+						<MenuEditModalItem
 							label='메뉴명'
 							type='text'
+							value={menuName}
 							placeholder='ex. 아메리카노'
 							onChange={(event) => {
 								setMenuName(event.target.value);
 							}}
 						/>
-						<MenuRegisterModalItem
+						<MenuEditModalItem
 							label='메뉴 가격'
 							type='number'
+							value={menuPrice}
 							placeholder='ex. 3000'
 							onChange={(event) => {
 								setMenuPrice(event.target.value);
 							}}
 						/>
-						<MenuRegisterModalItem
+						<MenuEditModalItem
 							label='메뉴 상세 설명'
 							type='text'
 							placeholder='(선택사항)'
@@ -187,9 +188,10 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 								setMenuDescription(event.target.value);
 							}}
 						/>
-						<MenuRegisterModalItem
+						<MenuEditModalItem
 							label='메뉴 노출 순서'
 							type='text'
+							value={menuOrder}
 							placeholder='ex. 1순위 = 1'
 							onChange={(event) => {
 								setMenuOrder(event.target.value);
@@ -213,11 +215,10 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 						)}
 					</div>
 				</div>
-
-				<MenuRegisterModalItemContainer className='flex items-center mt-3'>
-					<MenuRegisterModalItemLabel className='w-2/6 text-sm'>
+				<MenuEditModalItemContainer className='flex items-center mt-3'>
+					<MenuEditModalItemLabel className='w-2/6 text-sm'>
 						메뉴 태그 (최대 3개)
-					</MenuRegisterModalItemLabel>
+					</MenuEditModalItemLabel>
 					<div>
 						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
 							{menuTagList?.map((tag, index) => {
@@ -291,13 +292,13 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 							})}
 						</div>
 					</div>
-				</MenuRegisterModalItemContainer>
+				</MenuEditModalItemContainer>
 				<div className='my-3'>
-					<MenuRegisterModalItemLabel
+					<MenuEditModalItemLabel
 						className='block mb-2 text-sm  text-gray-900 dark:text-gray-300'
 						htmlFor='file_input'>
 						매장 사진 업로드
-					</MenuRegisterModalItemLabel>
+					</MenuEditModalItemLabel>
 					<input
 						className='block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'
 						id='file_input'
@@ -319,7 +320,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 					type='button'
 					onClick={registerMenu}
 					className='text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
-					등록
+					수정
 				</button>
 				<button
 					type='button'
@@ -332,22 +333,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 					className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
 					취소
 				</button>
-			</MenuRegisterModalContainer>
-		</MenuRegisterModalWrapper>
+			</MenuEditModalContainer>
+		</MenuEditModalWrapper>
 	);
 }
-
-// MenuRegisterModal.getInitialProps = async () => {
-// 	const token = localStorage.getItem("token");
-// 	const res = await fetch({
-// 		url: "https://ecomap.kr/api/v1/tags/type?type=menu",
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 			Authorization: `Bearer ${token}`,
-// 		},
-// 	});
-// 	const json = await res.json();
-// 	console.log(json);
-
-// 	return { tagData: json };
-// };

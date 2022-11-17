@@ -1,12 +1,13 @@
 import Layout from "../../components/UI/Layout/Layout";
 import Arrow from "../../assets/arrow-dashboard.svg";
 import styled from "styled-components";
-import { useState } from "react";
-import MenuModal from "../../components/UI/Modal/MenuModal";
+import { useEffect, useState } from "react";
+import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
 import { useRecoilState } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
 import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
+import axios from "axios";
 
 const MenuSettingWrapper = styled.div`
 	padding-top: 20px;
@@ -206,7 +207,9 @@ export default function ServiceSettingMenu() {
 						);
 					})}
 					{menuEditModalOpen && (
-						<MenuModal data={modalData} onClick={closeModal}></MenuModal>
+						<MenuEditModal
+							data={modalData}
+							changeOpen={setMenuEditModalOpen}></MenuEditModal>
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
@@ -214,3 +217,26 @@ export default function ServiceSettingMenu() {
 		</Layout>
 	);
 }
+
+// export async function getStaticProps() {
+// 	let menus;
+// 	if (typeof window !== "undefined") {
+// 		// Perform localStorage action
+// 		const token = localStorage.getItem("token");
+// 		axios({
+// 			method: "get",
+// 			url: "https://ecomap.kr/api/v1/menus",
+// 			headers: {
+// 				Authorization: `Bearer ${token}`,
+// 			},
+// 		}).then((res) => {
+// 			console.log(res);
+// 			menus = res.json();
+// 		});
+// 		return {
+// 			props: {
+// 				menus,
+// 			},
+// 		};
+// 	}
+// }
