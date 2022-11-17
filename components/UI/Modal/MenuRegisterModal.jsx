@@ -1,6 +1,6 @@
 import axios from "axios";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const MenuRegisterModalWrapper = styled.div`
@@ -90,32 +90,46 @@ const MenuRegisterModalItem = (props) => {
 	);
 };
 
-const MenuTagExample = [
-	"맛있는 아메리카노",
-	"고소함",
-	"디카페인 가능",
-	"벤티 사이즈",
-	"테이크아웃",
-	"얼음 많이",
-];
+// const MenuTagExample = [
+// 	"맛있는 아메리카노",
+// 	"고소함",
+// 	"디카페인 가능",
+// 	"벤티 사이즈",
+// 	"테이크아웃",
+// 	"얼음 많이",
+// ];
 
 export default function MenuRegisterModal({ open, changeOpen }) {
 	//   console.log(tagData);
 	//   const { open, changeOpen } = props;
+	const token = localStorage.getItem("token");
 
 	const [menuName, setMenuName] = useState("");
 	const [menuPrice, setMenuPrice] = useState("");
 	const [menuDescription, setMenuDescription] = useState("");
 	const [menuOrder, setMenuOrder] = useState("");
 
-	const [menuTagItem, setMenuTagItem] = useState("");
 	const [menuTagList, setMenuTagList] = useState([]);
+	const [selectedMenuTagList, setSelectedMenuTagList] = useState([]);
 
 	const [menuImage, setMenuImage] = useState("");
 	const [menuSelectedImage, setMenuSelectedImage] = useState();
 
+	useEffect(() => {
+		axios({
+			method: "get",
+			url: "https://ecomap.kr/api/v1/tags/type?type=menu",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			setMenuTagList((prev) => {
+				return [...prev, res.data.slice(0, 5)];
+			});
+		});
+	}, [token]);
+
 	const registerMenu = () => {
-		const token = localStorage.getItem("token");
 		const menuData = {
 			storeId: 1,
 			name: menuName,
@@ -243,11 +257,10 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 							})}
 						</div>
 						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl'>
-							{MenuTagExample.map((tag, index) => {
+							{menuTagList.map((tag, index) => {
 								return (
 									<MenuTagItemButton
 										onClick={() => {
-											const token = localStorage.getItem("token");
 											if (menuTagList.length < 3) {
 												axios({
 													method: "post",
@@ -274,7 +287,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 													console.log(response.status);
 												});
 											}
-											setMenuTagList((prev) => {
+											setSelectedMenuTagList((prev) => {
 												if (prev.length < 3) {
 													return [...prev, tag];
 												} else {
@@ -285,7 +298,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 										}}
 										className='flex gap-1 text-sm'
 										key={index}>
-										<div>#{tag}</div>
+										<div>#{tag.name}</div>
 									</MenuTagItemButton>
 								);
 							})}
