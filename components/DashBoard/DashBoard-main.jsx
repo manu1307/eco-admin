@@ -56,8 +56,8 @@ const StoreName = styled.div`
 `;
 const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.8);
-  width: 90%;
-  max-width: 1180px;
+  width: 92%;
+  max-width: 1200px;
   height: 80%;
   max-height: 420px;
   border-radius: 30px;
@@ -70,9 +70,13 @@ const ModalWrapper = styled.div`
     margin-top: 20px;
   }
 `;
+const ModalContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const ModalMessage = styled.div`
-  color: #fff;
+  color: white;
   font-weight: bold;
   font-size: ${(props) => props.fontSize}px;
   position: relative;
@@ -94,7 +98,7 @@ const ModalButton = styled.a`
   cursor: pointer;
 `;
 const BoxWrapper = styled.div`
-  opacity: ${(props) => (props.isFirst ? 0.5 : 1)};
+  /* opacity: ${(props) => (props.isFirst ? 0.3 : 1)}; */
   width: 100%;
   max-width: 1280px;
 `;
@@ -146,13 +150,15 @@ export default function DashBoardMain() {
           {isFirst && (
             <div className="flex justify-center">
               <ModalWrapper>
-                <ModalMessage fontSize={50}>환영합니다.</ModalMessage>
-                <ModalMessage fontSize={30}>
-                  매장설정을 먼저 해주세요.
-                </ModalMessage>
-                <ModalButton onClick={confirmSetting}>
-                  매장 설정 가기
-                </ModalButton>
+                <ModalContainer>
+                  <ModalMessage fontSize={50}>환영합니다.</ModalMessage>
+                  <ModalMessage fontSize={30}>
+                    매장설정을 먼저 해주세요.
+                  </ModalMessage>
+                  <ModalButton onClick={confirmSetting}>
+                    매장 설정 가기
+                  </ModalButton>
+                </ModalContainer>
               </ModalWrapper>
             </div>
           )}
