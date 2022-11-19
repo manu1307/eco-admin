@@ -108,34 +108,32 @@ const EditButton = styled.div`
 	}
 `;
 
-const dummyData = [
-	{ id: 1, menu: "아메리카노", price: 4000 },
-	{ id: 2, menu: "카페라떼", price: 4500 },
-	{ id: 3, menu: "초코 프라푸치노", price: 5000 },
-	{ id: 4, menu: "아샷추", price: 3000 },
-	{ id: 5, menu: "마카롱", price: 2000 },
-];
 export default function ServiceSettingMenu() {
 	const [menuData, setMenuData] = useState();
+	const [tagData, setTagData] = useState();
 
 	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
 	const [modalData, setModalData] = useState();
 	const [menuRegisterModalOpen, setMenuRegisterModalOpen] = useState(false);
+
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-		axios({
-			method: "get",
-			url: "https://ecomap.kr/api/v1/menus",
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		}).then((res) => {
-			console.log(res.data);
 
-			setMenuData(res.data);
-		});
+		const getMenuData = () => {
+			axios({
+				method: "get",
+				url: "https://ecomap.kr/api/v1/menus",
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}).then((res) => {
+				setMenuData(res.data);
+			});
+		};
+
+		getMenuData();
 	}, [menuEditModalOpen, menuRegisterModalOpen]);
 
 	const openModal = (data) => {
@@ -195,27 +193,38 @@ export default function ServiceSettingMenu() {
 							<MenuRegisterModal
 								open={menuRegisterModalOpen}
 								changeOpen={setMenuRegisterModalOpen}
+								tagData={tagData}
 							/>
 						</EditButton>
 					</MenuSettingBodyHeader>
 					{menuData?.map((data, index) => {
 						return (
-							<MenuSettingBodyContent key={data.id}>
+							<MenuSettingBodyContent key={index}>
 								<CheckContent>
 									<input type='checkbox' />
 								</CheckContent>
-								<NumberContent>{data.id && data.id}</NumberContent>
+								<NumberContent>{data.menuId && data.menuId}</NumberContent>
 								<MenuContent>{data.name}</MenuContent>
 								<PriceContent>{data.price}원</PriceContent>{" "}
 								<EditButton>
 									<button
 										onClick={() => {
-											openModal(data);
+											// const specificMenuData
+											const token = localStorage.getItem("token");
+											axios({
+												method: "get",
+												url: `https://ecomap.kr/api/v1/menus/${data.menuId}`,
+												headers: {
+													Authorization: `Bearer ${token}`,
+												},
+											}).then((res) => {
+												openModal(res.data);
+											});
 										}}
 										type='button'
 										className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
 										수정
-									</button>{" "}
+									</button>
 								</EditButton>
 							</MenuSettingBodyContent>
 						);
@@ -231,26 +240,3 @@ export default function ServiceSettingMenu() {
 		</Layout>
 	);
 }
-
-// export async function getStaticProps() {
-// 	let menus;
-// 	if (typeof window !== "undefined") {
-// 		// Perform localStorage action
-// 		const token = localStorage.getItem("token");
-// 		axios({
-// 			method: "get",
-// 			url: "https://ecomap.kr/api/v1/menus",
-// 			headers: {
-// 				Authorization: `Bearer ${token}`,
-// 			},
-// 		}).then((res) => {
-// 			console.log(res);
-// 			menus = res.json();
-// 		});
-// 		return {
-// 			props: {
-// 				menus,
-// 			},
-// 		};
-// 	}
-// }
