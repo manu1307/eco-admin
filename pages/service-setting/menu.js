@@ -114,6 +114,7 @@ export default function ServiceSettingMenu() {
 
 	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
 	const [modalData, setModalData] = useState();
+	const [modalDataMenuId, setModalDataMenuId] = useState();
 	const [menuRegisterModalOpen, setMenuRegisterModalOpen] = useState(false);
 
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
@@ -136,8 +137,9 @@ export default function ServiceSettingMenu() {
 		getMenuData();
 	}, [menuEditModalOpen, menuRegisterModalOpen]);
 
-	const openModal = (data) => {
+	const openModal = (data, menuId) => {
 		setModalData(data);
+		setModalDataMenuId(menuId);
 		setMenuEditModalOpen((prev) => !prev);
 	};
 
@@ -218,7 +220,7 @@ export default function ServiceSettingMenu() {
 													Authorization: `Bearer ${token}`,
 												},
 											}).then((res) => {
-												openModal(res.data);
+												openModal(res.data, data.menuId);
 											});
 										}}
 										type='button'
@@ -231,6 +233,7 @@ export default function ServiceSettingMenu() {
 					})}
 					{menuEditModalOpen && (
 						<MenuEditModal
+							menuId={modalDataMenuId}
 							data={modalData}
 							changeOpen={setMenuEditModalOpen}></MenuEditModal>
 					)}

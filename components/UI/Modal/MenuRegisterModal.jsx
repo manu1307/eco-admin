@@ -16,8 +16,9 @@ const MenuRegisterModalWrapper = styled.div`
 `;
 const MenuRegisterModalContainer = styled.div`
 	width: 800px;
-	height: 500px;
-	padding: 10px;
+	height: 700px;
+	overflow-y: clip;
+	padding: 25px;
 	background-color: white;
 	color: black;
 	border-radius: 20px;
@@ -31,9 +32,12 @@ const MenuRegisterModalContainer = styled.div`
 		width: 90%;
 		top: 20px;
 		left: 0%;
-		height: 500px;
+		padding: 15px;
+		height: 700px;
 		margin: 0 auto;
 		overflow-y: scroll;
+		display: flex;
+		flex-direction: column;
 	}
 `;
 const MenuRegisterModalItemContainer = styled.div`
@@ -48,6 +52,46 @@ const MenuRegisterModalItemInput = styled.input`
 	border: 2px solid #00000038;
 	@media screen and (max-width: 640px) {
 		font-size: 10px;
+	}
+`;
+const MenuRegisterModalDescriptionInput = styled.textarea`
+	border: 2px solid #00000038;
+	height: 200px;
+	@media screen and (max-width: 640px) {
+		font-size: 10px;
+		height: 150px;
+	}
+`;
+const MenuRegisterModalFirstRow = styled.div`
+	height: 450px;
+	@media screen and (max-width: 640px) {
+		height: 100%;
+	}
+`;
+
+const MenuImageWrapper = styled.div`
+	width: 450px;
+	height: 450px;
+	border: 2px solid #bfbfbf;
+	border-radius: 20px;
+	margin: 0;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+		height: 300px;
+	}
+`;
+const MenuImageContent = styled.div`
+	box-sizing: content-box;
+	width: 450px;
+	height: 450px;
+	border-radius: 20px;
+	border: 2px solid #bfbfbf;
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin: -2px;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+		height: 300px;
 	}
 `;
 
@@ -76,16 +120,25 @@ const MenuRegisterModalItem = (props) => {
 	const { label, type, placeholder, onChange } = props;
 
 	return (
-		<MenuRegisterModalItemContainer className='flex items-center mt-3'>
-			<MenuRegisterModalItemLabel className='w-2/6 text-sm'>
+		<MenuRegisterModalItemContainer className='flex flex-col gap-2 items-center mt-3'>
+			<MenuRegisterModalItemLabel className='w-full text-sm'>
 				{label}
 			</MenuRegisterModalItemLabel>
-			<MenuRegisterModalItemInput
-				type={type}
-				placeholder={placeholder}
-				className='input-bordered rounded-xl w-5/6 max-w-lg font-normal'
-				onChange={onChange}
-			/>
+			{label === "메뉴 상세 설명" ? (
+				<MenuRegisterModalDescriptionInput
+					type={type}
+					placeholder={placeholder}
+					className='input-bordered rounded-xl w-full max-w-lg font-normal'
+					onChange={onChange}
+				/>
+			) : (
+				<MenuRegisterModalItemInput
+					type={type}
+					placeholder={placeholder}
+					className='input-bordered rounded-xl w-full max-w-lg font-normal'
+					onChange={onChange}
+				/>
+			)}
 		</MenuRegisterModalItemContainer>
 	);
 };
@@ -114,7 +167,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setMenuTagList((prev) => {
+				setMenuTagList(() => {
 					return res.data;
 				});
 			});
@@ -139,6 +192,9 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 		const data = new FormData();
 		data.append("createMenuDto", blob);
 		data.append("file", menuImage);
+		console.log(json);
+		console.log(data.get("file"));
+		console.log(data.get("createMenuDto"));
 
 		axios({
 			method: "post",
@@ -169,8 +225,28 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 	return (
 		<MenuRegisterModalWrapper className={!open && "hidden"}>
 			<MenuRegisterModalContainer>
-				<div className='flex flex-col sm:flex-row gap-4 '>
-					<div className='w-full sm:w-1/2'>
+				<MenuRegisterModalFirstRow className='flex flex-col h-80 sm:flex-row gap-4 '>
+					<MenuImageWrapper className='my-3 sm:m-0 w-full'>
+						{menuImage ? (
+							<MenuImageContent
+								style={{
+									backgroundImage: `url(${menuImage})`,
+								}}>
+								{/* <Image
+									className='rounded-xl'
+									src={menuImage}
+									layout='fill'
+									sizes='10vw'
+									alt='image'
+								/> */}
+							</MenuImageContent>
+						) : (
+							<div className='w-full text-slate-300 text-center'>
+								이미지 미리 보기 칸
+							</div>
+						)}
+					</MenuImageWrapper>
+					<div className='flex flex-col gap-5 w-full sm:w-2/5'>
 						<MenuRegisterModalItem
 							label='메뉴명'
 							type='text'
@@ -195,36 +271,12 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 								setMenuDescription(event.target.value);
 							}}
 						/>
-						<MenuRegisterModalItem
-							label='메뉴 노출 순서'
-							type='text'
-							placeholder='ex. 1순위 = 1'
-							onChange={(event) => {
-								setMenuOrder(event.target.value);
-							}}
-						/>
 					</div>
+				</MenuRegisterModalFirstRow>
 
-					<div className=' my-3 sm:m-0  w-full sm:w-1/2'>
-						{menuImage ? (
-							<Image
-								className='rounded-xl'
-								src={menuImage}
-								width={500}
-								height={300}
-								alt='image'
-							/>
-						) : (
-							<div className='w-full text-slate-300 text-center'>
-								이미지 미리 보기 칸
-							</div>
-						)}
-					</div>
-				</div>
-
-				<MenuRegisterModalItemContainer className='flex items-center mt-3'>
-					<MenuRegisterModalItemLabel className='w-1/6 text-sm'>
-						메뉴 태그 <br /> (최대 2개)
+				<MenuRegisterModalItemContainer className='flex flex-col items-start gap-3 mt-6'>
+					<MenuRegisterModalItemLabel className='w-full text-sm'>
+						메뉴 태그 (최대 2개)
 					</MenuRegisterModalItemLabel>
 					<div>
 						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
@@ -272,14 +324,27 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 						</div>
 					</div>
 				</MenuRegisterModalItemContainer>
-				<div className='my-3'>
+				<div className='flex my-3'>
 					<MenuRegisterModalItemLabel
-						className='block mb-2 text-sm  text-gray-900 dark:text-gray-300'
+						className='flex gap-3 items-center w-full mb-2 text-sm  text-gray-900 dark:text-gray-300'
 						htmlFor='file_input'>
-						매장 사진 업로드
+						메뉴 사진
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							fill='none'
+							viewBox='0 0 24 24'
+							strokeWidth={1.5}
+							stroke='currentColor'
+							className='w-6 h-6'>
+							<path
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
+							/>
+						</svg>
 					</MenuRegisterModalItemLabel>
 					<input
-						className='block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'
+						className='hidden text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'
 						id='file_input'
 						type='file'
 						onChange={(event) => {
@@ -295,23 +360,25 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 						}}
 					/>
 				</div>
-				<button
-					type='button'
-					onClick={registerMenu}
-					className='text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
-					등록
-				</button>
-				<button
-					type='button'
-					onClick={() => {
-						clearModal();
-						changeOpen(() => {
-							return false;
-						});
-					}}
-					className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
-					취소
-				</button>
+				<div className='w-full flex'>
+					<button
+						type='button'
+						onClick={registerMenu}
+						className='w-1/2 text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
+						등록
+					</button>
+					<button
+						type='button'
+						onClick={() => {
+							clearModal();
+							changeOpen(() => {
+								return false;
+							});
+						}}
+						className='w-1/2 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
+						취소
+					</button>
+				</div>
 			</MenuRegisterModalContainer>
 		</MenuRegisterModalWrapper>
 	);
