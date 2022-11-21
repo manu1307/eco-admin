@@ -93,12 +93,11 @@ const MenuEditModalItem = (props) => {
 };
 
 export default function MenuEditModal(props) {
-	const { data, changeOpen } = props;
+	const { data, menuId, changeOpen } = props;
 
 	const [menuName, setMenuName] = useState(data.name);
 	const [menuPrice, setMenuPrice] = useState(data.price);
 	const [menuDescription, setMenuDescription] = useState(data.description);
-	const [menuOrder, setMenuOrder] = useState(data.id);
 	const [menuTagList, setMenuTagList] = useState(data.tagMenus);
 
 	const [menuImage, setMenuImage] = useState(
@@ -143,12 +142,13 @@ export default function MenuEditModal(props) {
 		});
 	};
 
-	const deleteMenu = () => {
+	const deleteMenu = (menuId) => {
+		console.log(menuId);
 		const token = localStorage.getItem("token");
 
 		axios({
 			method: "delete",
-			url: "https://ecomap.kr/api/v1/menus/",
+			url: `https://ecomap.kr/api/v1/menus/${menuId}`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -173,7 +173,6 @@ export default function MenuEditModal(props) {
 		setMenuName("");
 		setMenuPrice("");
 		setMenuDescription("");
-		setMenuOrder("");
 		setMenuTagList([]);
 		setMenuImage("");
 		setMenuSelectedImage("");
@@ -208,15 +207,6 @@ export default function MenuEditModal(props) {
 							placeholder='(선택사항)'
 							onChange={(event) => {
 								setMenuDescription(event.target.value);
-							}}
-						/>
-						<MenuEditModalItem
-							label='메뉴 노출 순서'
-							type='text'
-							value={menuOrder}
-							placeholder='ex. 1순위 = 1'
-							onChange={(event) => {
-								setMenuOrder(event.target.value);
 							}}
 						/>
 					</div>
@@ -276,7 +266,9 @@ export default function MenuEditModal(props) {
 				<div>
 					<button
 						type='button'
-						onClick={deleteMenu}
+						onClick={() => {
+							deleteMenu(menuId);
+						}}
 						className='text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
 						메뉴 삭제
 					</button>
