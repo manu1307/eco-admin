@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../../components/UI/Layout/Layout";
 import Image from "next/image";
+import styled from "styled-components";
 
 const StoreOpenTime = [
   { day: "월요일", openTime: "", closeTime: "" },
@@ -13,12 +14,102 @@ const StoreOpenTime = [
   { day: "일요일", openTime: "", closeTime: "" },
 ];
 
+const StoreRegisterModalItemContainer = styled.div`
+  width: 100%;
+`;
+const StoreRegisterModalItemLabel = styled.div`
+  @media screen and (max-width: 640px) {
+    font-size: 11px;
+  }
+`;
+
+const StoreTagItemButton = styled.button`
+  padding: 1px 5px;
+  font-weight: 400;
+  color: #595959;
+  border-radius: 10px;
+  border: 1px solid #595959;
+  :hover {
+    color: black;
+  }
+`;
+const StoreTagSelected = styled.div`
+  padding: 1px 5px;
+  font-weight: 400;
+  color: black;
+  border-radius: 10px;
+  background-color: #a1d2ff;
+  border: 1px solid #5cb0ff;
+  :hover {
+    color: black;
+  }
+`;
+
 export default function MarketSetting() {
   const [storeName, setStoreName] = useState("");
   const [storePhoneNumber, setStorePhoneNumber] = useState("");
   const [storeDescription, setStoreDescription] = useState("");
   const [storeAddress, setStoreAddress] = useState("");
   const [storeImage, setStoreImage] = useState();
+
+  const [storeTagList, setStoreTagList] = useState([]);
+
+  const [selectedStoreTagIdList, setSelectedStoreTagIdList] = useState([]);
+  const [selectedStoreTagList, setSelectedStoreTagList] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const getTagData = () => {
+      axios({
+        method: "get",
+        url: "https://ecomap.kr/api/v1/tags/type?type=store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res) => {
+        setStoreTagList(() => {
+          return res.data;
+        });
+      });
+    };
+    getTagData();
+  }, []);
+
+  const registerStore = () => {
+    const token = localStorage.getItem("token");
+    const storeDto = {
+      name: storeName,
+      phoneNumber: storePhoneNumber,
+      description: storeDescription,
+      address: storeAddress,
+      mondayTime: `${StoreOpenTime[0].openTime} ~ ${StoreOpenTime[0].closeTime}`,
+      tuesdayTime: `${StoreOpenTime[1].openTime} ~ ${StoreOpenTime[1].closeTime}`,
+      wednesdayTime: `${StoreOpenTime[2].openTime} ~ ${StoreOpenTime[2].closeTime}`,
+      thursdayTime: `${StoreOpenTime[3].openTime} ~ ${StoreOpenTime[3].closeTime}`,
+      fridayTime: `${StoreOpenTime[4].openTime} ~ ${StoreOpenTime[4].closeTime}`,
+      saturdayTime: `${StoreOpenTime[5].openTime} ~ ${StoreOpenTime[5].closeTime}`,
+      sundayTime: `${StoreOpenTime[6].openTime} ~ ${StoreOpenTime[6].closeTime}`,
+      tagIds: selectedStoreTagIdList,
+    };
+    const json = JSON.stringify(storeDto);
+    const blob = new Blob([json], {
+      type: "application/json",
+    });
+    const formData = new FormData();
+    formData.append("createStoreDto", blob);
+    formData.append("files", storeImage);
+    axios({
+      method: "post",
+      url: "https://ecomap.kr/api/v1/stores",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+      data: formData,
+    }).then((res) => {
+      console.log(res.status);
+    });
+  };
 
   return (
     <Layout
@@ -103,33 +194,36 @@ export default function MarketSetting() {
             }}
           />
         </div>
-        <div>영업시간</div>
-        {StoreOpenTime.map((day, index) => {
-          return (
-            <div className="mb-2 flex items-center gap-2" key={index}>
-              <label for="appt" className="text-sm">
-                {day.day}
-              </label>
-              <input
-                className="rounded-lg p-1 w-20"
-                type="time"
-                onChange={(event) => {
-                  day.openTime = event.target.value;
-                }}
-                required
-              ></input>
-              <div className="mx-3 font-bold">~</div>
-              <input
-                className="rounded-lg p-1 w-20"
-                type="time"
-                onChange={(event) => {
-                  day.closeTime = event.target.value;
-                }}
-                required
-              ></input>
-            </div>
-          );
-        })}
+        <div>
+          <div>영업시간</div>
+          {StoreOpenTime.map((day, index) => {
+            return (
+              <div className="mb-2 flex items-center gap-2 " key={index}>
+                <label for="" className="text-xs">
+                  {day.day}
+                </label>
+                <input
+                  className="rounded-lg p-1 w-32 text-xs"
+                  type="time"
+                  onChange={(event) => {
+                    day.openTime = event.target.value;
+                  }}
+                  required
+                ></input>
+                <div className="mx-3 font-bold">~</div>
+                <input
+                  className="rounded-lg p-1 w-32 text-xs"
+                  type="time"
+                  onChange={(event) => {
+                    day.closeTime = event.target.value;
+                  }}
+                  required
+                ></input>
+              </div>
+            );
+          })}
+        </div>
+
         <div>
           <label
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
@@ -150,9 +244,6 @@ export default function MarketSetting() {
                 const resultImage = reader.result;
                 setStoreImage(resultImage);
               };
-              //   setStoreImage(() => {
-              //     return event.target.files[0];
-              //   });
             }}
           />
         </div>
@@ -171,66 +262,66 @@ export default function MarketSetting() {
             </div>
           )}
         </div>
+        <div>
+          <StoreRegisterModalItemContainer className="flex flex-col items-start gap-3 mt-6">
+            <StoreRegisterModalItemLabel className="w-full text-sm">
+              매장 태그 (최대 3개)
+            </StoreRegisterModalItemLabel>
+            <div>
+              <div className="w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5">
+                {selectedStoreTagList.map((tag, i) => {
+                  return (
+                    <StoreTagSelected className="text-sm" key={i}>
+                      #{tag}
+                      <button
+                        onClick={() => {
+                          const filteredList = selectedStoreTagList.filter(
+                            (selectedTag) => {
+                              return selectedTag !== tag;
+                            }
+                          );
+                          setSelectedStoreTagList(filteredList);
+                        }}
+                      >
+                        ×
+                      </button>
+                    </StoreTagSelected>
+                  );
+                })}
+              </div>
+              <div className="w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5">
+                {storeTagList.map((tag, i) => {
+                  return (
+                    <StoreTagItemButton
+                      className="text-sm"
+                      key={i}
+                      onClick={() => {
+                        if (selectedStoreTagList.length < 3) {
+                          setSelectedStoreTagIdList((prev) => {
+                            return [...prev, tag.tagId];
+                          });
+                          setSelectedStoreTagList((prev) => {
+                            return [...prev, tag.name];
+                          });
+                        } else {
+                          alert("태그는 2개까지만 선택 가능합니다.");
+                        }
+                      }}
+                    >
+                      #{tag.name}
+                    </StoreTagItemButton>
+                  );
+                })}
+              </div>
+            </div>
+          </StoreRegisterModalItemContainer>
+        </div>
         <button
           type="submit"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           onClick={(event) => {
             event.preventDefault();
-            const token = localStorage.getItem("token");
-            const storeDto = {
-              name: storeName,
-              phoneNumber: storePhoneNumber,
-              description: storeDescription,
-              address: storeAddress,
-              mondayTime: `${StoreOpenTime[0].openTime} ~ ${StoreOpenTime[0].closeTime}`,
-              tuesdayTime: `${StoreOpenTime[1].openTime} ~ ${StoreOpenTime[1].closeTime}`,
-              wednesdayTime: `${StoreOpenTime[2].openTime} ~ ${StoreOpenTime[2].closeTime}`,
-              thursdayTime: `${StoreOpenTime[3].openTime} ~ ${StoreOpenTime[3].closeTime}`,
-              fridayTime: `${StoreOpenTime[4].openTime} ~ ${StoreOpenTime[4].closeTime}`,
-              saturdayTime: `${StoreOpenTime[5].openTime} ~ ${StoreOpenTime[5].closeTime}`,
-              sundayTime: `${StoreOpenTime[6].openTime} ~ ${StoreOpenTime[6].closeTime}`,
-              tagIds: ["1", "2"],
-              //   name: "맘스터치",
-              //   phoneNumber: "01012341234",
-              //   emdName: "이태원동",
-              //   description: "가게 설명입니다.",
-              //   address: "서울시 동작구",
-              //   latitude: "37.5576984952347",
-              //   longitude: "127.079226104632",
-              //   mondayTime: "09:00 ~ 21:00",
-              //   tuesdayTime: "09:00 ~ 21:00",
-              //   wednesdayTime: "09:00 ~ 21:00",
-              //   thursdayTime: "09:00 ~ 21:00",
-              //   fridayTime: "09:00 ~ 21:00",
-              //   saturdayTime: "09:00 ~ 21:00",
-              //   sundayTime: "09:00 ~ 21:00",
-              //   tagIds: ["1", "2"],
-            };
-            const json = JSON.stringify(storeDto);
-            const blob = new Blob([json], {
-              type: "application/json",
-            });
-            const formData = new FormData();
-            formData.append("createStoreDto", blob);
-            formData.append("files", storeImage);
-            axios({
-              method: "post",
-              url: "https://ecomap.kr/api/v1/stores",
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
-              },
-              data: formData,
-            }).then((res) => {
-              console.log(res.status);
-            });
-            console.log(
-              storeName,
-              storePhoneNumber,
-              storeDescription,
-              storeAddress,
-              StoreOpenTime
-            );
+            registerStore();
           }}
         >
           설정

@@ -1,7 +1,14 @@
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import Logo from "../../../assets/ecomap-logo.png";
+import {
+  apiBaseAddressState,
+  apiTokenState,
+} from "../../../states/globalState";
 import Drawer from "./Drawer";
 
 const HeaderWrapper = styled.div`
@@ -87,7 +94,7 @@ const SelectOption = styled.option`
   font-weight: 700;
 `;
 
-const ModileWrapper = styled.div`
+const MobileWrapper = styled.div`
   width: 100%;
   background-color: #072f53;
   height: 50px;
@@ -99,6 +106,23 @@ const ModileWrapper = styled.div`
 `;
 
 export default function Header() {
+  const [storeList, setStoreList] = useState([]);
+  const BaseURL = useRecoilValue(apiBaseAddressState);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    axios({
+      method: "get",
+      url: `${BaseURL}/api/v1/stores`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => {
+      console.log(res);
+    });
+  }, [BaseURL]);
+
   return (
     <>
       <HeaderWrapper>
@@ -115,8 +139,11 @@ export default function Header() {
             <Link href="/dashboard">
               <NavButton>대시보드</NavButton>
             </Link>
-            <Link href="/market-setting">
-              <NavButton>매장설정</NavButton>
+            <Link href="/storeSetting">
+              <NavButton>매장 설정</NavButton>
+            </Link>
+            <Link href="/storeManage">
+              <NavButton>매장 관리</NavButton>
             </Link>
             <Link href="/service-setting">
               <NavButton>서비스 설정</NavButton>
@@ -126,18 +153,21 @@ export default function Header() {
             </Link>
             <DropdownWrapper>
               <SelectWrapper>
-                <SelectOption>스타벅스 1호점</SelectOption>
-                <SelectOption>스타벅스 2호점</SelectOption>
-                <SelectOption>스타벅스 3호점</SelectOption>
-                <SelectOption>스타벅스 4호점</SelectOption>
+                {storeList.length > 0 ? (
+                  storeList.map((store, index) => {
+                    return <SelectOption key={index}>{store}</SelectOption>;
+                  })
+                ) : (
+                  <SelectOption>가게를 등록해주세요.</SelectOption>
+                )}
               </SelectWrapper>
             </DropdownWrapper>
           </NavButtonWrapper>
         </HeaderContent>
       </HeaderWrapper>
-      <ModileWrapper>
+      <MobileWrapper>
         <Drawer />
-      </ModileWrapper>
+      </MobileWrapper>
     </>
   );
 }
