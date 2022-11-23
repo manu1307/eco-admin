@@ -9,6 +9,11 @@ const SideBarWrapper = styled.div`
   margin: 0;
   position: fixed;
   top: 100px;
+  overflow: scroll;
+  padding-bottom: 100px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
   @media screen and (max-width: 500px) {
     display: none;
   }
