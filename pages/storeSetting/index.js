@@ -112,12 +112,7 @@ export default function MarketSetting() {
   };
 
   return (
-    <Layout
-      sideItems={[
-        { text: "매장 설정", url: "/market-setting" },
-        { text: "태그 설정", url: "/market-setting/tag" },
-      ]}
-    >
+    <Layout sideItems={[{ text: "매장 설정", url: "/market-setting" }]}>
       <div className="p-5 bg-white text-black">
         <div className="grid gap-6 mb-2 md:grid-cols-2">
           <div>
