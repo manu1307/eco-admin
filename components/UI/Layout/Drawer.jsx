@@ -59,8 +59,11 @@ export default function Drawer() {
             </Link>
           </li>
           <li>
-            <Link href="/market-setting">
+            <Link href="/storeSetting">
               <a>매장 설정</a>
+            </Link>
+            <Link href="/storeManage">
+              <a>매장 관리</a>
             </Link>
           </li>
           <li>

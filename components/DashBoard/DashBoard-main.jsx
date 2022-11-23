@@ -107,8 +107,8 @@ export default function DashBoardMain() {
   // console.log(isFirstState);
   const [isFirst, setIsFirst] = useState(true);
 
-  const confirmSetting = () => {
-    setIsFirst(false);
+  const confirmSetting = (event) => {
+    // setIsFirst(false);
   };
 
   const data = isFirst ? "" : "300";
@@ -155,9 +155,11 @@ export default function DashBoardMain() {
                   <ModalMessage fontSize={30}>
                     매장설정을 먼저 해주세요.
                   </ModalMessage>
-                  <ModalButton onClick={confirmSetting}>
-                    매장 설정 가기
-                  </ModalButton>
+                  <Link href="/storeSetting">
+                    <ModalButton onClick={confirmSetting}>
+                      매장 설정 가기
+                    </ModalButton>
+                  </Link>
                 </ModalContainer>
               </ModalWrapper>
             </div>

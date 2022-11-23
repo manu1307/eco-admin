@@ -1,7 +1,9 @@
 import axios from "axios";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { apiTokenState } from "../states/globalState";
 
 const Wrapper = styled.div`
   width: 900px;
@@ -60,6 +62,8 @@ export default function SignIn() {
   const [loginPassword, setLoginPassword] = useState("");
   const loginToken = useRef("");
 
+  const [globalLoginToken, setGlobalLoginToken] = useRecoilState(apiTokenState);
+
   const onChangeLoginId = (event) => {
     setLoginId(() => event.target.value);
   };
@@ -84,6 +88,7 @@ export default function SignIn() {
       })
       .then(() => {
         if (loginToken) {
+          setGlobalLoginToken(loginToken.current);
           localStorage.setItem("token", loginToken.current);
           window.location.href = "/dashboard";
         } else {
