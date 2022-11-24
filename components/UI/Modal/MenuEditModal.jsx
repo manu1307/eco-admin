@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
 
 const MenuEditModalWrapper = styled.div`
   width: 90vw;
@@ -94,16 +95,40 @@ const MenuEditModalItem = (props) => {
 
 export default function MenuEditModal(props) {
   const { data, menuId, changeOpen } = props;
+  console.log(data);
+
+  const [menuTagList, setMenuTagList] = useState([]);
+  const [selectedMenuTagList, setSelectedMenuTagList] = useState([]);
+  const [selectedMenuTagIdList, setSelectedMenuTagIdList] = useState(
+    data.tagMenus.tagId
+  );
 
   const [menuName, setMenuName] = useState(data.name);
   const [menuPrice, setMenuPrice] = useState(data.price);
   const [menuDescription, setMenuDescription] = useState(data.description);
-  const [menuTagList, setMenuTagList] = useState(data.tagMenus);
-
+  // const [menuSelectedTagList, setMenuSelectedTagList] = useState(data.tagMenus);
   const [menuImage, setMenuImage] = useState(
     data.imageUrl ? data.imageUrl : ""
   );
   const [menuSelectedImage, setMenuSelectedImage] = useState();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const getTagData = () => {
+      axios({
+        method: "get",
+        url: "https://ecomap.kr/api/v1/tags/type?type=menu",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res) => {
+        setMenuTagList(() => {
+          return res.data;
+        });
+      });
+    };
+    getTagData();
+  }, []);
 
   const EditMenu = () => {
     const token = localStorage.getItem("token");
@@ -126,7 +151,7 @@ export default function MenuEditModal(props) {
 
     axios({
       method: "put",
-      url: "https://ecomap.kr/api/v1/menus/2",
+      url: `https://ecomap.kr/api/v1/menus/${menuId}`,
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
@@ -162,7 +187,9 @@ export default function MenuEditModal(props) {
             Authorization: `Bearer ${token}`,
           },
         }).then((res) => {
-          console.log(res.data);
+          changeOpen(() => {
+            return false;
+          });
         });
       } else {
         alert("오류가 생겼습니다. 다시 시도해주세요.");
@@ -173,7 +200,6 @@ export default function MenuEditModal(props) {
     setMenuName("");
     setMenuPrice("");
     setMenuDescription("");
-    setMenuTagList([]);
     setMenuImage("");
     setMenuSelectedImage("");
   };
@@ -228,16 +254,55 @@ export default function MenuEditModal(props) {
           </div>
         </div>
         <MenuEditModalItemContainer className="flex items-center mt-3">
-          <MenuEditModalItemLabel className="w-2/6 text-sm">
-            메뉴 태그 (최대 3개)
+          <MenuEditModalItemLabel className="first-line:w-full text-sm">
+            메뉴 태그 (최대 2개)
           </MenuEditModalItemLabel>
           <div>
             <div className="w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5">
-              {menuTagList?.map((tag, index) => {
-                console.log(tag);
+              {selectedMenuTagList.map((tag, i) => {
+                return (
+                  <MenuTagSelected className="text-sm" key={i}>
+                    #{tag}
+                    <button
+                      onClick={() => {
+                        const filteredList = selectedMenuTagList.filter(
+                          (selectedTag) => {
+                            return selectedTag !== tag;
+                          }
+                        );
+                        setSelectedMenuTagList(filteredList);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </MenuTagSelected>
+                );
               })}
             </div>
-            <div className="w-full flex flex-wrap gap-2 max-w-lg rounded-xl"></div>
+            <div className="w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5">
+              {menuTagList.map((tag, i) => {
+                return (
+                  <MenuTagItemButton
+                    className="text-sm"
+                    key={i}
+                    onClick={() => {
+                      if (selectedMenuTagList.length < 2) {
+                        setSelectedMenuTagIdList((prev) => {
+                          return [...prev, tag.tagId];
+                        });
+                        setSelectedMenuTagList((prev) => {
+                          return [...prev, tag.name];
+                        });
+                      } else {
+                        alert("태그는 2개까지만 선택 가능합니다.");
+                      }
+                    }}
+                  >
+                    #{tag.name}
+                  </MenuTagItemButton>
+                );
+              })}
+            </div>
           </div>
         </MenuEditModalItemContainer>
         <div className="my-3">

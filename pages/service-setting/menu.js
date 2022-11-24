@@ -112,7 +112,7 @@ export default function ServiceSettingMenu() {
     const getMenuData = () => {
       axios({
         method: "get",
-        url: "https://ecomap.kr/api/v1/menus",
+        url: "https://ecomap.kr/api/v1/1/menus",
         headers: {
           Authorization: `Bearer ${token}`,
         },
