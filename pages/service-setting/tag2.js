@@ -9,6 +9,7 @@ import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
 import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
+import TagRegisterModal from "../../components/UI/Modal/TagRegisterModal";
 
 const MenuSettingWrapper = styled.div`
 	padding-top: 20px;
@@ -96,57 +97,62 @@ const EditButton = styled.div`
 `;
 
 export default function ServiceSettingMenu() {
-	const [menuData, setMenuData] = useState();
-	const [tagData, setTagData] = useState();
-
-	const currentPageMenuData = useRef();
-
-	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
-	const [modalData, setModalData] = useState();
-	const [modalDataMenuId, setModalDataMenuId] = useState();
-	const [menuRegisterModalOpen, setMenuRegisterModalOpen] = useState(false);
+	const [tagEditModalOpen, setTagEditModalOpen] = useState(false);
 
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 
-	useEffect(() => {
-		const token = localStorage.getItem("token");
+	const [tagType, setTagType] = useState("");
+	const [tagItem, setTagItem] = useState("");
 
-		const getMenuData = () => {
+	const [menuTagList, setMenuTagList] = useState([]);
+
+	const [storeTagList, setStoreTagList] = useState([]);
+
+	const submitTagItem = () => {
+		if (tagType && tagItem) {
+			const token = localStorage.getItem("token");
+			const tagData = {
+				type: tagType,
+				name: tagItem,
+			};
 			axios({
-				method: "get",
-				url: "https://ecomap.kr/api/v1/1/menus",
+				method: "post",
+				url: "https://ecomap.kr/api/v1/tags",
 				headers: {
+					"Content-Type": "application/json",
 					Authorization: `Bearer ${token}`,
 				},
-			}).then((res) => {
-				console.log(res.data);
-				setMenuData(res.data);
+				data: tagData,
+			}).then((response) => {
+				getMenuTagItemList(token);
+				getStoreTagItemList(token);
+				setTagItem("");
 			});
-		};
-
-		getMenuData();
-	}, [menuRegisterModalOpen, menuEditModalOpen]);
-
-	const [itemOffset, setItemOffset] = useState(0);
-	const itemsPerPage = 5;
-	const endOffset = itemOffset + itemsPerPage;
-	const currentItems = menuData?.slice(itemOffset, endOffset);
-	currentPageMenuData.current = currentItems;
-	const pageCount = Math.ceil(menuData?.length / itemsPerPage);
-
-	// Invoke when user click to request another page.
-	const handlePageClick = (event) => {
-		const newOffset = (event.selected * itemsPerPage) % menuData.length;
-		setItemOffset(newOffset);
+		} else {
+			alert("올바른 태그를 입력해주세요");
+		}
 	};
 
-	const openModal = (data, menuId) => {
-		setModalData(() => {
-			return data;
-		});
-		setModalDataMenuId(menuId);
-		setMenuEditModalOpen((prev) => !prev);
-	};
+	// const [itemOffset, setItemOffset] = useState(0);
+	// const itemsPerPage = 5;
+	// const endOffset = itemOffset + itemsPerPage;
+	// const currentItems = menuData?.slice(itemOffset, endOffset);
+	// currentPageMenuData.current = currentItems;
+	// const pageCount = Math.ceil(menuData?.length / itemsPerPage);
+
+	// // Invoke when user click to request another page.
+	// const handlePageClick = (event) => {
+	// 	const newOffset = (event.selected * itemsPerPage) % menuData.length;
+	// 	setItemOffset(newOffset);
+	// };
+
+	// const openModal = (data, menuId) => {
+	// 	setModalData(() => {
+	// 		return data;
+	// 	});
+	// 	setModalDataMenuId(menuId);
+	// 	setMenuEditModalOpen((prev) => !prev);
+	// };
 
 	return (
 		<Layout
@@ -161,30 +167,25 @@ export default function ServiceSettingMenu() {
 				{ text: "댓글신고", url: "" },
 			]}>
 			<MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
-				<ContentHeader firstCategory='서비스 설정' secondCategory='메뉴 설정' />
+				<ContentHeader firstCategory='서비스 설정' secondCategory='태그 설정' />
+
 				<MenuSettingBody className='flex flex-col items-center'>
 					<MenuSettingBodyHeader className='flex items-center'>
-						<CheckContent>Check</CheckContent>
-						<NumberContent>No.</NumberContent>
-						<MenuContent>메뉴명</MenuContent>
-						<PriceContent>가격</PriceContent>
+						<NumberContent>태그 Id</NumberContent>
+						<MenuContent>태그</MenuContent>
 						<EditButton>
 							<button
 								type='button'
 								onClick={() => {
-									setMenuRegisterModalOpen(true);
+									setTagEditModalOpen(true);
 								}}
 								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
 								등록
 							</button>
-							<MenuRegisterModal
-								open={menuRegisterModalOpen}
-								changeOpen={setMenuRegisterModalOpen}
-								tagData={tagData}
-							/>
 						</EditButton>
 					</MenuSettingBodyHeader>
-					{currentPageMenuData.current?.map((data, index) => {
+
+					{/* {currentPageMenuData.current?.map((data, index) => {
 						return (
 							<MenuSettingBodyContent key={index}>
 								<CheckContent>
@@ -214,8 +215,8 @@ export default function ServiceSettingMenu() {
 								</EditButton>
 							</MenuSettingBodyContent>
 						);
-					})}
-					<div className='w-full mt-5 '>
+					})} */}
+					{/* <div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'
 							breakLabel='...'
@@ -226,12 +227,10 @@ export default function ServiceSettingMenu() {
 							previousLabel='< 이전'
 							renderOnZeroPageCount={null}
 						/>
-					</div>
-					{menuEditModalOpen && (
-						<MenuEditModal
-							menuId={modalDataMenuId}
-							data={modalData}
-							changeOpen={setMenuEditModalOpen}></MenuEditModal>
+					</div> */}
+					{tagEditModalOpen && (
+						<TagRegisterModal
+							changeOpen={setTagEditModalOpen}></TagRegisterModal>
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
