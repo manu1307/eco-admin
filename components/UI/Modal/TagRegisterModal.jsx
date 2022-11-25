@@ -14,8 +14,6 @@ const TagEditModalBackground = styled.div`
 	z-index: 2;
 `;
 const TagEditModalContainer = styled.div`
-	/* width: 800px; */
-	/* height: 550px; */
 	padding: 20px;
 	background-color: white;
 	color: black;
