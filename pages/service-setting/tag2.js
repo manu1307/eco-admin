@@ -2,7 +2,7 @@ import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
 import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
@@ -10,245 +10,226 @@ import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
 import TagRegisterModal from "../../components/UI/Modal/TagRegisterModal";
+import { apiBaseAddressState } from "../../states/global/globalState";
+import TagEditModal from "../../components/UI/Modal/TagEditModal";
 
 const MenuSettingWrapper = styled.div`
-  padding-top: 20px;
-  width: 83.7%;
-  background-color: #f6f6f6;
-  padding-left: 50px;
-  @media screen and (max-width: 640px) {
-    width: 100%;
-    padding: 10px;
-    height: 90vh;
-  }
-  @media screen and (max-width: 1366px) {
-  }
+	padding-top: 20px;
+	width: 83.7%;
+	background-color: #f6f6f6;
+	padding-left: 50px;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+		padding: 10px;
+		height: 90vh;
+	}
+	@media screen and (max-width: 1366px) {
+	}
 `;
 
 const MenuSettingBody = styled.div`
-  width: 100%;
-  max-width: 1280px;
-  height: 90%;
-  max-height: 900px;
-  margin-top: 20px;
-  border-radius: 15px;
-  box-shadow: 0 0 2px 1.5px #d8d8d8;
-  background-color: #fff;
-  padding: 20px 20px;
+	width: 100%;
+	max-width: 1280px;
+	height: 90%;
+	max-height: 900px;
+	margin-top: 20px;
+	border-radius: 15px;
+	box-shadow: 0 0 2px 1.5px #d8d8d8;
+	background-color: #fff;
+	padding: 20px 20px;
 `;
 
 const MenuSettingBodyHeader = styled.div`
-  width: 100%;
-  border-radius: 15px;
-  background-color: #242746;
-  height: 70px;
-  color: white;
-  font-size: 20px;
-  font-weight: 700;
-  @media screen and (max-width: 640px) {
-    font-size: 12px;
-    height: 50px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+	width: 100%;
+	border-radius: 15px;
+	background-color: #242746;
+	height: 70px;
+	color: white;
+	font-size: 20px;
+	font-weight: 700;
+	@media screen and (max-width: 640px) {
+		font-size: 12px;
+		height: 50px;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 `;
 const MenuSettingBodyContent = styled.div`
-  width: 100%;
-  border-radius: 15px;
-  background-color: #f5f5f5;
-  height: 70px;
-  color: black;
-  font-size: 20px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  @media screen and (max-width: 640px) {
-    font-size: 12px;
-    height: 50px;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+	width: 100%;
+	border-radius: 15px;
+	background-color: #f5f5f5;
+	height: 70px;
+	color: black;
+	font-size: 20px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	@media screen and (max-width: 640px) {
+		font-size: 12px;
+		height: 50px;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 `;
-const CheckContent = styled.div`
-  width: 10%;
-  text-align: center;
-`;
-const NumberContent = styled.div`
-  width: 10%;
-  text-align: center;
-`;
-const MenuContent = styled.div`
-  width: 30%;
-  @media screen and (max-width: 640px) {
-    width: 35%;
-  }
-`;
-const PriceContent = styled.div`
-  width: 40%;
-  @media screen and (max-width: 640px) {
-    width: 30%;
-  }
-`;
+
 const EditButton = styled.div`
-  width: 10%;
-  @media screen and (max-width: 640px) {
-    width: 15%;
-  }
+	@media screen and (max-width: 640px) {
+		width: 15%;
+	}
 `;
 const TagSelectBtn = styled.div`
-  margin-top: 20px;
-  max-width: 1280px;
-  padding: 10px 10px;
-  border-radius: 15px;
-  box-shadow: 0 0 2px 1.5px #d8d8d8;
-  background-color: #fff;
-  font-weight: bold;
-  cursor: pointer;
+	margin-top: 20px;
+	max-width: 1280px;
+	padding: 10px 10px;
+	border-radius: 15px;
+	box-shadow: 0 0 2px 1.5px #d8d8d8;
+	background-color: #fff;
+	font-weight: bold;
+	cursor: pointer;
 
-  :hover {
-    background-color: #242746;
-    color: white;
-  }
-  @media screen and (max-width: 500px) {
-    padding: 10px;
-    color: black;
-  }
+	:hover {
+		background-color: #242746;
+		color: white;
+	}
+	@media screen and (max-width: 500px) {
+		padding: 10px;
+		color: black;
+	}
 `;
 
-const TagSelectButton = (props) => {
-  const { tagCategory } = props;
+const TagItem = (props) => {
+	const {
+		tagId,
+		type,
+		tagContent,
+		status,
+		tagData,
+		handleTagEditModal,
+		// handleTagEditModalData,
+	} = props;
+	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-  return (
-    <TagSelectBtn className="w-1/3 text-center">{tagCategory}</TagSelectBtn>
-  );
+	const getTagData = () => {
+		axios({ method: "get", url: `${BASEURL}/` });
+	};
+	return (
+		<MenuSettingBodyContent>
+			<div className='w-1/6 text-center'>{tagId}</div>
+			<div className='w-1/6 text-center'>{type}</div>
+			<div className='w-2/6 text-center'>{tagContent}</div>
+			<div className='w-1/6 text-center'>{status}</div>
+			<EditButton className='w-1/6 flex justify-center'>
+				<button
+					onClick={() => {
+						handleTagEditModal(tagData, tagId);
+					}}
+					type='button'
+					className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+					수정
+				</button>
+			</EditButton>
+		</MenuSettingBodyContent>
+	);
 };
 
 export default function ServiceSettingMenu() {
-  const [tagEditModalOpen, setTagEditModalOpen] = useState(false);
+	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
+	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-  const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
+	const [tagRegisterModalOpen, setRegisterModalOpen] = useState(false);
+	const [tagEditModalOpen, setEditModalOpen] = useState(false);
 
-  const [tagType, setTagType] = useState("");
-  const [tagItem, setTagItem] = useState("");
+	const [tagType, setTagType] = useState("");
+	const [tagItem, setTagItem] = useState("");
 
-  const [menuTagList, setMenuTagList] = useState([]);
+	const [tagList, setTagList] = useState();
+	const [menuTagList, setMenuTagList] = useState([]);
+	const [storeTagList, setStoreTagList] = useState([]);
 
-  const [storeTagList, setStoreTagList] = useState([]);
+	const [modalTagData, setModalTagData] = useState();
+	const [modalDataTagId, setModalDataTagId] = useState();
 
-  const submitTagItem = () => {
-    if (tagType && tagItem) {
-      const token = localStorage.getItem("token");
-      const tagData = {
-        type: tagType,
-        name: tagItem,
-      };
-      axios({
-        method: "post",
-        url: "https://ecomap.kr/api/v1/tags",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        data: tagData,
-      }).then((response) => {
-        getMenuTagItemList(token);
-        getStoreTagItemList(token);
-        setTagItem("");
-      });
-    } else {
-      alert("올바른 태그를 입력해주세요");
-    }
-  };
+	const currentPageTagList = useRef();
 
-  // const [itemOffset, setItemOffset] = useState(0);
-  // const itemsPerPage = 5;
-  // const endOffset = itemOffset + itemsPerPage;
-  // const currentItems = menuData?.slice(itemOffset, endOffset);
-  // currentPageMenuData.current = currentItems;
-  // const pageCount = Math.ceil(menuData?.length / itemsPerPage);
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		axios({
+			method: "get",
+			url: `${BASEURL}/api/v1/tags`,
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((response) => {
+			setTagList(response.data);
+		});
+	}, [BASEURL]);
 
-  // // Invoke when user click to request another page.
-  // const handlePageClick = (event) => {
-  // 	const newOffset = (event.selected * itemsPerPage) % menuData.length;
-  // 	setItemOffset(newOffset);
-  // };
+	// 페이지네이션 관련
 
-  // const openModal = (data, menuId) => {
-  // 	setModalData(() => {
-  // 		return data;
-  // 	});
-  // 	setModalDataMenuId(menuId);
-  // 	setMenuEditModalOpen((prev) => !prev);
-  // };
+	const [itemOffset, setItemOffset] = useState(0);
+	const itemsPerPage = 5;
+	const endOffset = itemOffset + itemsPerPage;
+	const currentItems = tagList?.slice(itemOffset, endOffset);
+	currentPageTagList.current = currentItems;
+	const pageCount = Math.ceil(tagList?.length / itemsPerPage);
+	const handlePageClick = (event) => {
+		const newOffset = (event.selected * itemsPerPage) % tagList.length;
+		setItemOffset(newOffset);
+	};
 
-  return (
-    <Layout
-      sideItems={[
-        { text: "텀블러 할인 설정", url: "" },
-        { text: "단골 스탬프 설정", url: "" },
-        { text: "단골 리스트", url: "" },
-        { text: "메뉴 설정", url: "/service-setting/menu" },
-        { text: "마감타임 설정", url: "/service-setting/closingsale" },
-        { text: "알림 설정", url: "" },
-        { text: "태그 설정", url: "/service-setting/tag" },
-        { text: "댓글신고", url: "" },
-      ]}
-    >
-      <MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
-        <ContentHeader firstCategory="서비스 설정" secondCategory="태그 설정" />
-        <div className="flex w-full justify-around">
-          <TagSelectButton tagCategory="가게 태그" />
-          <TagSelectButton tagCategory="메뉴 태그" />
-        </div>
-        <MenuSettingBody className="flex flex-col items-center">
-          <MenuSettingBodyHeader className="flex items-center">
-            <NumberContent>태그 Id</NumberContent>
-            <MenuContent>태그</MenuContent>
-            <EditButton>
-              <button
-                type="button"
-                onClick={() => {
-                  setTagEditModalOpen(true);
-                }}
-                className="text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center"
-              >
-                등록
-              </button>
-            </EditButton>
-          </MenuSettingBodyHeader>
+	const openEditModal = (data, tagId) => {
+		setModalTagData(() => data);
+		setModalDataTagId(tagId);
+		setEditModalOpen((prev) => !prev);
+	};
 
-          {/* {currentPageMenuData.current?.map((data, index) => {
+	return (
+		<Layout
+			sideItems={[
+				{ text: "텀블러 할인 설정", url: "" },
+				{ text: "단골 스탬프 설정", url: "" },
+				{ text: "단골 리스트", url: "" },
+				{ text: "메뉴 설정", url: "/service-setting/menu" },
+				{ text: "마감타임 설정", url: "/service-setting/closingsale" },
+				{ text: "알림 설정", url: "" },
+				{ text: "태그 설정", url: "/service-setting/tag" },
+				{ text: "댓글신고", url: "" },
+			]}>
+			<MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
+				<ContentHeader firstCategory='서비스 설정' secondCategory='태그 설정' />
+				<MenuSettingBody className='flex flex-col items-center'>
+					<MenuSettingBodyHeader className='flex items-center'>
+						<div className='w-1/6 text-center'>태그 Id</div>
+						<div className='w-1/6 text-center'>type</div>
+						<div className='w-2/6 text-center'>태그</div>
+						<div className='w-1/6 text-center'>상태</div>
+						<EditButton className='w-1/6 flex justify-center'>
+							<button
+								type='button'
+								onClick={() => {
+									setRegisterModalOpen(true);
+								}}
+								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
+								등록
+							</button>
+						</EditButton>
+					</MenuSettingBodyHeader>
+					{tagList?.map((tag) => {
 						return (
-							<MenuSettingBodyContent key={index}>
-								<CheckContent>
-									<input type='checkbox' />
-								</CheckContent>
-								<NumberContent>{data.menuId && data.menuId}</NumberContent>
-								<MenuContent>{data.name}</MenuContent>
-								<PriceContent>{data.price}원</PriceContent>{" "}
-								<EditButton>
-									<button
-										onClick={() => {
-											const token = localStorage.getItem("token");
-											axios({
-												method: "get",
-												url: `https://ecomap.kr/api/v1/menus/${data.menuId}`,
-												headers: {
-													Authorization: `Bearer ${token}`,
-												},
-											}).then((res) => {
-												openModal(res.data, data.menuId);
-											});
-										}}
-										type='button'
-										className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
-										수정
-									</button>
-								</EditButton>
-							</MenuSettingBodyContent>
+							<TagItem
+								key={tag.tagId}
+								tagId={tag.tagId}
+								type={tag.type}
+								tagContent={tag.name}
+								status={tag.status.toString()}
+								tagData={tag}
+								handleTagEditModal={openEditModal}
+								// handleTagEditModalData={getTagEditModalData}
+							/>
 						);
-					})} */}
-          {/* <div className='w-full mt-5 '>
+					})}
+					<div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'
 							breakLabel='...'
@@ -259,15 +240,19 @@ export default function ServiceSettingMenu() {
 							previousLabel='< 이전'
 							renderOnZeroPageCount={null}
 						/>
-					</div> */}
-          {tagEditModalOpen && (
-            <TagRegisterModal
-              changeOpen={setTagEditModalOpen}
-            ></TagRegisterModal>
-          )}
-        </MenuSettingBody>
-      </MenuSettingWrapper>
-      <BackgroundColor />
-    </Layout>
-  );
+					</div>
+					{tagRegisterModalOpen && (
+						<TagRegisterModal
+							changeOpen={setRegisterModalOpen}></TagRegisterModal>
+					)}
+					{tagEditModalOpen && (
+						<TagEditModal
+							changeOpen={setEditModalOpen}
+							tagData={modalTagData}></TagEditModal>
+					)}
+				</MenuSettingBody>
+			</MenuSettingWrapper>
+			<BackgroundColor />
+		</Layout>
+	);
 }
