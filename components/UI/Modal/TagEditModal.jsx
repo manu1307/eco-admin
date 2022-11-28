@@ -1,14 +1,10 @@
 import styled from "styled-components";
-import { useState } from "react";
-import { useRecoilValue } from "recoil";
-import {
-	apiBaseAddressState,
-	apiTokenState,
-} from "../../../states/global/globalState";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import axios from "axios";
 
-const TagRegisterModalWrapper = styled.div``;
-const TagRegisterModalBackground = styled.div`
+const TagEditModalWrapper = styled.div``;
+const TagEditModalBackground = styled.div`
 	width: 90vw;
 	height: 100vh;
 	background-color: #80808073;
@@ -17,7 +13,7 @@ const TagRegisterModalBackground = styled.div`
 	left: 0;
 	z-index: 2;
 `;
-const TagRegisterModalContainer = styled.div`
+const TagEditModalContainer = styled.div`
 	padding: 20px;
 	background-color: white;
 	color: black;
@@ -44,41 +40,14 @@ const TagInputContainer = styled.div`
 	align-items: center;
 `;
 
-export default function TagRegisterModal(props) {
-	const { changeOpen } = props;
+export default function TagEditModal(props) {
+	const { changeOpen, tagData } = props;
+	console.log(tagData);
 
 	const [tagItem, setTagItem] = useState("");
-	const [tagType, setTagType] = useState("");
-
-	const BASEURL = useRecoilValue(apiBaseAddressState);
-
-	const submitTag = () => {
-		if (tagItem && tagType) {
-			const token = localStorage.getItem("token");
-			const tagData = {
-				type: tagType,
-				name: tagItem,
-			};
-			console.log(tagData);
-			axios({
-				method: "post",
-				url: `${BASEURL}/api/v1/tags`,
-				headers: {
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
-					},
-				},
-				data: tagData,
-			});
-		} else {
-			alert("올바른 태그를 입력해주세요");
-		}
-	};
-
 	return (
-		<TagRegisterModalWrapper>
-			<TagRegisterModalContainer>
+		<TagEditModalWrapper>
+			<TagEditModalContainer>
 				<div className='flex  sm:flex-row gap-4 '>
 					<TagInputContainer>
 						<select
@@ -104,7 +73,8 @@ export default function TagRegisterModal(props) {
 						<button
 							type='button'
 							className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-3  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							onClick={submitTag}>
+							// onClick={submitTagItem}
+						>
 							태그 등록
 						</button>
 						<button
@@ -119,13 +89,13 @@ export default function TagRegisterModal(props) {
 						</button>
 					</TagInputContainer>
 				</div>
-			</TagRegisterModalContainer>
-			<TagRegisterModalBackground
+			</TagEditModalContainer>
+			<TagEditModalBackground
 				onClick={() => {
 					changeOpen(() => {
 						return false;
 					});
-				}}></TagRegisterModalBackground>
-		</TagRegisterModalWrapper>
+				}}></TagEditModalBackground>
+		</TagEditModalWrapper>
 	);
 }

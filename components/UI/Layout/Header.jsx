@@ -8,7 +8,7 @@ import Logo from "../../../assets/ecomap-logo.png";
 import {
 	apiBaseAddressState,
 	apiTokenState,
-} from "../../../states/globalState";
+} from "../../../states/global/globalState";
 import Drawer from "./Drawer";
 
 const HeaderWrapper = styled.div`
