@@ -1,295 +1,299 @@
 import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
+import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
+import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
 import axios from "axios";
+import ContentHeader from "../../components/UI/Content/ContentHeader";
+import ReactPaginate from "react-paginate";
+import TagRegisterModal from "../../components/UI/Modal/TagRegisterModal";
+import { apiBaseAddressState } from "../../states/global/globalState";
+import TagEditModal from "../../components/UI/Modal/TagEditModal";
 
-const StoreRegisterModalItemContainer = styled.div`
-  width: 100%;
-`;
-const TagInputContainer = styled.div`
-  width: 100%;
-  padding: 20px 0 0 20px;
-`;
-
-const TagListContainer = styled.div`
-  width: 100%;
-  padding: 20px 0 0 20px;
-`;
-const MenuTagListContainer = styled.div`
-  width: 100%;
-  margin: 0 0 20px 0;
-`;
-const StoreTagListContainer = styled.div`
-  width: 100%;
-  margin: 0 0 20px 0;
-`;
-const TagItemInput = styled.input`
-  /* padding: 5px 5px; */
-  font-weight: 400;
-  color: black;
-  background-color: white;
-
-  :focus {
-    outline: none;
-    border: none;
-  }
-`;
-const MenuTagItem = styled.div`
-  border: none;
+const MenuSettingWrapper = styled.div`
+	padding-top: 20px;
+	width: 83.7%;
+	background-color: #f6f6f6;
+	padding-left: 50px;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+		padding: 10px;
+		height: 90vh;
+	}
+	@media screen and (max-width: 1366px) {
+	}
 `;
 
-const MenuTagItemContainer = (props) => {
-  const { type, tag, reloadMenuTag, reloadStoreTag } = props;
-  const [editing, setEditing] = useState(false);
-  const menuTagItem = useRef("");
-  const getMenuTagItemList = (token) => {
-    axios({
-      method: "get",
-      url: "https://ecomap.kr/api/v1/tags/type?type=menu",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        reloadMenuTag(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const getStoreTagItemList = (token) => {
-    axios({
-      method: "get",
-      url: "https://ecomap.kr/api/v1/tags/type?type=store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        reloadStoreTag(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+const MenuSettingBody = styled.div`
+	width: 100%;
+	max-width: 1280px;
+	height: 90%;
+	max-height: 900px;
+	margin-top: 20px;
+	border-radius: 15px;
+	box-shadow: 0 0 2px 1.5px #d8d8d8;
+	background-color: #fff;
+	padding: 20px 20px;
+`;
 
-  const editMenuTagItem = (event, tagId) => {
-    if (event.key === "Enter") {
-      if (!event.target.value) {
-        alert("태그를 입력해주십시오");
-        return;
-      }
-      const token = localStorage.getItem("token");
-      menuTagItem.current = event.target.value;
+const MenuSettingBodyHeader = styled.div`
+	width: 100%;
+	border-radius: 15px;
+	background-color: #242746;
+	height: 70px;
+	color: white;
+	font-size: 20px;
+	font-weight: 700;
+	@media screen and (max-width: 640px) {
+		font-size: 12px;
+		height: 50px;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+`;
+const MenuSettingBodyContent = styled.div`
+	width: 100%;
+	border-radius: 15px;
+	background-color: #f5f5f5;
+	height: 70px;
+	color: black;
+	font-size: 20px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	@media screen and (max-width: 640px) {
+		font-size: 12px;
+		height: 50px;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+`;
 
-      const tagData = {
-        type: type,
-        name: menuTagItem.current,
-      };
+const EditButton = styled.div`
+	@media screen and (max-width: 640px) {
+		width: 15%;
+	}
+`;
+const TagSelectBtn = styled.div`
+	margin-top: 20px;
+	max-width: 1280px;
+	padding: 10px 10px;
+	border-radius: 15px;
+	box-shadow: 0 0 2px 1.5px #d8d8d8;
+	background-color: #fff;
+	font-weight: bold;
+	cursor: pointer;
 
-      axios({
-        method: "put",
-        url: `https://ecomap.kr/api/v1/tags/${tagId}`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        data: tagData,
-      })
-        .then((response) => {
-          console.log(response);
-          setEditing((prev) => !prev);
-          if (type === "menu") {
-            getMenuTagItemList(token);
-          } else if (type === "store") {
-            getStoreTagItemList(token);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-  return (
-    <MenuTagItem className="w-fit flex gap-3 p-1 rounded-xl bg-slate-200">
-      {editing ? (
-        <TagItemInput
-          className="p-1 "
-          disabled={!editing}
-          onKeyPress={(event) => {
-            editMenuTagItem(event, tag.tagId);
-          }}
-        />
-      ) : (
-        <>
-          <div className="p-1">{tag.name}</div>{" "}
-          <button
-            className="bg-slate-300 p-1 rounded-lg hover:bg-slate-400"
-            onClick={() => {
-              setEditing((prev) => !prev);
-              // editItem(tag.tagId);
-            }}
-          >
-            {!editing && "수정"}
-          </button>
-        </>
-      )}
-    </MenuTagItem>
-  );
+	:hover {
+		background-color: #242746;
+		color: white;
+	}
+	@media screen and (max-width: 500px) {
+		padding: 10px;
+		color: black;
+	}
+`;
+
+const TagItem = (props) => {
+	const {
+		tagId,
+		type,
+		tagContent,
+		status,
+		tagData,
+		handleTagEditModal,
+		handleTagActivate,
+	} = props;
+	const BASEURL = useRecoilValue(apiBaseAddressState);
+
+	const handleActivateTag = (id) => {
+		const token = localStorage.getItem("token");
+		axios({
+			method: "post",
+			url: `${BASEURL}/api/v1/tags/${id}`,
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			if (res.status === 200) {
+				axios({
+					method: "get",
+					url: `${BASEURL}/api/v1/tags`,
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				}).then((res) => {
+					handleTagActivate(res.data);
+				});
+			}
+		});
+	};
+
+	return (
+		<MenuSettingBodyContent>
+			<div className='w-1/6 text-center'>{tagId}</div>
+			<div className='w-1/6 text-center'>{type}</div>
+			<div className='w-2/6 text-center'>{tagContent}</div>
+			<div className='w-1/6 text-center'>{status}</div>
+			<EditButton className='w-1/6 flex justify-center'>
+				<button
+					onClick={() => {
+						handleTagEditModal(tagData, tagId);
+					}}
+					type='button'
+					className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none   font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-4 sm:py-2 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+					수정
+				</button>
+				{JSON.parse(status) ? (
+					<button
+						onClick={() => {
+							handleActivateTag(tagId);
+						}}
+						type='button'
+						className='text-white bg-green-500 hover:bg-green-800 focus:outline-none  font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-4 sm:py-2 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+						활성화
+					</button>
+				) : (
+					<button
+						onClick={() => {
+							console.log(status);
+							handleActivateTag(tagId);
+						}}
+						type='button'
+						className='text-white bg-red-500 hover:bg-red-700 focus:outline-none   font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-4 sm:py-2 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+						비활성화
+					</button>
+				)}
+			</EditButton>
+		</MenuSettingBodyContent>
+	);
 };
 
-export default function MarketSettingTag() {
-  const [tagType, setTagType] = useState("");
-  const [tagItem, setTagItem] = useState("");
+export default function ServiceSettingMenu() {
+	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
+	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-  const [menuTagList, setMenuTagList] = useState([]);
+	const [tagRegisterModalOpen, setRegisterModalOpen] = useState(false);
+	const [tagEditModalOpen, setEditModalOpen] = useState(false);
 
-  const [storeTagList, setStoreTagList] = useState([]);
+	const [tagType, setTagType] = useState("");
+	const [tagItem, setTagItem] = useState("");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    getMenuTagItemList(token);
-    getStoreTagItemList(token);
-  }, []);
-  const getMenuTagItemList = (token) => {
-    axios({
-      method: "get",
-      url: "https://ecomap.kr/api/v1/tags/type?type=menu",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        setMenuTagList(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const getStoreTagItemList = (token) => {
-    axios({
-      method: "get",
-      url: "https://ecomap.kr/api/v1/tags/type?type=store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        setStoreTagList(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const submitTagItem = () => {
-    if (tagType && tagItem) {
-      const token = localStorage.getItem("token");
-      const tagData = {
-        type: tagType,
-        name: tagItem,
-      };
-      axios({
-        method: "post",
-        url: "https://ecomap.kr/api/v1/tags",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        data: tagData,
-      }).then((response) => {
-        getMenuTagItemList(token);
-        getStoreTagItemList(token);
-        setTagItem("");
-      });
-    } else {
-      alert("올바른 태그를 입력해주세요");
-    }
-  };
+	const [tagList, setTagList] = useState();
 
-  return (
-    <Layout
-      sideItems={[
-        { text: "텀블러 할인 설정", url: "" },
-        { text: "단골 스탬프 설정", url: "" },
-        { text: "단골 리스트", url: "" },
-        { text: "메뉴 설정", url: "/service-setting/menu" },
-        { text: "마감타임 설정", url: "/service-setting/closingsale" },
-        { text: "알림 설정", url: "" },
-        { text: "태그 설정", url: "/service-setting/tag" },
-        { text: "댓글신고", url: "" },
-      ]}
-    >
-      <StoreRegisterModalItemContainer className="flex flex-col items-start mt-3">
-        <TagInputContainer>
-          <select
-            className="rounded-xl mr-5"
-            defaultValue="none"
-            onChange={(event) => {
-              console.log(event.target.value);
-              setTagType(event.target.value);
-            }}
-          >
-            <option value="none">태그 종류</option>
-            <option value="menu">메뉴</option>
-            <option value="store">매장</option>
-          </select>
-          <input
-            className="rounded-xl mr-5 w-80"
-            type="text"
-            value={tagItem}
-            placeholder="태그를 입력해주세요"
-            onChange={(event) => {
-              setTagItem(event.target.value);
-            }}
-          />
-          <button
-            type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={submitTagItem}
-          >
-            태그 등록
-          </button>
-        </TagInputContainer>
-        <TagListContainer>
-          <MenuTagListContainer>
-            메뉴 태그{" "}
-            <div className="flex gap-3 flex-wrap marker:w-full max-w-5xl rounded-xl mt-3">
-              {menuTagList.map((tag, index) => {
-                return (
-                  <MenuTagItemContainer
-                    key={index}
-                    tag={tag}
-                    reloadMenuTag={setMenuTagList}
-                    reloadStoreTag={setStoreTagList}
-                    type="menu"
-                  />
-                );
-              })}
-            </div>
-          </MenuTagListContainer>
-          <StoreTagListContainer>
-            매장 태그{" "}
-            <div className="flex gap-3 flex-wrap marker:w-full max-w-5xl rounded-xl mt-3">
-              {storeTagList.map((tag, index) => {
-                return (
-                  <MenuTagItemContainer
-                    key={index}
-                    tag={tag}
-                    reloadMenuTag={setMenuTagList}
-                    reloadStoreTag={setStoreTagList}
-                    type="store"
-                  />
-                );
-              })}
-            </div>
-          </StoreTagListContainer>
-        </TagListContainer>
-      </StoreRegisterModalItemContainer>
-    </Layout>
-  );
+	const [modalTagData, setModalTagData] = useState();
+	const [modalDataTagId, setModalDataTagId] = useState();
+
+	const currentPageTagList = useRef();
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		axios({
+			method: "get",
+			url: `${BASEURL}/api/v1/tags`,
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((response) => {
+			setTagList(response.data);
+		});
+	}, [BASEURL, tagRegisterModalOpen, tagEditModalOpen]);
+
+	// 페이지네이션 관련
+
+	const [itemOffset, setItemOffset] = useState(0);
+	const itemsPerPage = 10;
+	const endOffset = itemOffset + itemsPerPage;
+	const currentItems = tagList?.slice(itemOffset, endOffset);
+	currentPageTagList.current = currentItems;
+	const pageCount = Math.ceil(tagList?.length / itemsPerPage);
+	const handlePageClick = (event) => {
+		const newOffset = (event.selected * itemsPerPage) % tagList.length;
+		setItemOffset(newOffset);
+	};
+
+	const openEditModal = (data, tagId) => {
+		setModalTagData(() => data);
+		setModalDataTagId(tagId);
+		setEditModalOpen((prev) => !prev);
+	};
+
+	return (
+		<Layout
+			sideItems={[
+				{ text: "텀블러 할인 설정", url: "" },
+				{ text: "단골 스탬프 설정", url: "" },
+				{ text: "단골 리스트", url: "" },
+				{ text: "메뉴 설정", url: "/service-setting/menu" },
+				{ text: "마감타임 설정", url: "/service-setting/closingsale" },
+				{ text: "알림 설정", url: "" },
+				{ text: "태그 설정", url: "/service-setting/tag" },
+				{ text: "댓글신고", url: "" },
+			]}>
+			<MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
+				<ContentHeader firstCategory='서비스 설정' secondCategory='태그 설정' />
+				<MenuSettingBody className='flex flex-col items-center'>
+					<MenuSettingBodyHeader className='flex items-center'>
+						<div className='w-1/6 text-center'>태그 Id</div>
+						<div className='w-1/6 text-center'>type</div>
+						<div className='w-2/6 text-center'>태그</div>
+						<div className='w-1/6 text-center'>상태</div>
+						<EditButton className='w-1/6 flex justify-center'>
+							<button
+								type='button'
+								onClick={() => {
+									setRegisterModalOpen(true);
+								}}
+								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
+								등록
+							</button>
+						</EditButton>
+					</MenuSettingBodyHeader>
+					{currentPageTagList.current?.map((tag) => {
+						return (
+							<TagItem
+								key={tag.tagId}
+								tagId={tag.tagId}
+								type={tag.type}
+								tagContent={tag.name}
+								status={tag.status.toString()}
+								tagData={tag}
+								handleTagEditModal={openEditModal}
+								handleTagActivate={setTagList}
+								// handleTagEditModalData={getTagEditModalData}
+							/>
+						);
+					})}
+					<div className='w-full mt-5 '>
+						<ReactPaginate
+							className='w-full flex gap-5 justify-center'
+							breakLabel='...'
+							nextLabel='다음 >'
+							onPageChange={handlePageClick}
+							pageRangeDisplayed={3}
+							pageCount={pageCount}
+							previousLabel='< 이전'
+							renderOnZeroPageCount={null}
+						/>
+					</div>
+					{tagRegisterModalOpen && (
+						<TagRegisterModal
+							changeOpen={setRegisterModalOpen}></TagRegisterModal>
+					)}
+					{tagEditModalOpen && (
+						<TagEditModal
+							changeOpen={setEditModalOpen}
+							tagData={modalTagData}></TagEditModal>
+					)}
+				</MenuSettingBody>
+			</MenuSettingWrapper>
+			<BackgroundColor />
+		</Layout>
+	);
 }
