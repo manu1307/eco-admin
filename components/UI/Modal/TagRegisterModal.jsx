@@ -64,12 +64,14 @@ export default function TagRegisterModal(props) {
 				method: "post",
 				url: `${BASEURL}/api/v1/tags`,
 				headers: {
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
-					},
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
 				},
 				data: tagData,
+			}).then((res) => {
+				if (res.status === 200) {
+					changeOpen(false);
+				}
 			});
 		} else {
 			alert("올바른 태그를 입력해주세요");

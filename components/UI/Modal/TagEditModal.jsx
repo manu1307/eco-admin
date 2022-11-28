@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { apiBaseAddressState } from "../../../states/global/globalState";
 
 const TagEditModalWrapper = styled.div``;
 const TagEditModalBackground = styled.div`
@@ -42,9 +44,36 @@ const TagInputContainer = styled.div`
 
 export default function TagEditModal(props) {
 	const { changeOpen, tagData } = props;
-	console.log(tagData);
+	// {tagId: 2, type: 'store', name: '맛있는 아메리카노', status: true}
 
-	const [tagItem, setTagItem] = useState("");
+	const BASEURL = useRecoilValue(apiBaseAddressState);
+
+	const [tagType, setTagType] = useState(tagData.type);
+	const [tagItem, setTagItem] = useState(tagData.name);
+
+	const editTagItem = () => {
+		const token = localStorage.getItem("token");
+		const tagId = tagData.tagId;
+		const newData = {
+			type: tagType,
+			name: tagItem,
+		};
+		console.log(newData);
+		axios({
+			method: "put",
+			url: `${BASEURL}/api/v1/tags/${tagId}`,
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			data: newData,
+		}).then((res) => {
+			if (res.status === 200) {
+				changeOpen(false);
+			}
+		});
+	};
+
 	return (
 		<TagEditModalWrapper>
 			<TagEditModalContainer>
@@ -52,9 +81,8 @@ export default function TagEditModal(props) {
 					<TagInputContainer>
 						<select
 							className='rounded-xl mr-5'
-							defaultValue='none'
+							defaultValue={tagType}
 							onChange={(event) => {
-								console.log(event.target.value);
 								setTagType(event.target.value);
 							}}>
 							<option value='none'>태그 종류</option>
@@ -73,8 +101,7 @@ export default function TagEditModal(props) {
 						<button
 							type='button'
 							className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-3  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-							// onClick={submitTagItem}
-						>
+							onClick={editTagItem}>
 							태그 등록
 						</button>
 						<button
