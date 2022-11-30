@@ -1,30 +1,40 @@
 import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { QrReader } from "react-qr-reader";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const Test = (props) => {
-  const [data, setData] = useState("No result");
+  const [data, setData] = useState("");
+  const lastResult = useRef();
+
+  const onReadResult = (result, error) => {
+    if (!result) {
+      return;
+    }
+
+    lastResult.current = result.text;
+    if (!!error) {
+      console.info(error);
+    }
+  };
 
   return (
     <>
-      <QrReader
-        onResult={(result, error) => {
-          if (!!result) {
-            setData(result?.text);
-          }
-
-          if (!!error) {
-            console.info(error);
-          }
-        }}
-        style={{ width: "100%" }}
-      />
-      <p>{data}</p>
+      {!lastResult.current && (
+        <QrReader
+          scanDelay={1000}
+          constraints={{ facingMode: "environment" }}
+          onResult={onReadResult}
+          style={{ width: "100%" }}
+        />
+      )}
+      <p>{lastResult.current}</p>
     </>
   );
 };
 export default function StoreManage() {
+  const [shouldRender, setShouldRender] = useState(false);
+
   return (
     <Layout
       sideItems={[
@@ -32,7 +42,14 @@ export default function StoreManage() {
         { text: "QR 태그", url: "/storeManage/qrCode" },
       ]}
     >
-      <Test />
+      {shouldRender && <Test />}
+      <button
+        onClick={() => {
+          setShouldRender(true);
+        }}
+      >
+        Render QR{" "}
+      </button>
     </Layout>
   );
 }
