@@ -1,10 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
-import {
-	apiBaseAddressState,
-	apiTokenState,
-} from "../../../states/global/globalState";
+import { apiBaseAddressState } from "../../../states/global/globalState";
 import axios from "axios";
 
 const TagRegisterModalWrapper = styled.div``;
