@@ -83,7 +83,7 @@ export default function SignIn() {
 				password: loginPassword,
 			}),
 		})
-			.then(async (response) => {
+			.then((response) => {
 				if (response.status === 200) {
 					loginToken.current = response.data.token;
 				} else {
@@ -123,14 +123,7 @@ export default function SignIn() {
 						onChange={onChangeLoginPassword}
 					/>
 				</div>
-				<div className='flex text-xs mt-1 justify-around text-gray-400 '>
-					{/* <div>
-            <FindButton>아이디 찾기</FindButton>
-          </div>
-          <div>
-            <FindButton>비밀번호 찾기</FindButton>
-          </div> */}
-				</div>
+				<div className='flex text-xs mt-1 justify-around text-gray-400 '></div>
 				<div className='w-full flex justify-around my-4 '>
 					<LoginButton
 						className='px-4 py-2 rounded-lg text-white text-lg'
