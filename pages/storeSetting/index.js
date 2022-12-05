@@ -5,6 +5,8 @@ import Image from "next/image";
 import styled from "styled-components";
 import Postcode from "../../components/MarketSetting/PostCode";
 import AddressSearchModal from "../../components/UI/Modal/AddressSearchModal";
+import { useRecoilValue } from "recoil";
+import { storeAddrState } from "../../states/StoreSetting/storeAddressState";
 
 const StoreOpenTime = [
 	{ day: "월요일", openTime: "", closeTime: "" },
@@ -54,6 +56,8 @@ export default function MarketSetting() {
 	const [storeAddress, setStoreAddress] = useState("");
 	const [storeImage, setStoreImage] = useState();
 
+	const storeAddressData = useRecoilValue(storeAddrState);
+
 	const [addressSearchModalOpen, setAddressSearchModalOpen] = useState(false);
 
 	const [storeTagList, setStoreTagList] = useState([]);
@@ -82,7 +86,7 @@ export default function MarketSetting() {
 	const registerStore = () => {
 		const token = localStorage.getItem("token");
 
-		const storeDto = {
+		const storeInfo = {
 			name: storeName,
 			phoneNumber: storePhoneNumber,
 			emdName: "이태원동",
@@ -97,12 +101,12 @@ export default function MarketSetting() {
 			sundayTime: `${StoreOpenTime[6].openTime} ~ ${StoreOpenTime[6].closeTime}`,
 			tagIds: selectedStoreTagIdList,
 		};
-		const json = JSON.stringify(storeDto);
+		const json = JSON.stringify(storeInfo);
 		const blob = new Blob([json], {
 			type: "application/json",
 		});
 		const formData = new FormData();
-		formData.append("createStoreDto", blob);
+		formData.append("createStoreRequest", blob);
 		formData.append("files", storeImage);
 		// 이미지 변환 안하고 그냥 보내면 됨 (추후 DB 정해지는 대로 수정)
 		axios({
@@ -200,6 +204,9 @@ export default function MarketSetting() {
 						className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 						placeholder='상세 주소'
 						required
+						onChange={() => {
+							console.log(storeAddressData);
+						}}
 					/>
 				</div>
 				<div>
