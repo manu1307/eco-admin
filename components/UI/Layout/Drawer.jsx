@@ -10,6 +10,36 @@ const ToggleButton = styled.label`
 
 export default function Drawer() {
   const [sideBarOpen, setSideBarOpen] = useRecoilState(SideBarOpenState);
+
+  const DrawerMenu = [
+    {
+      bname: "대시보드",
+      bnameURL: "/dashboard",
+      detail: [{ name: "대시보드", url: "/dashboard" }],
+    },
+    {
+      bname: "매장 설정",
+      bnameURL: "/storeSetting",
+      detail: [{ name: "매장 설정", url: "/storeSetting" }],
+    },
+    {
+      bname: "매장 관리",
+      bnameURL: "/storeManage",
+      detail: [
+        { name: "매장 관리", url: "/storeManage" },
+        { name: "qr 코드", url: "/storeManage/qrCode" },
+      ],
+    },
+    {
+      bname: "서비스 설정",
+      bnameURL: "/serviceSetting",
+      detail: [
+        { name: "메뉴 설정", url: "/serviceSetting/menu" },
+        { name: "마감 할인 설정", url: "/serviceSetting/closingsale" },
+        { name: "태그 설정", url: "/serviceSetting/tag" },
+      ],
+    },
+  ];
   return (
     <div className="drawer">
       <input

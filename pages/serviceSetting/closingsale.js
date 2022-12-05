@@ -8,9 +8,10 @@ export default function ClosingSale() {
         { text: "텀블러 할인 설정", url: "" },
         { text: "단골 스탬프 설정", url: "" },
         { text: "단골 리스트", url: "" },
-        { text: "메뉴 설정", url: "/service-setting/menu" },
-        { text: "마감타임 설정", url: "/service-setting/closingsale" },
+        { text: "메뉴 설정", url: "/serviceSetting/menu" },
+        { text: "마감타임 설정", url: "/serviceSetting/closingsale" },
         { text: "알림 설정", url: "" },
+        { text: "태그 설정", url: "/serviceSetting/tag" },
         { text: "댓글신고", url: "" },
       ]}
     >
