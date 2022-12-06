@@ -3217,11 +3217,6 @@
   "resolved" "https://registry.npmjs.org/html-tags/-/html-tags-3.2.0.tgz"
   "version" "3.2.0"
 
-"html5-qrcode@^2.3.3":
-  "integrity" "sha512-3mA9N7wKM+nEFemBo1vCNgypJBFv2WvBXeacLx9b+Z8sueW1cUHq6p5fQ9aIBDK0DNBvtqhhW+79hdJPUHGwrA=="
-  "resolved" "https://registry.npmjs.org/html5-qrcode/-/html5-qrcode-2.3.3.tgz"
-  "version" "2.3.3"
-
 "iconv-lite@^0.4.24":
   "integrity" "sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA=="
   "resolved" "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz"

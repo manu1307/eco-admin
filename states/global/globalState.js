@@ -8,3 +8,7 @@ export const apiTokenState = atom({
   key: "apiTokenState",
   default: "",
 });
+export const storeListState = atom({
+  key: "storeListState",
+  default: [],
+});
