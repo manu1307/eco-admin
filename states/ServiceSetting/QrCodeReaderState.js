@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-export const QrCOdeReaderState = atom({
-  key: "QrCOdeReaderState",
+export const QrCodeReaderState = atom({
+  key: "QrCodeReaderState",
   default: "",
 });

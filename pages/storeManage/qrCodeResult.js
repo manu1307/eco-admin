@@ -2,14 +2,13 @@ import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { QrReader } from "react-qr-reader";
 import { useRef, useState } from "react";
-import { useRecoilState } from "recoil";
-import { QrCOdeReaderState } from "../../states/ServiceSetting/QrCodeReaderState";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { QrCodeReaderState } from "../../states/ServiceSetting/QrCodeReaderState";
 
 export default function QrCodeResult() {
-  const [shouldRender, setShouldRender] = useState(false);
   const [data, setData] = useState("");
 
-  const [qrCodeResult, setQrCodeResult] = useRecoilState(QrCOdeReaderState);
+  const qrCodeResult = useRecoilValue(QrCodeReaderState);
 
   console.log(qrCodeResult);
 
