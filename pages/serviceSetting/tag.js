@@ -138,7 +138,7 @@ const TagItem = (props) => {
       <div className="w-1/6 text-center">{type}</div>
       <div className="w-2/6 text-center">{tagContent}</div>
       <div className="w-1/6 text-center">{status}</div>
-      <EditButton className="w-1/6 flex justify-center">
+      <EditButton className="w-1/6 flex flex-col sm:flex-row justify-center">
         <button
           onClick={() => {
             handleTagEditModal(tagData, tagId);

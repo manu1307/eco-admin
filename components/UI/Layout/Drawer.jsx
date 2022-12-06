@@ -15,20 +15,15 @@ export default function Drawer() {
     {
       bname: "대시보드",
       bnameURL: "/dashboard",
-      detail: [{ name: "대시보드", url: "/dashboard" }],
     },
     {
       bname: "매장 설정",
       bnameURL: "/storeSetting",
-      detail: [{ name: "매장 설정", url: "/storeSetting" }],
     },
     {
       bname: "매장 관리",
       bnameURL: "/storeManage",
-      detail: [
-        { name: "매장 관리", url: "/storeManage" },
-        { name: "qr 코드", url: "/storeManage/qrCode" },
-      ],
+      detail: [{ name: "qr 코드", url: "/storeManage/qrCode" }],
     },
     {
       bname: "서비스 설정",
@@ -83,33 +78,22 @@ export default function Drawer() {
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay z-10"></label>
         <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
-          <li>
-            <Link href="/dashboard">
-              <a>대시보드</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/storeSetting">
-              <a>매장 설정</a>
-            </Link>
-            <Link href="/storeManage">
-              <a>매장 관리</a>
-            </Link>
-            <Link href="/storeManage/qrCode">
-              <a style={{ textIndent: "1rem" }}>- qr 코드</a>
-            </Link>{" "}
-          </li>
-          <li>
-            <a>서비스 설정</a>
-            <Link href="/service-setting/menu">
-              <a style={{ textIndent: "1rem" }}>- 메뉴 설정</a>
-            </Link>
-            <Link href="/service-setting/closingsale">
-              <a style={{ textIndent: "1rem" }}>- 마감타임 세일 설정</a>
-            </Link>{" "}
-            {/* <a style={{ textIndent: "1rem" }}>- 텀블러 할인 마감타임 설정</a>
-            <a style={{ textIndent: "1rem" }}>- 알림 설정</a> */}
-          </li>
+          {DrawerMenu.map((menuItem, index) => {
+            return (
+              <li key={index}>
+                <Link href={menuItem.bnameURL}>
+                  <a>{menuItem.bname}</a>
+                </Link>
+                {menuItem.detail?.map((detailMenu, index) => {
+                  return (
+                    <Link key={index} href={detailMenu.url}>
+                      <a className="indent-2">- {detailMenu.name}</a>
+                    </Link>
+                  );
+                })}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>

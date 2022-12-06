@@ -2,9 +2,10 @@ import ContentHeader from "../../components/UI/Content/ContentHeader";
 import Layout from "../../components/UI/Layout/Layout";
 import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
 import styled from "styled-components";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import { useState } from "react";
+import { QrCodeReaderState } from "../../states/ServiceSetting/QrCodeReaderState";
 
 const ContentSettingWrapper = styled.div`
   padding-top: 20px;
@@ -85,6 +86,7 @@ export default function StoreManage() {
     <Layout
       sideItems={[
         { text: "매장 관리", url: "/storeManage" },
+        { text: "매장 수정", url: "/storeManage/edit" },
         { text: "QR 태그", url: "/storeManage/qrCode" },
       ]}
     >

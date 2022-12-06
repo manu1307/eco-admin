@@ -63,6 +63,7 @@ export default function MarketSetting() {
   const [storeImage, setStoreImage] = useState();
 
   const storeAddressData = useRecoilValue(storeAddrState);
+  const [storeAddressDetail, setStoreAddressDetail] = useState("");
 
   const [storeList, setStoreList] = useRecoilState(storeListState);
 
@@ -98,7 +99,7 @@ export default function MarketSetting() {
       name: storeName,
       phoneNumber: storePhoneNumber,
       description: storeDescription,
-      addrDetail: storeAddressData.addrDetail,
+      addrDetail: `${storeAddressData.addrDetail} ${storeAddressDetail}`,
       addrDepth01: storeAddressData.addrDepth01,
       addrDepth02: storeAddressData.addrDepth02,
       addrDepth03: storeAddressData.addrDepth03,
@@ -200,7 +201,6 @@ export default function MarketSetting() {
             id="description"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="가게 설명입니다."
-            required=""
             onChange={(event) => {
               setStoreDescription(event.target.value);
             }}
@@ -213,31 +213,37 @@ export default function MarketSetting() {
           >
             주소
           </label>
-          <input
-            type="text"
-            id="address"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="주소"
-            value={storeAddress}
-            required
-            onClick={() => {
-              if (!storeAddress) {
-                setAddressSearchModalOpen(true);
-              }
-            }}
-            onChange={(event) => {
-              setStoreAddress(() => {
-                event.target.value;
-              });
-            }}
-          />
-          <input
-            type="text"
-            id="address"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="상세 주소"
-            required
-          />
+          <div className="flex gap-6">
+            <input
+              type="text"
+              id="address"
+              className=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="주소"
+              value={storeAddress}
+              required
+              onClick={() => {
+                if (!storeAddress) {
+                  setAddressSearchModalOpen(true);
+                }
+              }}
+              onChange={(event) => {
+                setStoreAddress(() => {
+                  event.target.value;
+                });
+              }}
+            />
+            <input
+              type="text"
+              id="address"
+              value={storeAddressDetail}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="상세 주소"
+              required
+              onChange={(event) => {
+                setStoreAddressDetail(event.target.value);
+              }}
+            />{" "}
+          </div>
         </div>
         <div>
           <div>영업시간</div>
@@ -338,10 +344,14 @@ export default function MarketSetting() {
                       onClick={() => {
                         if (selectedStoreTagList.length < 3) {
                           setSelectedStoreTagIdList((prev) => {
-                            return [...prev, tag.tagId];
+                            const set = new Set([...prev, tag.tagId]);
+                            const noOverLapArr = [...set];
+                            return noOverLapArr;
                           });
                           setSelectedStoreTagList((prev) => {
-                            return [...prev, tag.name];
+                            const set = new Set([...prev, tag.name]);
+                            const noOverLapArr = [...set];
+                            return noOverLapArr;
                           });
                         } else {
                           alert("태그는 2개까지만 선택 가능합니다.");
@@ -364,7 +374,7 @@ export default function MarketSetting() {
             registerStore();
           }}
         >
-          설정
+          등록
         </button>
         {addressSearchModalOpen && (
           <AddressSearchModal
