@@ -52,7 +52,7 @@ const StoreTagSelected = styled.div`
 export default function MarketEdit() {
   const BASEURL = useRecoilValue(apiBaseAddressState);
 
-  const [storeList, setStoreList] = useState();
+  const [storeList, setStoreList] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -68,17 +68,22 @@ export default function MarketEdit() {
     });
   }, [BASEURL]);
 
+  const renderStoreEdit = () => {};
+
   return (
     <Layout
       sideItems={[
-        { text: "매장 관리", url: "/storeManage" },
-        { text: "매장 수정", url: "/storeManage/edit" },
-        { text: "QR 태그", url: "/storeManage/qrCode" },
+        { text: "매장 설정", url: "/storeSetting" },
+        { text: "정보 수정", url: "/storeSetting/edit" },
       ]}
     >
       <div>
         {storeList.map((store) => {
-          return <div key={store.storeId}>{store.name}</div>;
+          return (
+            <button key={store.storeId} onClick={renderStoreEdit}>
+              {store.name}
+            </button>
+          );
         })}
       </div>
     </Layout>

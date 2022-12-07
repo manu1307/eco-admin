@@ -148,7 +148,12 @@ export default function MarketSetting() {
   };
 
   return (
-    <Layout sideItems={[{ text: "매장 설정", url: "/market-setting" }]}>
+    <Layout
+      sideItems={[
+        { text: "매장 설정", url: "/storeSetting" },
+        { text: "정보 수정", url: "/storeSetting/edit" },
+      ]}
+    >
       <div className="p-5 bg-white text-black">
         <div className="grid gap-6 mb-2 md:grid-cols-2">
           <div>
