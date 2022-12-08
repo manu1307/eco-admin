@@ -286,12 +286,12 @@ export default function MarketSetting() {
 					)}
 				</div>
 				<div>
-					<StoreRegisterModalItemContainer className='flex flex-col items-start gap-3 mt-6'>
+					<StoreRegisterModalItemContainer className='w-full flex flex-col items-start gap-3 mt-6'>
 						<StoreRegisterModalItemLabel className='w-full text-sm'>
 							매장 태그 (최대 3개)
 						</StoreRegisterModalItemLabel>
-						<div>
-							<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
+						<div className='w-full'>
+							<div className='w-full flex flex-wrap m-0 gap-2 rounded-xl mb-3 sm:h-5'>
 								{selectedStoreTagList.map((tag, i) => {
 									return (
 										<StoreTagSelected className='text-sm' key={i}>
@@ -311,7 +311,7 @@ export default function MarketSetting() {
 									);
 								})}
 							</div>
-							<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
+							<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
 								{storeTagList.map((tag, i) => {
 									return (
 										<StoreTagItemButton

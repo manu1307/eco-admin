@@ -55,6 +55,8 @@ const StoreName = styled.div`
 	font-size: 24px;
 	font-weight: bold;
 	color: black;
+	display: flex;
+	align-items: center;
 `;
 const ModalWrapper = styled.div`
 	background-color: rgba(0, 0, 0, 0.8);
@@ -116,14 +118,18 @@ export default function DashBoardMain() {
 			method: "get",
 			url: `${BASEURL}/api/v1/stores`,
 			headers: { Authorization: `Bearer ${token}` },
-		}).then((res) => {
-			if (res.data) {
-				setIsFirst(false);
-				console.log(res.data[0]);
+		})
+			.then((res) => {
+				if (res.data) {
+					setIsFirst(false);
+					console.log(res.data[0]);
 
-				setStoreData(res.data[0]);
-			}
-		});
+					setStoreData(res.data[0]);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}, [BASEURL]);
 
 	const confirmSetting = (event) => {};
@@ -158,7 +164,11 @@ export default function DashBoardMain() {
 								style={{ marginLeft: "0.3rem", fontSize: "14px" }}></span>
 						</EcoLevel>
 						<StoreName>
-							{storeData ? storeData.name : "가게를 등록해주세요"}
+							{storeData ? (
+								storeData.name
+							) : (
+								<div className='text-sm'>가게를 등록해주세요</div>
+							)}
 						</StoreName>
 					</div>
 				</StoreNameWrapper>

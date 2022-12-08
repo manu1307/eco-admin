@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import { useState } from "react";
-import { QrCodeReaderState } from "../../states/ServiceSetting/QrCodeReaderState";
 
 const ContentSettingWrapper = styled.div`
 	padding-top: 20px;
@@ -66,11 +65,35 @@ const CategoryButton = styled.button`
 		color: #121533;
 	}
 `;
+const ContentSettingBodyContent = styled.div`
+	width: 100%;
+	border-radius: 15px;
+	background-color: #f5f5f5;
+	height: 70px;
+	color: black;
+	font-size: 20px;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	@media screen and (max-width: 640px) {
+		font-size: 12px;
+		height: 50px;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+`;
+const SearchButton = styled.button`
+	background-color: #242746;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 1rem;
+`;
 const SearchInputStyled = styled.input`
-	border: 1px solid black;
+	border: 2px solid lightgrey;
 	border-radius: 20px;
 	font-size: 12px;
 	height: 40px;
+	width: 100%;
 `;
 
 const SearchInput = (props) => {
@@ -126,13 +149,45 @@ export default function StoreManage() {
 					</CategoryButton>
 				</CategoryButtonWrapper>
 				<ContentSettingBody className='flex flex-col items-center'>
-					<div className='flex'>
-						<div>
-							<div>고객명</div>
-							<SearchInput type='text' placeholder='이름을 입력하세요' />
+					<div className='w-full flex justify-around'>
+						<div className='w-11/12 flex justify-between mb-3'>
+							<div className='w-1/5'>
+								<div className='text-sm mb-1'>Customer</div>
+								<SearchInput type='text' placeholder='Enter Customer Name' />
+							</div>
+							<div className='w-1/5'>
+								<div className='text-sm mb-1'>Id</div>
+								<SearchInput type='text' placeholder='Enter Your Id' />
+							</div>
+							<div className='w-1/5'>
+								<div className='text-sm mb-1'>Start Date</div>
+								<SearchInput type='text' placeholder='Start Date' />
+							</div>
+							<div className='w-1/5'>
+								<div className='text-sm mb-1'>End Date</div>
+								<SearchInput type='text' placeholder='End Date' />
+							</div>
+						</div>
+						<div className='flex items-center '>
+							<SearchButton>검색</SearchButton>
 						</div>
 					</div>
-					<ContentSettingBodyHeader className='flex items-center'></ContentSettingBodyHeader>
+					<ContentSettingBodyHeader className='flex items-center justify-around'>
+						<div>Check</div>
+						<div>사용자 ID</div>
+						<div>Date</div>
+						<div>Id</div>
+						<div>텀블러 스탬프</div>
+						<div>일반 스탬프</div>
+					</ContentSettingBodyHeader>
+					<ContentSettingBodyContent className='flex items-center justify-around'>
+						<input type='checkbox' />
+						<div>철수</div>
+						<div>날짜</div>
+						<div>Id</div>
+						<div>20회</div>
+						<div>3회</div>
+					</ContentSettingBodyContent>
 				</ContentSettingBody>
 			</ContentSettingWrapper>
 			<BackgroundColor />
