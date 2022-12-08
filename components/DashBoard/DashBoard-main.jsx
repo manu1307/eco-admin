@@ -119,7 +119,9 @@ export default function DashBoardMain() {
 		}).then((res) => {
 			if (res.data) {
 				setIsFirst(false);
-				setStoreData(res.data);
+				console.log(res.data[0]);
+
+				setStoreData(res.data[0]);
 			}
 		});
 	}, [BASEURL]);
@@ -153,11 +155,11 @@ export default function DashBoardMain() {
 							<span style={{ fontSize: "12px" }}>에코레벨</span>
 							<span
 								className='font-bold'
-								style={{ marginLeft: "0.3rem", fontSize: "14px" }}>
-								D
-							</span>
+								style={{ marginLeft: "0.3rem", fontSize: "14px" }}></span>
 						</EcoLevel>
-						<StoreName>{storeData[0].name}</StoreName>
+						<StoreName>
+							{storeData ? storeData.name : "가게를 등록해주세요"}
+						</StoreName>
 					</div>
 				</StoreNameWrapper>
 				<div>
