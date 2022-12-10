@@ -123,7 +123,6 @@ export default function DashBoardMain() {
 				if (res.data) {
 					setIsFirst(false);
 					console.log(res.data[0]);
-
 					setStoreData(res.data[0]);
 				}
 			})
