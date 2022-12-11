@@ -66,8 +66,6 @@ const FormItemLayout = (props) => {
 };
 
 export default function SignUpForm() {
-	const router = useRouter();
-
 	const SignUpData = useRecoilValue(signUpSelector);
 	const {
 		id,
@@ -99,8 +97,8 @@ export default function SignUpForm() {
 				password: password,
 				confirmPassword: passwordConfirm,
 				name: name,
-				businessNumber: phoneNumber,
-				phoneNumber: businessNumber,
+				// businessNumber: businessNumber ? businessNumber : "",
+				phoneNumber: phoneNumber,
 				birthday: birthday,
 				gender: gender,
 			}),

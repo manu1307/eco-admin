@@ -1,7 +1,7 @@
 import Drawer from "../../components/UI/Layout/Drawer";
 import Layout from "../../components/UI/Layout/Layout";
 
-export default function ServiceSetting() {
+export default function Stamp() {
 	return (
 		<Layout
 			sideItems={[

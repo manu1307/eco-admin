@@ -2,13 +2,26 @@ import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { QrReader } from "react-qr-reader";
 import { useRef, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { QrCodeReaderState } from "../../states/ServiceSetting/QrCodeReaderState";
+import {
+	apiBaseAddressState,
+	storeListState,
+} from "../../states/global/globalState";
+import axios from "axios";
 
 export default function QrCode() {
+	const BASEURL = useRecoilValue(apiBaseAddressState);
+
 	const [data, setData] = useState("");
+	const [totalCoffeeCount, setTotalCoffeeCount] = useState("");
+	const [tumblerCount, setTumblerCount] = useState("");
 
 	const [qrCodeResult, setQrCodeResult] = useRecoilState(QrCodeReaderState);
+
+	const storeData = useRecoilValue(storeListState);
+	const testStore = storeData[0];
+	console.log(testStore);
 
 	const onReadResult = (result, error) => {
 		if (!result) {
@@ -24,6 +37,30 @@ export default function QrCode() {
 				console.info(error);
 			}
 		}
+	};
+
+	const submitOrder = () => {
+		const token = localStorage.getItem("token");
+
+		const data = {
+			storeId: testStore.storeId,
+			loginId: "abcedf",
+			price: 5000,
+			totalCoffeeCount: parseInt(totalCoffeeCount),
+			tumblerCount: parseInt(tumblerCount),
+			couponIds: [1, 2],
+		};
+		console.log(data);
+		axios({
+			method: "post",
+			url: `${BASEURL}/api/v1/orders`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+			data: data,
+		}).then((res) => {
+			console.log(res);
+		});
 	};
 
 	return (
@@ -43,12 +80,27 @@ export default function QrCode() {
 				</>
 			)}
 			<p>{qrCodeResult}</p>
-			<button
-				onClick={() => {
-					window.location.href = "/storeManage/qrCodeResult";
-				}}>
-				결과 확인{" "}
-			</button>
+			<div>
+				<label>잔 개수</label>
+				<input
+					type='number'
+					value={totalCoffeeCount}
+					onChange={(event) => {
+						setTotalCoffeeCount(event.target.value);
+					}}
+				/>
+			</div>
+			<div>
+				<label>텀블러 개수</label>
+				<input
+					type='number'
+					value={tumblerCount}
+					onChange={(event) => {
+						setTumblerCount(event.target.value);
+					}}
+				/>
+			</div>
+			<button onClick={submitOrder}>확인</button>
 		</Layout>
 	);
 }
