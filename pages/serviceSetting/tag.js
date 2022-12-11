@@ -179,9 +179,6 @@ export default function ServiceSettingMenu() {
 	const [tagRegisterModalOpen, setRegisterModalOpen] = useState(false);
 	const [tagEditModalOpen, setEditModalOpen] = useState(false);
 
-	const [tagType, setTagType] = useState("");
-	const [tagItem, setTagItem] = useState("");
-
 	const [tagList, setTagList] = useState();
 
 	const [modalTagData, setModalTagData] = useState();
@@ -253,7 +250,7 @@ export default function ServiceSettingMenu() {
 							</button>
 						</EditButton>
 					</MenuSettingBodyHeader>
-					{currentPageTagList.current?.map((tag) => {
+					{/* {currentPageTagList.current?.map((tag) => {
 						return (
 							<TagItem
 								key={tag.tagId}
@@ -264,10 +261,9 @@ export default function ServiceSettingMenu() {
 								tagData={tag}
 								handleTagEditModal={openEditModal}
 								handleTagActivate={setTagList}
-								// handleTagEditModalData={getTagEditModalData}
 							/>
 						);
-					})}
+					})} */}
 					<div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'
