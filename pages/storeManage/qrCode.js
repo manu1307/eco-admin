@@ -43,11 +43,6 @@ export default function QrCode() {
 		const token = localStorage.getItem("token");
 
 		const data = {
-			// storeId: 1,
-			// loginId: qrCodeResult,
-			// price: 5000,
-			// totalCoffeeCount: 3,
-			// tumblerCount: 3,
 			storeId: testStore.storeId,
 			loginId: qrCodeResult,
 			price: 5000,
@@ -65,6 +60,9 @@ export default function QrCode() {
 			data: data,
 		}).then((res) => {
 			console.log(res);
+			alert(
+				`아이디 : ${qrCodeResult} \n 총 잔개수 : ${totalCoffeeCount} \n 텀블러 : ${tumblerCount}`
+			);
 		});
 	};
 
@@ -84,7 +82,7 @@ export default function QrCode() {
 					/>
 				</>
 			)}
-			<p>{qrCodeResult}</p>
+			{/* <p>{qrCodeResult}</p> */}
 			{qrCodeResult && (
 				<>
 					<div>
