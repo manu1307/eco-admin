@@ -43,12 +43,17 @@ export default function QrCode() {
 		const token = localStorage.getItem("token");
 
 		const data = {
+			// storeId: 1,
+			// loginId: qrCodeResult,
+			// price: 5000,
+			// totalCoffeeCount: 3,
+			// tumblerCount: 3,
 			storeId: testStore.storeId,
-			loginId: "abcedf",
+			loginId: qrCodeResult,
 			price: 5000,
 			totalCoffeeCount: parseInt(totalCoffeeCount),
 			tumblerCount: parseInt(tumblerCount),
-			couponIds: [1, 2],
+			// couponIds: [1, 2],
 		};
 		console.log(data);
 		axios({
@@ -80,27 +85,32 @@ export default function QrCode() {
 				</>
 			)}
 			<p>{qrCodeResult}</p>
-			<div>
-				<label>잔 개수</label>
-				<input
-					type='number'
-					value={totalCoffeeCount}
-					onChange={(event) => {
-						setTotalCoffeeCount(event.target.value);
-					}}
-				/>
-			</div>
-			<div>
-				<label>텀블러 개수</label>
-				<input
-					type='number'
-					value={tumblerCount}
-					onChange={(event) => {
-						setTumblerCount(event.target.value);
-					}}
-				/>
-			</div>
-			<button onClick={submitOrder}>확인</button>
+			{qrCodeResult && (
+				<>
+					<div>
+						<label>잔 개수</label>
+						<input
+							type='number'
+							value={totalCoffeeCount}
+							onChange={(event) => {
+								setTotalCoffeeCount(event.target.value);
+							}}
+						/>
+					</div>
+					<div>
+						<label>텀블러 개수</label>
+						<input
+							type='number'
+							value={tumblerCount}
+							onChange={(event) => {
+								setTumblerCount(event.target.value);
+							}}
+						/>
+					</div>
+
+					<button onClick={submitOrder}>확인</button>
+				</>
+			)}
 		</Layout>
 	);
 }
