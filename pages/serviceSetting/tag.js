@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
-import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
 import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
@@ -287,7 +286,6 @@ export default function ServiceSettingMenu() {
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
-			<BackgroundColor />
 		</Layout>
 	);
 }

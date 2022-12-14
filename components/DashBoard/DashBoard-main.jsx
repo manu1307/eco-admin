@@ -5,7 +5,6 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 import Arrow from "../../assets/arrow-dashboard.svg";
-import BackgroundColor from "../UI/Layout/BackgroundColor";
 import Box from "./Box";
 import { apiBaseAddressState } from "../../states/global/globalState";
 
@@ -213,7 +212,6 @@ export default function DashBoardMain() {
 				<br />
 				{/* <div>차트</div> */}
 			</DashBoardWrapper>
-			<BackgroundColor />
 		</>
 	);
 }

@@ -84,7 +84,7 @@ export default function QrCode() {
 			)}
 			{/* <p>{qrCodeResult}</p> */}
 			{qrCodeResult && (
-				<>
+				<div className="text-black">
 					<div>
 						<label>잔 개수</label>
 						<input
@@ -107,7 +107,7 @@ export default function QrCode() {
 					</div>
 
 					<button onClick={submitOrder}>확인</button>
-				</>
+				</div>
 			)}
 		</Layout>
 	);
