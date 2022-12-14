@@ -3,6 +3,13 @@ import SideBar from "./SideBar";
 import styled from "styled-components";
 import Drawer from "./Drawer";
 
+const Background = styled.div`
+	width: 100%;
+	/* height: 100vh; */
+	z-index: -4;
+	position: absolute;
+	background-color: #f6f6f6;
+`;
 const BodyWrapper = styled.div`
 	/* max-width: 1280px; */
 `;
@@ -32,6 +39,7 @@ export default function Layout({ children, sideItems }) {
 				<SideBar items={sideItems} />
 				<ChildrenWrapper>{children}</ChildrenWrapper>
 			</BodyWrapper>
+			<Background />
 		</>
 	);
 }

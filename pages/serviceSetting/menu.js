@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
 import { useRecoilState } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
-import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
 import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
 import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
@@ -234,7 +233,6 @@ export default function ServiceSettingMenu() {
 					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
-			<BackgroundColor />
 		</Layout>
 	);
 }

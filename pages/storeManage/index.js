@@ -1,6 +1,5 @@
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import Layout from "../../components/UI/Layout/Layout";
-import BackgroundColor from "../../components/UI/Layout/BackgroundColor";
 import styled from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
@@ -190,7 +189,6 @@ export default function StoreManage() {
 					</ContentSettingBodyContent>
 				</ContentSettingBody>
 			</ContentSettingWrapper>
-			<BackgroundColor />
 		</Layout>
 	);
 }
