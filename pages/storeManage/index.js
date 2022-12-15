@@ -4,12 +4,18 @@ import styled from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import { useState } from "react";
+import {
+	apiBaseAddressState,
+	apiTokenState,
+	currentStoreState,
+} from "../../states/global/globalState";
+import axios from "axios";
 
 const ContentSettingWrapper = styled.div`
-	padding-top: 20px;
-	width: 83.7%;
+	width: 100%;
+	max-width: 1140px;
+	padding: 28px;
 	background-color: #f6f6f6;
-	padding-left: 50px;
 	@media screen and (max-width: 640px) {
 		width: 100%;
 		padding: 10px;
@@ -21,7 +27,7 @@ const ContentSettingWrapper = styled.div`
 
 const ContentSettingBody = styled.div`
 	width: 100%;
-	max-width: 1280px;
+	max-width: 1140px;
 	height: 90%;
 	max-height: 900px;
 	margin-top: 20px;
@@ -102,8 +108,23 @@ const SearchInput = (props) => {
 
 export default function StoreManage() {
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
+	const currentStore = useRecoilValue(currentStoreState);
+	const BASEURL = useRecoilValue(apiBaseAddressState);
+	console.log(currentStore);
 
 	const [currentCategory, setCurrentCategory] = useState("단골관리");
+	const getNormalStamp = () => {
+		const token = localStorage.getItem("token");
+		axios({
+			method: "get",
+			url: `${BASEURL}/api/v1/stamps/owner/${currentStore.storeId}/basic`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			console.log(res);
+		});
+	};
 	return (
 		<Layout
 			sideItems={[
@@ -130,6 +151,7 @@ export default function StoreManage() {
 					</CategoryButton>
 					<CategoryButton
 						onClick={() => {
+							getNormalStamp();
 							setCurrentCategory("스탬프 관리");
 						}}>
 						스탬프

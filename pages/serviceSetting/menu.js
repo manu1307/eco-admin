@@ -10,16 +10,13 @@ import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
 
 const MenuSettingWrapper = styled.div`
-	padding-top: 20px;
-	width: 83.7%;
-	background-color: #f6f6f6;
-	padding-left: 50px;
+	width: 100%;
+	max-width: 1140px;
+	padding: 28px;
 	@media screen and (max-width: 640px) {
 		width: 100%;
 		padding: 10px;
 		height: 90vh;
-	}
-	@media screen and (max-width: 1366px) {
 	}
 `;
 
@@ -150,7 +147,7 @@ export default function ServiceSettingMenu() {
 		<Layout
 			sideItems={[
 				// { text: "텀블러 할인 설정", url: "" },
-				{ text: "단골 스탬프 설정", url: "/serviceSetting/stamp" },
+				{ text: "단골 스탬프 설정", url: "/serviceSetting" },
 				// { text: "단골 리스트", url: "" },
 				{ text: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },

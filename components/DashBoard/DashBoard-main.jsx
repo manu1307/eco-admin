@@ -9,12 +9,10 @@ import Box from "./Box";
 import { apiBaseAddressState } from "../../states/global/globalState";
 
 const DashBoardWrapper = styled.div`
-	padding-top: 20px;
+	padding: 28px;
 	width: 100%;
 	max-width: 1280px;
 	background-color: #f6f6f6;
-	padding-left: 50px;
-	padding-right: 50px;
 	z-index: 0;
 	@media screen and (max-width: 640px) {
 		padding: 10px;
@@ -24,7 +22,7 @@ const DashBoardWrapper = styled.div`
 
 const DashBoardHeader = styled.div`
 	width: 100%;
-	max-width: 1180px;
+	max-width: 1140px;
 	padding: 15px 20px;
 	border-radius: 15px;
 	box-shadow: 0 0 2px 1.5px #d8d8d8;
@@ -103,7 +101,7 @@ const ModalButton = styled.a`
 const BoxWrapper = styled.div`
 	/* opacity: ${(props) => (props.isFirst ? 0.3 : 1)}; */
 	width: 100%;
-	max-width: 1280px;
+	max-width: 1140px;
 `;
 
 export default function DashBoardMain() {

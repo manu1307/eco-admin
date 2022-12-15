@@ -12,6 +12,7 @@ const CouponWrapper = styled.div`
 	gap: 10px;
 	justify-content: center;
 	align-items: center;
+	overflow: auto;
 `;
 
 const EmptyStamp = styled.div`

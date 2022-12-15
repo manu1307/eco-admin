@@ -15,10 +15,15 @@ const BodyWrapper = styled.div`
 `;
 const ChildrenWrapper = styled.div`
 	width: 83.3%;
+	height: 100%;
+	background-color: #f6f6f6;
 	position: absolute;
 	left: 250px;
 	top: 100px;
 	z-index: -1;
+	@media screen and (max-width: 1920px) {
+		width: calc(100% - 250px);
+	}
 	@media screen and (max-width: 1500px) {
 		left: 16.7%;
 	}

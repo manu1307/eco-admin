@@ -146,7 +146,7 @@ const TagItem = (props) => {
 					className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none   font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-4 sm:py-2 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
 					수정
 				</button>
-				{JSON.parse(status) ? (
+				{status == "Y" ? (
 					<button
 						onClick={() => {
 							handleActivateTag(tagId);
@@ -195,6 +195,8 @@ export default function ServiceSettingMenu() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((response) => {
+			console.log(response.data);
+
 			setTagList(response.data);
 		});
 	}, [BASEURL, tagRegisterModalOpen, tagEditModalOpen]);
@@ -222,7 +224,7 @@ export default function ServiceSettingMenu() {
 		<Layout
 			sideItems={[
 				// { text: "텀블러 할인 설정", url: "" },
-				{ text: "단골 스탬프 설정", url: "/serviceSetting/stamp" },
+				{ text: "단골 스탬프 설정", url: "/serviceSetting" },
 				// { text: "단골 리스트", url: "" },
 				{ text: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },
@@ -249,20 +251,20 @@ export default function ServiceSettingMenu() {
 							</button>
 						</EditButton>
 					</MenuSettingBodyHeader>
-					{/* {currentPageTagList.current?.map((tag) => {
+					{currentPageTagList.current?.map((tag) => {
 						return (
 							<TagItem
 								key={tag.tagId}
 								tagId={tag.tagId}
 								type={tag.type}
 								tagContent={tag.name}
-								status={tag.status.toString()}
+								status={tag.delYn.toString()}
 								tagData={tag}
 								handleTagEditModal={openEditModal}
 								handleTagActivate={setTagList}
 							/>
 						);
-					})} */}
+					})}
 					<div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'

@@ -8,6 +8,7 @@ import Logo from "../../../assets/ecomap-logo.png";
 import {
 	apiBaseAddressState,
 	apiTokenState,
+	currentStoreState,
 	storeListState,
 } from "../../../states/global/globalState";
 import Drawer from "./Drawer";
@@ -108,6 +109,7 @@ const MobileWrapper = styled.div`
 
 export default function Header() {
 	const [storeList, setStoreList] = useRecoilState(storeListState);
+	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
 	useEffect(() => {
@@ -120,8 +122,9 @@ export default function Header() {
 			},
 		}).then((res) => {
 			setStoreList(res.data);
+			setCurrentStore(res.data[0]);
 		});
-	}, [BASEURL, setStoreList]);
+	}, [BASEURL, setStoreList, setCurrentStore]);
 
 	return (
 		<>
@@ -156,7 +159,13 @@ export default function Header() {
 								{storeList.length > 0 ? (
 									storeList.map((store, index) => {
 										return (
-											<SelectOption key={index}>{store.name}</SelectOption>
+											<SelectOption
+												key={index}
+												onChange={(event) => {
+													setCurrentStore(event.target.value);
+												}}>
+												{store.name}
+											</SelectOption>
 										);
 									})
 								) : (
