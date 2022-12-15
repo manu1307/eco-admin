@@ -11,7 +11,8 @@ import { apiBaseAddressState } from "../../states/global/globalState";
 const DashBoardWrapper = styled.div`
 	padding: 28px;
 	width: 100%;
-	max-width: 1280px;
+	max-width: 1140px;
+	box-sizing: content-box;
 	background-color: #f6f6f6;
 	z-index: 0;
 	@media screen and (max-width: 640px) {
@@ -58,7 +59,7 @@ const StoreName = styled.div`
 const ModalWrapper = styled.div`
 	background-color: rgba(0, 0, 0, 0.8);
 	width: 92%;
-	max-width: 1200px;
+	max-width: 1140px;
 	height: 80%;
 	max-height: 420px;
 	border-radius: 30px;
@@ -157,7 +158,9 @@ export default function DashBoardMain() {
 							<span style={{ fontSize: "12px" }}>에코레벨</span>
 							<span
 								className='font-bold'
-								style={{ marginLeft: "0.3rem", fontSize: "14px" }}></span>
+								style={{ marginLeft: "0.3rem", fontSize: "14px" }}>
+								D
+							</span>
 						</EcoLevel>
 						<StoreName>
 							{storeData ? (

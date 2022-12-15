@@ -173,13 +173,13 @@ export default function MarketSetting() {
 						<div>
 							<label
 								htmlFor='store_name'
-								className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
+								className='block mb-2 text-sm font-medium  text-gray-900 '>
 								가게 이름
 							</label>
 							<input
 								type='text'
 								id='store_name'
-								className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+								className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 								placeholder='가게 이름'
 								required
 								onChange={(event) => {
@@ -190,13 +190,13 @@ export default function MarketSetting() {
 						<div>
 							<label
 								htmlFor='phone'
-								className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
+								className='block mb-2 text-sm font-medium text-gray-900 '>
 								전화번호
 							</label>
 							<input
 								type='tel'
 								id='phone'
-								className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+								className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 								placeholder='010-1234-5678'
 								pattern='[0-9]{3}[0-9]{4}[0-9]{4}'
 								required
@@ -209,13 +209,13 @@ export default function MarketSetting() {
 					<div className='mb-2'>
 						<label
 							htmlFor='description'
-							className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
+							className='block mb-2 text-sm font-medium text-gray-900 '>
 							가게 한줄 설명
 						</label>
 						<input
 							type='text'
 							id='description'
-							className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+							className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 							placeholder='가게 설명입니다.'
 							onChange={(event) => {
 								setStoreDescription(event.target.value);
@@ -225,14 +225,14 @@ export default function MarketSetting() {
 					<div className='mb-2'>
 						<label
 							htmlFor='address'
-							className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
+							className='block mb-2 text-sm font-medium text-gray-900 '>
 							주소
 						</label>
 						<div className='flex gap-6'>
 							<input
 								type='text'
 								id='address'
-								className=' bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+								className=' bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 								placeholder='주소'
 								value={storeAddress}
 								required
@@ -251,7 +251,7 @@ export default function MarketSetting() {
 								type='text'
 								id='address'
 								value={storeAddressDetail}
-								className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+								className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 								placeholder='상세 주소'
 								required
 								onChange={(event) => {
@@ -286,7 +286,7 @@ export default function MarketSetting() {
 										d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
 									/>
 								</svg>
-							</StoreImageRegister>{" "}
+							</StoreImageRegister>
 						</div>
 						<form>
 							<input
@@ -306,14 +306,18 @@ export default function MarketSetting() {
 					</div>
 					<div className='text-slate-400'>
 						{storeImage?.map((image, index) => {
+							if (!image[0]) {
+								return;
+							}
 							const imageName = image[0].name;
 							return (
 								<div key={index}>
 									{imageName}
 									<button
+										className='font-extrabold ml-2'
 										onClick={() => {
 											const filteredImage = storeImage?.filter((image) => {
-												return image[0].name != imageName;
+												return image[0]?.name != imageName;
 											});
 											setStoreImage(filteredImage);
 										}}>
@@ -350,7 +354,7 @@ export default function MarketSetting() {
 									})}
 								</div>
 								<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
-									{storeTagList.map((tag, i) => {
+									{/* {storeTagList?.map((tag, i) => {
 										return (
 											<StoreTagItemButton
 												className='text-sm'
@@ -374,7 +378,7 @@ export default function MarketSetting() {
 												#{tag.name}
 											</StoreTagItemButton>
 										);
-									})}
+									})} */}
 								</div>
 							</div>
 						</StoreRegisterModalItemContainer>

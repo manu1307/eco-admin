@@ -15,6 +15,7 @@ const ContentSettingWrapper = styled.div`
 	width: 100%;
 	max-width: 1140px;
 	padding: 28px;
+	box-sizing: content-box;
 	background-color: #f6f6f6;
 	@media screen and (max-width: 640px) {
 		width: 100%;
@@ -117,7 +118,7 @@ export default function StoreManage() {
 		const token = localStorage.getItem("token");
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/stamps/owner/${currentStore.storeId}/basic`,
+			url: `${BASEURL}/api/v1/stamps/owner/${currentStore[0].storeId}/basic`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
