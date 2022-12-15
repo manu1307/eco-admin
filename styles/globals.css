@@ -1,4 +1,4 @@
-/* @tailwind base; */
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -9,9 +9,11 @@ body {
 	font-family: -apple-system, SCDream, sans-serif;
 	background-color: #f6f6f6;
 }
-@font-face {
-	font-family: "SCDream";
-	src: url("/public/fonts/SCDream1.otf") format("truetype");
+@layer base {
+	@font-face {
+		font-family: "SCDream";
+		src: url("/public/fonts/SCDream1.otf") format("Opentype");
+	}
 }
 a {
 	color: inherit;
