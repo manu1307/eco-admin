@@ -11,10 +11,10 @@ import { apiBaseAddressState } from "../../states/global/globalState";
 import TagEditModal from "../../components/UI/Modal/TagEditModal";
 
 const MenuSettingWrapper = styled.div`
-	padding-top: 20px;
-	width: 83.7%;
+	width: 100%;
+	max-width: 1140px;
+	padding: 28px;
 	background-color: #f6f6f6;
-	padding-left: 50px;
 	@media screen and (max-width: 640px) {
 		width: 100%;
 		padding: 10px;
@@ -125,7 +125,7 @@ const TagItem = (props) => {
 						Authorization: `Bearer ${token}`,
 					},
 				}).then((res) => {
-					handleTagActivate(res.data);
+					handleTagActivate(res.data.data);
 				});
 			}
 		});
@@ -136,7 +136,7 @@ const TagItem = (props) => {
 			<div className='w-1/6 text-center'>{tagId}</div>
 			<div className='w-1/6 text-center'>{type}</div>
 			<div className='w-2/6 text-center'>{tagContent}</div>
-			<div className='w-1/6 text-center'>{status}</div>
+			<div className='w-1/6 text-center'>{status == "Y" ? "N" : "Y"}</div>
 			<EditButton className='w-1/6 flex flex-col sm:flex-row justify-center'>
 				<button
 					onClick={() => {
@@ -158,7 +158,6 @@ const TagItem = (props) => {
 				) : (
 					<button
 						onClick={() => {
-							console.log(status);
 							handleActivateTag(tagId);
 						}}
 						type='button'
@@ -178,7 +177,7 @@ export default function ServiceSettingMenu() {
 	const [tagRegisterModalOpen, setRegisterModalOpen] = useState(false);
 	const [tagEditModalOpen, setEditModalOpen] = useState(false);
 
-	const [tagList, setTagList] = useState();
+	const [tagList, setTagList] = useState([]);
 
 	const [modalTagData, setModalTagData] = useState();
 	const [modalDataTagId, setModalDataTagId] = useState();
@@ -195,9 +194,7 @@ export default function ServiceSettingMenu() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((response) => {
-			console.log(response.data);
-
-			setTagList(response.data);
+			setTagList(response.data.data);
 		});
 	}, [BASEURL, tagRegisterModalOpen, tagEditModalOpen]);
 

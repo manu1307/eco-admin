@@ -1,7 +1,9 @@
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { currentStoreState } from "../../../states/global/globalState";
 
 const MenuRegisterModalWrapper = styled.div``;
 const MenuRegisterModalBackground = styled.div`
@@ -149,6 +151,7 @@ const MenuRegisterModalItem = (props) => {
 };
 
 export default function MenuRegisterModal({ open, changeOpen }) {
+	const currentStore = useRecoilValue(currentStoreState);
 	const [menuName, setMenuName] = useState("");
 	const [menuPrice, setMenuPrice] = useState("");
 	const [menuDescription, setMenuDescription] = useState("");
@@ -174,9 +177,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setMenuTagList(() => {
-					return res.data;
-				});
+				setMenuTagList(res.data.data);
 			});
 		};
 		getTagData();
@@ -184,20 +185,22 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 
 	const registerMenu = () => {
 		const token = localStorage.getItem("token");
+		console.log(currentStore[0].storeId);
 		const menuData = {
-			storeId: 1,
+			storeId: currentStore[0].storeId,
 			name: menuName,
 			price: parseInt(menuPrice),
 			description: menuDescription ? menuDescription : null,
 			orders: menuOrder,
 			tagIds: selectedMenuTagIdList,
 		};
+		console.log(menuData);
 		const json = JSON.stringify(menuData);
 		const blob = new Blob([json], {
 			type: "application/json",
 		});
 		const data = new FormData();
-		data.append("createMenuDto", blob);
+		data.append("createMenuRequest", blob);
 		data.append("file", menuImage);
 
 		axios({
@@ -208,12 +211,13 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 				Authorization: `Bearer ${token}`,
 			},
 			data: data,
-		}).then((Response) => {
-			if (Response.status === 200) {
+		}).then((response) => {
+			if (response.status === 200) {
 				clearModal();
 				changeOpen(false);
 				console.log("메뉴 등록 되었습니다.");
 			} else {
+				console.log(response);
 				alert("등록 오류가 생겼습니다. 다시 시도해주세요.");
 			}
 		});
@@ -326,7 +330,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 							})}
 						</div>
 						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
-							{menuTagList.map((tag, i) => {
+							{menuTagList?.map((tag, i) => {
 								return (
 									<MenuTagItemButton
 										className='text-sm'

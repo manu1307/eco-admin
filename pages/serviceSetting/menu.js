@@ -92,7 +92,7 @@ const EditButton = styled.div`
 `;
 
 export default function ServiceSettingMenu() {
-	const [menuData, setMenuData] = useState();
+	const [menuData, setMenuData] = useState([]);
 	const [tagData, setTagData] = useState();
 
 	const currentPageMenuData = useRef();
@@ -115,8 +115,8 @@ export default function ServiceSettingMenu() {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				console.log(res.data);
-				setMenuData(res.data);
+				// console.log(res.data.data);
+				setMenuData(res.data.data);
 			});
 		};
 
@@ -124,7 +124,7 @@ export default function ServiceSettingMenu() {
 	}, [menuRegisterModalOpen, menuEditModalOpen]);
 
 	const [itemOffset, setItemOffset] = useState(0);
-	const itemsPerPage = 5;
+	const itemsPerPage = 10;
 	const endOffset = itemOffset + itemsPerPage;
 	const currentItems = menuData?.slice(itemOffset, endOffset);
 	currentPageMenuData.current = currentItems;
@@ -136,9 +136,7 @@ export default function ServiceSettingMenu() {
 	};
 
 	const openModal = (data, menuId) => {
-		setModalData(() => {
-			return data;
-		});
+		setModalData(data);
 		setModalDataMenuId(menuId);
 		setMenuEditModalOpen((prev) => !prev);
 	};
@@ -199,7 +197,7 @@ export default function ServiceSettingMenu() {
 													Authorization: `Bearer ${token}`,
 												},
 											}).then((res) => {
-												openModal(res.data, data.menuId);
+												openModal(res.data.data, data.menuId);
 											});
 										}}
 										type='button'
