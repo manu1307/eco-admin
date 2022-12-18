@@ -84,7 +84,7 @@ export default function MarketEdit() {
 	const [storeTagList, setStoreTagList] = useState([]);
 
 	const [selectedStoreTagIdList, setSelectedStoreTagIdList] = useState([]);
-	const [selectedStoreTagList, setSelectedStoreTagList] = useState([]);
+	const [tagStoresList, setTagStoresList] = useState([]);
 
 	//가게 태그 가져오기
 	useEffect(() => {
@@ -97,7 +97,7 @@ export default function MarketEdit() {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setStoreTagList(res.data);
+				setStoreTagList(res.data.data);
 			});
 		};
 		getTagData();
@@ -125,8 +125,6 @@ export default function MarketEdit() {
 
 		const getSpecificStoreData = () => {
 			const storeId = currentStore[0]?.storeId;
-			console.log(currentStore);
-			console.log(storeId);
 			if (storeId) {
 				axios({
 					method: "get",
@@ -135,7 +133,7 @@ export default function MarketEdit() {
 						Authorization: `Bearer ${localStorage.getItem("token")}`,
 					},
 				}).then((res) => {
-					const fetchedStoreData = res.data;
+					const fetchedStoreData = res.data.data;
 					console.log(fetchedStoreData);
 					setStoreData(fetchedStoreData);
 					setStoreName(fetchedStoreData.name);
@@ -143,11 +141,12 @@ export default function MarketEdit() {
 					setStoreDescription(fetchedStoreData.description);
 					setStoreImage(fetchedStoreData.images);
 					setStoreAddressDetail(fetchedStoreData.addrDetail);
-
 					const checkedStoreTagList = fetchedStoreData.tagList.filter(
 						(tag) => tag.check == true
 					);
-					setSelectedStoreTagList(checkedStoreTagList);
+					console.log(fetchedStoreData.tagList);
+					// console.log(checkedStoreTagList);
+					setTagStoresList(fetchedStoreData.tagList);
 				});
 			} else {
 				return;
@@ -156,8 +155,9 @@ export default function MarketEdit() {
 		getSpecificStoreData();
 	}, [selectedStore, BASEURL, currentStore]);
 	//가게 정보 수정
-	const registerStore = () => {
+	const editStore = () => {
 		const token = localStorage.getItem("token");
+		const storeId = currentStore[0]?.storeId;
 
 		const storeInfo = {
 			name: storeName,
@@ -169,26 +169,19 @@ export default function MarketEdit() {
 			addrDepth03: storeAddressData.addrDepth03,
 			latitude: Number(storeAddressData.latitude),
 			longitude: Number(storeAddressData.longitude),
-			mondayTime: `${StoreOpenTime[0].openTime} ~ ${StoreOpenTime[0].closeTime}`,
-			tuesdayTime: `${StoreOpenTime[1].openTime} ~ ${StoreOpenTime[1].closeTime}`,
-			wednesdayTime: `${StoreOpenTime[2].openTime} ~ ${StoreOpenTime[2].closeTime}`,
-			thursdayTime: `${StoreOpenTime[3].openTime} ~ ${StoreOpenTime[3].closeTime}`,
-			fridayTime: `${StoreOpenTime[4].openTime} ~ ${StoreOpenTime[4].closeTime}`,
-			saturdayTime: `${StoreOpenTime[5].openTime} ~ ${StoreOpenTime[5].closeTime}`,
-			sundayTime: `${StoreOpenTime[6].openTime} ~ ${StoreOpenTime[6].closeTime}`,
-			tagIds: selectedStoreTagIdList,
+			tagStores: selectedStoreTagIdList,
 		};
 		const json = JSON.stringify(storeInfo);
 		const blob = new Blob([json], {
 			type: "application/json",
 		});
 		const formData = new FormData();
-		formData.append("createStoreRequest", blob);
+		formData.append("updateStoreInfoRequest", blob);
 		formData.append("files", storeImage);
 		// 이미지 변환 안하고 그냥 보내면 됨 (추후 DB 정해지는 대로 수정)
 		axios({
-			method: "post",
-			url: "https://ecomap.kr/api/v1/stores",
+			method: "put",
+			url: `https://ecomap.kr/api/v1/stores/${storeId}`,
 			headers: {
 				"Content-Type": "multipart/form-data",
 				Authorization: `Bearer ${token}`,
@@ -389,11 +382,11 @@ export default function MarketEdit() {
 								</StoreRegisterModalItemLabel>
 								<div className='w-full'>
 									<div className='w-full flex flex-wrap m-0 gap-2 rounded-xl mb-3 sm:h-5'>
-										{selectedStoreTagList.map((tag, i) => {
-											console.log(selectedStoreTagIdList);
-											return (
+										{tagStoresList?.map((tag, i) => {
+											console.log(tagStoresList);
+											tag.check && (
 												<StoreTagSelected className='text-sm' key={i}>
-													{/* #{tag}
+													#{tag}
 													<button
 														onClick={() => {
 															const filteredList = selectedStoreTagList.filter(
@@ -401,37 +394,40 @@ export default function MarketEdit() {
 																	return selectedTag !== tag;
 																}
 															);
-															setSelectedStoreTagList(filteredList);
+															// setSelectedStoreTagList(filteredList);
 														}}>
 														×
-													</button> */}
+													</button>
 												</StoreTagSelected>
 											);
 										})}
 									</div>
 									<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
-										{storeTagList.map((tag, i) => {
+										{tagStoresList.map((tag, i) => {
+											const selectedTag = tagStoresList.filter((tag) => {
+												tag.check == true;
+											});
 											return (
 												<StoreTagItemButton
 													className='text-sm'
 													key={i}
-													onClick={() => {
-														if (selectedStoreTagList.length < 3) {
-															setSelectedStoreTagIdList((prev) => {
-																const set = new Set([...prev, tag.tagId]);
-																const noOverLapArr = [...set];
-																return noOverLapArr;
-															});
-															setSelectedStoreTagList((prev) => {
-																const set = new Set([...prev, tag.name]);
-																const noOverLapArr = [...set];
-																return noOverLapArr;
+													onClick={(event) => {
+														const targetTag = tag.tagName;
+														if (selectedTag.length < 3) {
+															setTagStoresList((prev) => {
+																prev.map((tag) => {
+																	if (tag.tagName == targetTag) {
+																		tag.check = !tag.check;
+																	}
+																});
+																console.log(prev);
+																return prev;
 															});
 														} else {
 															alert("태그는 2개까지만 선택 가능합니다.");
 														}
 													}}>
-													#{tag.name}
+													#{tag.tagName}
 												</StoreTagItemButton>
 											);
 										})}
@@ -444,7 +440,7 @@ export default function MarketEdit() {
 							className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
 							onClick={(event) => {
 								event.preventDefault();
-								registerStore();
+								editStore();
 							}}>
 							수정
 						</button>

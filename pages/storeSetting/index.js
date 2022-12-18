@@ -96,7 +96,7 @@ export default function MarketSetting() {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setStoreTagList(res.data);
+				setStoreTagList(res.data.data);
 			});
 		};
 		getTagData();
@@ -354,7 +354,7 @@ export default function MarketSetting() {
 									})}
 								</div>
 								<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
-									{/* {storeTagList?.map((tag, i) => {
+									{storeTagList?.map((tag, i) => {
 										return (
 											<StoreTagItemButton
 												className='text-sm'
@@ -378,7 +378,7 @@ export default function MarketSetting() {
 												#{tag.name}
 											</StoreTagItemButton>
 										);
-									})} */}
+									})}
 								</div>
 							</div>
 						</StoreRegisterModalItemContainer>
