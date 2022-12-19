@@ -6,7 +6,10 @@ import styled from "styled-components";
 
 import Arrow from "../../assets/arrow-dashboard.svg";
 import Box from "./Box";
-import { apiBaseAddressState } from "../../states/global/globalState";
+import {
+	apiBaseAddressState,
+	currentStoreState,
+} from "../../states/global/globalState";
 
 const DashBoardWrapper = styled.div`
 	padding: 28px;
@@ -107,27 +110,12 @@ const BoxWrapper = styled.div`
 
 export default function DashBoardMain() {
 	const [isFirst, setIsFirst] = useState(true);
-	const [storeData, setStoreData] = useState();
 	const BASEURL = useRecoilValue(apiBaseAddressState);
+	const currentStore = useRecoilValue(currentStoreState);
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-		axios({
-			method: "get",
-			url: `${BASEURL}/api/v1/stores`,
-			headers: { Authorization: `Bearer ${token}` },
-		})
-			.then((res) => {
-				if (res.data) {
-					setIsFirst(false);
-					console.log(res.data[0]);
-					setStoreData(res.data[0]);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, [BASEURL]);
+		currentStore && setIsFirst(false);
+	}, [currentStore]);
 
 	const confirmSetting = (event) => {};
 
@@ -163,8 +151,8 @@ export default function DashBoardMain() {
 							</span>
 						</EcoLevel>
 						<StoreName>
-							{storeData ? (
-								storeData.name
+							{currentStore ? (
+								currentStore[0].name
 							) : (
 								<div className='text-sm'>가게를 등록해주세요</div>
 							)}

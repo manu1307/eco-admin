@@ -30,6 +30,7 @@ const ChildrenWrapper = styled.div`
 	}
 	@media screen and (max-width: 640px) {
 		width: 100%;
+		height: calc(100vh - 50px);
 		position: relative;
 		top: 0;
 		left: 0;
