@@ -2,12 +2,13 @@ import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
 import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
+import { currentStoreState } from "../../states/global/globalState";
 
 const MenuSettingWrapper = styled.div`
 	width: 100%;
@@ -92,6 +93,8 @@ const EditButton = styled.div`
 `;
 
 export default function ServiceSettingMenu() {
+	const currentStore = useRecoilValue(currentStoreState);
+
 	const [menuData, setMenuData] = useState([]);
 	const [tagData, setTagData] = useState();
 
@@ -106,22 +109,20 @@ export default function ServiceSettingMenu() {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-
 		const getMenuData = () => {
 			axios({
 				method: "get",
-				url: "https://ecomap.kr/api/v1/1/menus",
+				url: `https://ecomap.kr/api/v1/${currentStore[0].storeId}/menus`,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				// console.log(res.data.data);
 				setMenuData(res.data.data);
 			});
 		};
 
 		getMenuData();
-	}, [menuRegisterModalOpen, menuEditModalOpen]);
+	}, [menuRegisterModalOpen, menuEditModalOpen, currentStore]);
 
 	const [itemOffset, setItemOffset] = useState(0);
 	const itemsPerPage = 10;

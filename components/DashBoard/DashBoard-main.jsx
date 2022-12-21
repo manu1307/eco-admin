@@ -19,8 +19,9 @@ const DashBoardWrapper = styled.div`
 	background-color: #f6f6f6;
 	z-index: 0;
 	@media screen and (max-width: 640px) {
+		box-sizing: border-box;
 		padding: 10px;
-		height: 95vh;
+		height: 100%;
 	}
 `;
 

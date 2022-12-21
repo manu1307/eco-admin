@@ -7,6 +7,9 @@ import { apiTokenState } from "../states/global/globalState";
 
 const Wrapper = styled.div`
 	width: 900px;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+	}
 `;
 const InputID = styled.input`
 	font-size: 15px;

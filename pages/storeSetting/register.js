@@ -27,6 +27,7 @@ const StoreSettingContainer = styled.div`
 	width: 100%;
 	max-width: 1140px;
 	padding: 28px;
+	background-color: #f6f6f6;
 `;
 
 const StoreRegisterModalItemContainer = styled.div`

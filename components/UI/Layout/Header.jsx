@@ -123,9 +123,9 @@ export default function Header() {
 		}).then((res) => {
 			console.log(res.data.data);
 			setStoreList(res.data.data);
-			setCurrentStore([res.data.data[0]]);
+			!currentStore && setCurrentStore([res.data.data[0]]);
 		});
-	}, [BASEURL, setStoreList, setCurrentStore]);
+	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 
 	return (
 		<>
