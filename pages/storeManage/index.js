@@ -155,10 +155,10 @@ export default function StoreManage() {
 	const currentStore = useRecoilValue(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-	const token = localStorage.getItem("token");
-
 	const [currentCategory, setCurrentCategory] = useState("frequent");
 	const getNormalStamp = () => {
+		const token = localStorage.getItem("token");
+
 		const storeId = currentStore[0].storeId;
 		axios({
 			method: "get",
@@ -172,6 +172,8 @@ export default function StoreManage() {
 	};
 	const getOrder = () => {
 		const storeId = currentStore[0].storeId;
+		const token = localStorage.getItem("token");
+
 		axios({
 			method: "get",
 			url: `${BASEURL}/api/v1/orders/owner/${storeId}`,
