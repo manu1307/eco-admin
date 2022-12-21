@@ -14,7 +14,7 @@ const BodyWrapper = styled.div`
 	/* max-width: 1280px; */
 `;
 const ChildrenWrapper = styled.div`
-	width: 83.3%;
+	width: calc(100% - 250px);
 	height: 100%;
 	background-color: #f6f6f6;
 	position: absolute;
