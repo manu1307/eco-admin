@@ -111,11 +111,24 @@ const BoxWrapper = styled.div`
 
 export default function DashBoardMain() {
 	const [isFirst, setIsFirst] = useState(true);
-	const BASEURL = useRecoilValue(apiBaseAddressState);
+	const [storeId, setStoreId] = useState();
 	const currentStore = useRecoilValue(currentStoreState);
 
 	useEffect(() => {
+		setStoreId(localStorage.getItem("storeId"));
 		currentStore && setIsFirst(false);
+		axios({
+			method: "get",
+			url: "https://ecomap.kr/api/v1/tags/type?type=store",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			const tagData = res.data.data;
+			const selectedTag = tagData.filter((tag) => tag.check == true);
+			setStoreTagList(tagData);
+			setSelectedStoreTagList(selectedTag);
+		});
 	}, [currentStore]);
 
 	const confirmSetting = (event) => {};

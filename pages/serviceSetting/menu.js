@@ -94,7 +94,7 @@ const EditButton = styled.div`
 
 export default function ServiceSettingMenu() {
 	const currentStore = useRecoilValue(currentStoreState);
-
+	// console.log(currentStore[0].storeId);
 	const [menuData, setMenuData] = useState([]);
 	const [tagData, setTagData] = useState();
 
@@ -109,10 +109,11 @@ export default function ServiceSettingMenu() {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
+		const storeId = localStorage.getItem("storeId");
 		const getMenuData = () => {
 			axios({
 				method: "get",
-				url: `https://ecomap.kr/api/v1/${currentStore[0].storeId}/menus`,
+				url: `https://ecomap.kr/api/v1/${storeId}/menus`,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},

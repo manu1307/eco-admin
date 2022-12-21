@@ -98,7 +98,6 @@ const MenuImageContent = styled.div`
 	margin: -2px;
 	@media screen and (max-width: 640px) {
 		width: 100%;
-		height: 300px;
 	}
 `;
 
@@ -233,15 +232,15 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 	return (
 		<MenuRegisterModalWrapper className={!open && "hidden"}>
 			<MenuRegisterModalContainer>
-				<MenuRegisterModalFirstRow className='flex flex-col h-80 sm:flex-row gap-4 '>
-					<MenuImageWrapper className='my-3 sm:m-0 w-full'>
+				<MenuRegisterModalFirstRow className='flex flex-col sm:h-80 sm:flex-row gap-4 '>
+					<MenuImageWrapper className='my-3 h-80 sm:m-0 w-full'>
 						{menuImage ? (
 							<MenuImageContent
 								style={{
 									backgroundImage: `url(${menuImageUrl})`,
 								}}></MenuImageContent>
 						) : (
-							<div className='flex items-center h-full  w-full text-slate-300 text-center'>
+							<div className='flex items-center h-80  w-full text-slate-300 text-center'>
 								<MenuRegisterModalItemLabel
 									className='flex gap-3 items-center justify-center w-full mb-2 text-sm  text-gray-900 dark:text-gray-300'
 									htmlFor='file_input'>
@@ -361,6 +360,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 							id='file_input'
 							type='file'
 							onChange={(event) => {
+								console.log("read code executed");
 								let reader = new FileReader();
 								if (event.target.files[0]) {
 									setMenuImage(event.target.files[0]);

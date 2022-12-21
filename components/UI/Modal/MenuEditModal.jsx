@@ -12,6 +12,9 @@ const MenuEditModalBackground = styled.div`
 	top: 0;
 	left: 0;
 	z-index: 2;
+	@media screen and (max-width: 640px) {
+		width: 100vw;
+	}
 `;
 
 const MenuEditModalContainer = styled.div`
@@ -143,7 +146,7 @@ const MenuEditModalItem = (props) => {
 
 export default function MenuEditModal(props) {
 	const { data, menuId, changeOpen } = props;
-	console.log(data);
+	// console.log(data);
 	const [menuTagList, setMenuTagList] = useState([]);
 	const [selectedMenuTagList, setSelectedMenuTagList] = useState([]);
 	const [selectedMenuTagIdList, setSelectedMenuTagIdList] = useState(
@@ -213,7 +216,7 @@ export default function MenuEditModal(props) {
 	};
 
 	const deleteMenu = (menuId) => {
-		console.log(menuId);
+		// console.log(menuId);
 		const token = localStorage.getItem("token");
 
 		axios({
@@ -246,7 +249,7 @@ export default function MenuEditModal(props) {
 		setMenuPrice("");
 		setMenuDescription("");
 		setMenuImage("");
-		setMenuSelectedImage("");
+		// setMenuSelectedImage("");
 	};
 	return (
 		<MenuEditModalWrapper>
@@ -390,6 +393,7 @@ export default function MenuEditModal(props) {
 								}
 								reader.onloadend = () => {
 									const resultImage = reader.result;
+									console.log(resultImage);
 									setMenuImageUrl(resultImage);
 								};
 							}}
@@ -402,7 +406,7 @@ export default function MenuEditModal(props) {
 						onClick={() => {
 							deleteMenu(menuId);
 						}}
-						className='text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
+						className='text-white bg-gray-500 hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
 						메뉴 삭제
 					</button>
 				</div>

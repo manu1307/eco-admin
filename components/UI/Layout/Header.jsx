@@ -121,9 +121,10 @@ export default function Header() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			console.log(res.data.data);
+			// console.log(res.data.data);
 			setStoreList(res.data.data);
 			!currentStore && setCurrentStore([res.data.data[0]]);
+			localStorage.setItem("storeId", res.data.data[0].storeId);
 		});
 	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 
@@ -158,23 +159,16 @@ export default function Header() {
 						<DropdownWrapper>
 							<SelectWrapper
 								onChange={(event) => {
-									setCurrentStore(() => {
-										const selectedStore = storeList.filter(
-											(store) => store.name == event.target.value
-										);
-										return selectedStore;
-									});
+									const selectedStore = storeList.filter(
+										(store) => store.name == event.target.value
+									);
+									setCurrentStore(selectedStore);
+									localStorage.setItem("storeId", selectedStore[0].storeId);
 								}}>
 								{storeList.length > 0 ? (
 									storeList.map((store, index) => {
 										return (
-											<SelectOption
-												key={index}
-												onChange={(event) => {
-													setCurrentStore(event.target.value);
-												}}>
-												{store.name}
-											</SelectOption>
+											<SelectOption key={index}>{store.name}</SelectOption>
 										);
 									})
 								) : (
