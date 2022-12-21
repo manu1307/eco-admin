@@ -6,7 +6,6 @@ import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import { useState } from "react";
 import {
 	apiBaseAddressState,
-	apiTokenState,
 	currentStoreState,
 } from "../../states/global/globalState";
 import axios from "axios";
@@ -15,11 +14,12 @@ const ContentSettingWrapper = styled.div`
 	width: 100%;
 	max-width: 1140px;
 	padding: 28px;
+	box-sizing: content-box;
 	background-color: #f6f6f6;
 	@media screen and (max-width: 640px) {
+		box-sizing: border-box;
 		width: 100%;
 		padding: 10px;
-		height: 90vh;
 	}
 	@media screen and (max-width: 1366px) {
 	}
@@ -69,6 +69,11 @@ const CategoryButton = styled.button`
 		background-color: #00e1d4;
 		color: #121533;
 	}
+	@media screen and (max-width: 640px) {
+		font-size: 12px;
+		height: 40px;
+		line-height: 40px;
+	}
 `;
 const ContentSettingBodyContent = styled.div`
 	width: 100%;
@@ -106,23 +111,73 @@ const SearchInput = (props) => {
 	return <SearchInputStyled type={type} placeholder={placeholder} />;
 };
 
+const StoreManageHeader = {
+	frequent: ["아이디", "최근 구매 일자", "텀블러 스탬프", "일반 스탬프"],
+	order: [
+		"주문번호",
+		"주문날짜",
+		"매장 이름",
+		"아이디",
+		"포인트",
+		"스탬프",
+		"delYn",
+	],
+	stamp: ["스탬프 Id", "날짜", "Id", "매장 이름", "스탬프", "delYn"],
+	point: [
+		"포인트 Id",
+		"날짜",
+		"매장 이름",
+		"Id",
+		"포인트",
+		"누적",
+		"businessType",
+	],
+	coupon: [
+		"쿠폰 Id",
+		"쿠폰 발권일",
+		"쿠폰 사용일",
+		"Id",
+		"매장 이름",
+		"사용 여보",
+		"취소 여부",
+	],
+};
+const CategoryName = {
+	frequent: "단골 관리",
+	order: "주문 관리",
+	stamp: "스탬프 관리",
+	point: "포인트 관리",
+	coupon: "쿠폰 관리",
+};
+
 export default function StoreManage() {
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 	const currentStore = useRecoilValue(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
-	console.log(currentStore);
+	const storeId = currentStore[0].storeId;
+	const token = localStorage.getItem("token");
 
-	const [currentCategory, setCurrentCategory] = useState("단골관리");
+	const [currentCategory, setCurrentCategory] = useState("frequent");
 	const getNormalStamp = () => {
-		const token = localStorage.getItem("token");
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/stamps/owner/${currentStore.storeId}/basic`,
+			url: `${BASEURL}/api/v1/stamps/owner/${storeId}/basic`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
 			console.log(res);
+		});
+	};
+	const getOrder = () => {
+		axios({
+			method: "get",
+			url: `${BASEURL}/api/v1/orders/owner/${storeId}`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			console.log(res.data);
 		});
 	};
 	return (
@@ -134,43 +189,44 @@ export default function StoreManage() {
 			<ContentSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
 				<ContentHeader
 					firstCategory='매장 관리'
-					secondCategory={currentCategory}
+					secondCategory={CategoryName[currentCategory]}
 				/>
 				<CategoryButtonWrapper className='flex gap-2 w-full mt-5'>
 					<CategoryButton
 						onClick={() => {
-							setCurrentCategory("단골 관리");
+							setCurrentCategory("frequent");
 						}}>
 						단골
 					</CategoryButton>
 					<CategoryButton
 						onClick={() => {
-							setCurrentCategory("주문 관리");
+							getOrder();
+							setCurrentCategory("order");
 						}}>
 						주문
 					</CategoryButton>
 					<CategoryButton
 						onClick={() => {
 							getNormalStamp();
-							setCurrentCategory("스탬프 관리");
+							setCurrentCategory("stamp");
 						}}>
 						스탬프
 					</CategoryButton>
 					<CategoryButton
 						onClick={() => {
-							setCurrentCategory("포인트 관리");
+							setCurrentCategory("point");
 						}}>
 						포인트
 					</CategoryButton>
 					<CategoryButton
 						onClick={() => {
-							setCurrentCategory("쿠폰 관리");
+							setCurrentCategory("coupon");
 						}}>
 						쿠폰
 					</CategoryButton>
 				</CategoryButtonWrapper>
 				<ContentSettingBody className='flex flex-col items-center'>
-					<div className='w-full flex justify-around'>
+					<div className='w-full sm:flex justify-around hidden'>
 						<div className='w-11/12 flex justify-between mb-3'>
 							<div className='w-1/5'>
 								<div className='text-sm mb-1'>Customer</div>
@@ -194,20 +250,28 @@ export default function StoreManage() {
 						</div>
 					</div>
 					<ContentSettingBodyHeader className='flex items-center justify-around'>
-						<div>Check</div>
-						<div>사용자 ID</div>
+						<div className='w-8 sm:w-32 text-center'>Check</div>
+						{StoreManageHeader[currentCategory].map((item, i) => {
+							return <div key={i}>{item}</div>;
+						})}
+						{/* <div>사용자 ID</div>
 						<div>Date</div>
 						<div>Id</div>
 						<div>텀블러 스탬프</div>
-						<div>일반 스탬프</div>
+						<div>일반 스탬프</div> */}
 					</ContentSettingBodyHeader>
 					<ContentSettingBodyContent className='flex items-center justify-around'>
-						<input type='checkbox' />
-						<div>철수</div>
+						<div className='w-8 sm:w-32 text-center'>
+							<input type='checkbox' />
+						</div>
+						{StoreManageHeader[currentCategory].map((item, i) => {
+							return <div key={i}>{item}</div>;
+						})}
+						{/* <div>철수</div>
 						<div>날짜</div>
 						<div>Id</div>
 						<div>20회</div>
-						<div>3회</div>
+						<div>3회</div> */}
 					</ContentSettingBodyContent>
 				</ContentSettingBody>
 			</ContentSettingWrapper>

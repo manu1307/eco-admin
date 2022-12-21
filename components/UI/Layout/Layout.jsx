@@ -23,12 +23,14 @@ const ChildrenWrapper = styled.div`
 	z-index: -1;
 	@media screen and (max-width: 1920px) {
 		width: calc(100% - 250px);
+		height: calc(100% - 100px);
 	}
 	@media screen and (max-width: 1500px) {
 		left: 16.7%;
 	}
 	@media screen and (max-width: 640px) {
 		width: 100%;
+		height: calc(100vh - 50px);
 		position: relative;
 		top: 0;
 		left: 0;

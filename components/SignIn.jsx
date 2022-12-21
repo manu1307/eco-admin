@@ -7,6 +7,9 @@ import { apiTokenState } from "../states/global/globalState";
 
 const Wrapper = styled.div`
 	width: 900px;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+	}
 `;
 const InputID = styled.input`
 	font-size: 15px;
@@ -84,9 +87,10 @@ export default function SignIn() {
 			}),
 		})
 			.then((response) => {
+				console.log(response.data);
 				if (response.status === 200) {
-					loginToken.current = response.data.token;
-					localStorage.setItem("role", response.data.role);
+					loginToken.current = response.data.data.token;
+					localStorage.setItem("role", response.data.data.role);
 				} else {
 					alert("아이디, 비밀번호를 다시 확인해주세요.");
 				}

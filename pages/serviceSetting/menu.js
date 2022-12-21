@@ -2,12 +2,13 @@ import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
 import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
+import { currentStoreState } from "../../states/global/globalState";
 
 const MenuSettingWrapper = styled.div`
 	width: 100%;
@@ -92,7 +93,9 @@ const EditButton = styled.div`
 `;
 
 export default function ServiceSettingMenu() {
-	const [menuData, setMenuData] = useState();
+	const currentStore = useRecoilValue(currentStoreState);
+
+	const [menuData, setMenuData] = useState([]);
 	const [tagData, setTagData] = useState();
 
 	const currentPageMenuData = useRef();
@@ -106,25 +109,23 @@ export default function ServiceSettingMenu() {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-
 		const getMenuData = () => {
 			axios({
 				method: "get",
-				url: "https://ecomap.kr/api/v1/1/menus",
+				url: `https://ecomap.kr/api/v1/${currentStore[0].storeId}/menus`,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				console.log(res.data);
-				setMenuData(res.data);
+				setMenuData(res.data.data);
 			});
 		};
 
 		getMenuData();
-	}, [menuRegisterModalOpen, menuEditModalOpen]);
+	}, [menuRegisterModalOpen, menuEditModalOpen, currentStore]);
 
 	const [itemOffset, setItemOffset] = useState(0);
-	const itemsPerPage = 5;
+	const itemsPerPage = 10;
 	const endOffset = itemOffset + itemsPerPage;
 	const currentItems = menuData?.slice(itemOffset, endOffset);
 	currentPageMenuData.current = currentItems;
@@ -136,9 +137,7 @@ export default function ServiceSettingMenu() {
 	};
 
 	const openModal = (data, menuId) => {
-		setModalData(() => {
-			return data;
-		});
+		setModalData(data);
 		setModalDataMenuId(menuId);
 		setMenuEditModalOpen((prev) => !prev);
 	};
@@ -199,7 +198,7 @@ export default function ServiceSettingMenu() {
 													Authorization: `Bearer ${token}`,
 												},
 											}).then((res) => {
-												openModal(res.data, data.menuId);
+												openModal(res.data.data, data.menuId);
 											});
 										}}
 										type='button'

@@ -6,17 +6,22 @@ import styled from "styled-components";
 
 import Arrow from "../../assets/arrow-dashboard.svg";
 import Box from "./Box";
-import { apiBaseAddressState } from "../../states/global/globalState";
+import {
+	apiBaseAddressState,
+	currentStoreState,
+} from "../../states/global/globalState";
 
 const DashBoardWrapper = styled.div`
 	padding: 28px;
 	width: 100%;
-	max-width: 1280px;
+	max-width: 1140px;
+	box-sizing: content-box;
 	background-color: #f6f6f6;
 	z-index: 0;
 	@media screen and (max-width: 640px) {
+		box-sizing: border-box;
 		padding: 10px;
-		height: 95vh;
+		height: 100%;
 	}
 `;
 
@@ -58,7 +63,7 @@ const StoreName = styled.div`
 const ModalWrapper = styled.div`
 	background-color: rgba(0, 0, 0, 0.8);
 	width: 92%;
-	max-width: 1200px;
+	max-width: 1140px;
 	height: 80%;
 	max-height: 420px;
 	border-radius: 30px;
@@ -106,27 +111,12 @@ const BoxWrapper = styled.div`
 
 export default function DashBoardMain() {
 	const [isFirst, setIsFirst] = useState(true);
-	const [storeData, setStoreData] = useState();
 	const BASEURL = useRecoilValue(apiBaseAddressState);
+	const currentStore = useRecoilValue(currentStoreState);
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-		axios({
-			method: "get",
-			url: `${BASEURL}/api/v1/stores`,
-			headers: { Authorization: `Bearer ${token}` },
-		})
-			.then((res) => {
-				if (res.data) {
-					setIsFirst(false);
-					console.log(res.data[0]);
-					setStoreData(res.data[0]);
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, [BASEURL]);
+		currentStore && setIsFirst(false);
+	}, [currentStore]);
 
 	const confirmSetting = (event) => {};
 
@@ -157,11 +147,13 @@ export default function DashBoardMain() {
 							<span style={{ fontSize: "12px" }}>에코레벨</span>
 							<span
 								className='font-bold'
-								style={{ marginLeft: "0.3rem", fontSize: "14px" }}></span>
+								style={{ marginLeft: "0.3rem", fontSize: "14px" }}>
+								D
+							</span>
 						</EcoLevel>
 						<StoreName>
-							{storeData ? (
-								storeData.name
+							{currentStore ? (
+								currentStore[0].name
 							) : (
 								<div className='text-sm'>가게를 등록해주세요</div>
 							)}

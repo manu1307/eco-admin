@@ -13,10 +13,12 @@ const MenuEditModalBackground = styled.div`
 	left: 0;
 	z-index: 2;
 `;
+
 const MenuEditModalContainer = styled.div`
 	width: 800px;
-	height: 550px;
-	padding: 10px;
+	/* height: 600px; */
+	overflow-y: clip;
+	padding: 25px;
 	background-color: white;
 	color: black;
 	border-radius: 20px;
@@ -30,10 +32,53 @@ const MenuEditModalContainer = styled.div`
 	@media screen and (max-width: 640px) {
 		width: 90%;
 		top: 20px;
-		left: 0%;
-		height: 500px;
+		left: 5%;
+		position: absolute;
+		padding: 15px;
+		height: 700px;
 		margin: 0 auto;
 		overflow-y: scroll;
+		display: flex;
+		flex-direction: column;
+	}
+`;
+const MenuImageWrapper = styled.div`
+	width: 450px;
+	height: 450px;
+	border: 2px solid #bfbfbf;
+	border-radius: 20px;
+	margin: 0;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+		height: 300px;
+	}
+`;
+const MenuImageContent = styled.div`
+	box-sizing: content-box;
+	width: 450px;
+	height: 450px;
+	border-radius: 20px;
+	border: 2px solid #bfbfbf;
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin: -2px;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+		height: 300px;
+	}
+`;
+const MenuEditModalDescriptionInput = styled.textarea`
+	border: 2px solid #00000038;
+	height: 160px;
+	@media screen and (max-width: 640px) {
+		font-size: 10px;
+		height: 150px;
+	}
+`;
+const MenuEditModalItemInput = styled.input`
+	border: 2px solid #00000038;
+	@media screen and (max-width: 640px) {
+		font-size: 10px;
 	}
 `;
 const MenuEditModalItemContainer = styled.div`
@@ -42,12 +87,6 @@ const MenuEditModalItemContainer = styled.div`
 const MenuEditModalItemLabel = styled.label`
 	@media screen and (max-width: 640px) {
 		font-size: 11px;
-	}
-`;
-const MenuEditModalItemInput = styled.input`
-	border: 2px solid #00000038;
-	@media screen and (max-width: 640px) {
-		font-size: 10px;
 	}
 `;
 
@@ -74,20 +113,30 @@ const MenuTagSelected = styled.div`
 `;
 
 const MenuEditModalItem = (props) => {
-	const { label, type, value, placeholder, onChange } = props;
+	const { label, type, placeholder, onChange, value } = props;
 
 	return (
-		<MenuEditModalItemContainer className='flex items-center mt-3'>
-			<MenuEditModalItemLabel className='w-2/6 text-sm'>
+		<MenuEditModalItemContainer className='flex flex-col gap-2 items-center mt-3'>
+			<MenuEditModalItemLabel className='w-full text-sm'>
 				{label}
 			</MenuEditModalItemLabel>
-			<MenuEditModalItemInput
-				type={type}
-				value={value && value}
-				placeholder={placeholder}
-				className='input-bordered rounded-xl w-5/6 max-w-lg font-normal'
-				onChange={onChange}
-			/>
+			{label === "메뉴 상세 설명" ? (
+				<MenuEditModalDescriptionInput
+					type={type}
+					placeholder={placeholder}
+					className='input-bordered rounded-xl w-full max-w-lg font-normal'
+					onChange={onChange}
+					value={value}
+				/>
+			) : (
+				<MenuEditModalItemInput
+					type={type}
+					placeholder={placeholder}
+					className='input-bordered rounded-xl w-full max-w-lg font-normal'
+					onChange={onChange}
+					value={value}
+				/>
+			)}
 		</MenuEditModalItemContainer>
 	);
 };
@@ -95,7 +144,6 @@ const MenuEditModalItem = (props) => {
 export default function MenuEditModal(props) {
 	const { data, menuId, changeOpen } = props;
 	console.log(data);
-
 	const [menuTagList, setMenuTagList] = useState([]);
 	const [selectedMenuTagList, setSelectedMenuTagList] = useState([]);
 	const [selectedMenuTagIdList, setSelectedMenuTagIdList] = useState(
@@ -105,11 +153,11 @@ export default function MenuEditModal(props) {
 	const [menuName, setMenuName] = useState(data.name);
 	const [menuPrice, setMenuPrice] = useState(data.price);
 	const [menuDescription, setMenuDescription] = useState(data.description);
-	// const [menuSelectedTagList, setMenuSelectedTagList] = useState(data.tagMenus);
+	const [menuSelectedTagList, setMenuSelectedTagList] = useState(data.tagMenus);
 	const [menuImage, setMenuImage] = useState(
 		data.imageUrl ? data.imageUrl : ""
 	);
-	const [menuSelectedImage, setMenuSelectedImage] = useState();
+	const [menuImageUrl, setMenuImageUrl] = useState(data.imageUrl);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
@@ -121,9 +169,7 @@ export default function MenuEditModal(props) {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setMenuTagList(() => {
-					return res.data;
-				});
+				setMenuTagList(res.data.data);
 			});
 		};
 		getTagData();
@@ -206,67 +252,94 @@ export default function MenuEditModal(props) {
 		<MenuEditModalWrapper>
 			<MenuEditModalContainer>
 				<div className='flex flex-col sm:flex-row gap-4 '>
-					<div className='w-full sm:w-1/2'>
+					<MenuImageWrapper className='my-3 sm:m-0 w-full'>
+						{menuImage ? (
+							<MenuImageContent
+								style={{
+									backgroundImage: `url(${menuImageUrl})`,
+								}}></MenuImageContent>
+						) : (
+							<div className='flex items-center h-full  w-full text-slate-300 text-center'>
+								<MenuEditModalItemLabel
+									className='flex gap-3 items-center justify-center w-full mb-2 text-sm  text-gray-900 dark:text-gray-300'
+									htmlFor='file_input'>
+									메뉴 사진
+									<svg
+										xmlns='http://www.w3.org/2000/svg'
+										fill='none'
+										viewBox='0 0 24 24'
+										strokeWidth={1.5}
+										stroke='currentColor'
+										className='w-6 h-6'>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
+										/>
+									</svg>
+								</MenuEditModalItemLabel>{" "}
+							</div>
+						)}
+					</MenuImageWrapper>
+					<div className='flex flex-col gap-5 w-full sm:w-2/5'>
 						<MenuEditModalItem
 							label='메뉴명'
 							type='text'
-							value={menuName}
 							placeholder='ex. 아메리카노'
+							value={menuName}
 							onChange={(event) => {
 								setMenuName(event.target.value);
 							}}
 						/>
 						<MenuEditModalItem
+							value={menuPrice}
 							label='메뉴 가격'
 							type='number'
-							value={menuPrice}
 							placeholder='ex. 3000'
 							onChange={(event) => {
 								setMenuPrice(event.target.value);
 							}}
 						/>
+						<label className='inline-flex relative items-center cursor-pointer'>
+							<input
+								type='checkbox'
+								defaultValue=''
+								className='sr-only peer'
+								defaultChecked=''
+							/>
+							<div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" />
+							<span className='ml-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+								마감타임 세일
+							</span>
+						</label>
+
 						<MenuEditModalItem
+							value={menuDescription}
 							label='메뉴 상세 설명'
 							type='text'
-							value={menuDescription || ""}
 							placeholder='(선택사항)'
 							onChange={(event) => {
 								setMenuDescription(event.target.value);
 							}}
 						/>
 					</div>
-
-					<div className=' my-3 sm:m-0  w-full sm:w-1/2'>
-						{menuImage ? (
-							<Image
-								className='rounded-xl'
-								src={menuImage}
-								width={500}
-								height={300}
-								alt='image'
-							/>
-						) : (
-							<div className='w-full text-slate-300 text-center'>
-								이미지 미리 보기 칸
-							</div>
-						)}
-					</div>
 				</div>
-				<MenuEditModalItemContainer className='flex items-center mt-3'>
-					<MenuEditModalItemLabel className='first-line:w-full text-sm'>
+				<MenuEditModalItemContainer className='flex flex-col items-start gap-3 mt-6'>
+					<MenuEditModalItemLabel className='w-full text-sm'>
 						메뉴 태그 (최대 2개)
 					</MenuEditModalItemLabel>
 					<div>
 						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
-							{selectedMenuTagList.map((tag, i) => {
+							{menuSelectedTagList?.map((tag, i) => {
 								return (
 									<MenuTagSelected className='text-sm' key={i}>
-										#{tag}
+										#{tag.tagName}
 										<button
-											onClick={() => {
+											onClick={(event) => {
+												console.log(event.target.value);
 												const filteredList = selectedMenuTagList.filter(
 													(selectedTag) => {
-														return selectedTag !== tag;
+														return selectedTag !== tag.tagName;
 													}
 												);
 												setSelectedMenuTagList(filteredList);
@@ -278,7 +351,7 @@ export default function MenuEditModal(props) {
 							})}
 						</div>
 						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
-							{menuTagList.map((tag, i) => {
+							{menuTagList?.map((tag, i) => {
 								return (
 									<MenuTagItemButton
 										className='text-sm'
@@ -286,7 +359,8 @@ export default function MenuEditModal(props) {
 										onClick={() => {
 											if (selectedMenuTagList.length < 2) {
 												setSelectedMenuTagIdList((prev) => {
-													return [...prev, tag.tagId];
+													console.log(prev);
+													// return [...prev, tag.tagId];
 												});
 												setSelectedMenuTagList((prev) => {
 													return [...prev, tag.name];
@@ -302,28 +376,25 @@ export default function MenuEditModal(props) {
 						</div>
 					</div>
 				</MenuEditModalItemContainer>
-				<div className='my-3'>
-					<MenuEditModalItemLabel
-						className='block mb-2 text-sm  text-gray-900 dark:text-gray-300'
-						htmlFor='file_input'>
-						매장 사진 업로드
-					</MenuEditModalItemLabel>
-					<input
-						className='block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'
-						id='file_input'
-						type='file'
-						onChange={(event) => {
-							let reader = new FileReader();
-							if (event.target.files[0]) {
-								setMenuSelectedImage(event.target.files[0]);
-								reader.readAsDataURL(event.target.files[0]);
-							}
-							reader.onloadend = () => {
-								const resultImage = reader.result;
-								setMenuImage(resultImage);
-							};
-						}}
-					/>
+				<div className='flex my-3'>
+					<form>
+						<input
+							className='hidden text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'
+							id='file_input'
+							type='file'
+							onChange={(event) => {
+								let reader = new FileReader();
+								if (event.target.files[0]) {
+									setMenuImage(event.target.files[0]);
+									reader.readAsDataURL(event.target.files[0]);
+								}
+								reader.onloadend = () => {
+									const resultImage = reader.result;
+									setMenuImageUrl(resultImage);
+								};
+							}}
+						/>
+					</form>
 				</div>
 				<div>
 					<button
@@ -335,23 +406,25 @@ export default function MenuEditModal(props) {
 						메뉴 삭제
 					</button>
 				</div>
-				<button
-					type='button'
-					onClick={EditMenu}
-					className='text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
-					수정
-				</button>
-				<button
-					type='button'
-					onClick={() => {
-						clearModal();
-						changeOpen(() => {
-							return false;
-						});
-					}}
-					className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
-					취소
-				</button>
+				<div className='w-full flex'>
+					<button
+						type='button'
+						onClick={EditMenu}
+						className='w-1/2 text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
+						수정
+					</button>
+					<button
+						type='button'
+						onClick={() => {
+							clearModal();
+							changeOpen(() => {
+								return false;
+							});
+						}}
+						className='w-1/2 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
+						취소
+					</button>{" "}
+				</div>
 			</MenuEditModalContainer>
 			<MenuEditModalBackground
 				onClick={() => {

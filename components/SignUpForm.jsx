@@ -97,12 +97,13 @@ export default function SignUpForm() {
 				password: password,
 				confirmPassword: passwordConfirm,
 				name: name,
-				// businessNumber: businessNumber ? businessNumber : "",
+				// businessNumber: businessNumber ? businessNumber : "123-123-1234",
 				phoneNumber: phoneNumber,
 				birthday: birthday,
 				gender: gender,
 			}),
 		}).then((response) => {
+			console.log(response);
 			if (response.status === 200) {
 				window.location.href = "/";
 			} else {
@@ -115,11 +116,12 @@ export default function SignUpForm() {
 		axios
 			.get(`https://ecomap.kr/api/v1/members/check?loginId=${id}`)
 			.then((res) => {
-				if (res.data.check) {
-					alert("사용 가능한 아이디입니다.");
-				} else {
-					alert("이미 존재하는 아이디입니다.");
-				}
+				console.log(res.data);
+				// if (!res.data.check) {
+				// 	alert("사용 가능한 아이디입니다.");
+				// } else {
+				// 	alert("이미 존재하는 아이디입니다.");
+				// }
 			});
 	};
 

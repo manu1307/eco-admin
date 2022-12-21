@@ -121,10 +121,11 @@ export default function Header() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			setStoreList(res.data);
-			setCurrentStore(res.data[0]);
+			console.log(res.data.data);
+			setStoreList(res.data.data);
+			!currentStore && setCurrentStore([res.data.data[0]]);
 		});
-	}, [BASEURL, setStoreList, setCurrentStore]);
+	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 
 	return (
 		<>
@@ -155,7 +156,15 @@ export default function Header() {
               <NavButton>정산</NavButton>
             </Link> */}
 						<DropdownWrapper>
-							<SelectWrapper>
+							<SelectWrapper
+								onChange={(event) => {
+									setCurrentStore(() => {
+										const selectedStore = storeList.filter(
+											(store) => store.name == event.target.value
+										);
+										return selectedStore;
+									});
+								}}>
 								{storeList.length > 0 ? (
 									storeList.map((store, index) => {
 										return (
