@@ -100,9 +100,9 @@ export default function ServiceSettingMenu() {
 
 	const currentPageMenuData = useRef();
 
-	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
 	const [modalData, setModalData] = useState();
 	const [modalDataMenuId, setModalDataMenuId] = useState();
+	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
 	const [menuRegisterModalOpen, setMenuRegisterModalOpen] = useState(false);
 
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
@@ -210,6 +210,12 @@ export default function ServiceSettingMenu() {
 							</MenuSettingBodyContent>
 						);
 					})}
+					<MenuEditModal
+						open={menuEditModalOpen}
+						menuId={modalDataMenuId}
+						data={modalData}
+						changeOpen={setMenuEditModalOpen}
+					/>
 					<div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'
@@ -222,12 +228,6 @@ export default function ServiceSettingMenu() {
 							renderOnZeroPageCount={null}
 						/>
 					</div>
-					{menuEditModalOpen && (
-						<MenuEditModal
-							menuId={modalDataMenuId}
-							data={modalData}
-							changeOpen={setMenuEditModalOpen}></MenuEditModal>
-					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
 		</Layout>

@@ -122,6 +122,31 @@ const MenuTagSelected = styled.div`
 		color: black;
 	}
 `;
+const MenuFileInput = styled.input`
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+`;
+const MenuFileLabel = styled.label`
+	position: relative;
+	top: -40px;
+	left: 380px;
+	padding: 4px 6px;
+	color: #999;
+	font-size: 16px;
+	line-height: normal;
+	vertical-align: middle;
+	background-color: #fdfdfd;
+	cursor: pointer;
+	border: 1px solid #ebebeb;
+	border-bottom-color: #e2e2e2;
+	border-radius: 0.25em;
+`;
 const MenuRegisterModalItem = (props) => {
 	const { label, type, placeholder, onChange } = props;
 
@@ -229,22 +254,43 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 		setMenuImage("");
 		setMenuImageUrl("");
 	};
+	// console.log(menuImage);
 	return (
 		<MenuRegisterModalWrapper className={!open && "hidden"}>
 			<MenuRegisterModalContainer>
-				<MenuRegisterModalFirstRow className='flex flex-col sm:h-80 sm:flex-row gap-4 '>
-					<MenuImageWrapper className='my-3 h-80 sm:m-0 w-full'>
-						{menuImage ? (
-							<MenuImageContent
-								style={{
-									backgroundImage: `url(${menuImageUrl})`,
-								}}></MenuImageContent>
+				<MenuRegisterModalFirstRow className='flex flex-col  sm:h-80 sm:flex-row gap-4 '>
+					<MenuImageWrapper className='my-3 sm:h-full sm:m-0 w-full'>
+						{menuImageUrl ? (
+							<div className='w-full h-full'>
+								<MenuImageContent
+									style={{
+										backgroundImage: `url(${menuImageUrl})`,
+									}}></MenuImageContent>
+								<div>
+									<MenuFileLabel for='ex_file'>업로드</MenuFileLabel>
+									<MenuFileInput
+										type='file'
+										id='ex_file'
+										onChange={(event) => {
+											let reader = new FileReader();
+											if (event.target.files[0]) {
+												setMenuImage(event.target.files[0]);
+												reader.readAsDataURL(event.target.files[0]);
+											}
+											reader.onloadend = () => {
+												const resultImage = reader.result;
+												setMenuImageUrl(resultImage);
+											};
+										}}
+									/>
+								</div>
+							</div>
 						) : (
-							<div className='flex items-center h-80  w-full text-slate-300 text-center'>
-								<MenuRegisterModalItemLabel
-									className='flex gap-3 items-center justify-center w-full mb-2 text-sm  text-gray-900 dark:text-gray-300'
-									htmlFor='file_input'>
-									메뉴 사진
+							<div className='w-full h-full flex justify-center items-center'>
+								<label
+									for='ex_file'
+									className='flex gap-2 font-extrabold text-gray-400'>
+									사진 업로드
 									<svg
 										xmlns='http://www.w3.org/2000/svg'
 										fill='none'
@@ -258,7 +304,23 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 											d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
 										/>
 									</svg>
-								</MenuRegisterModalItemLabel>{" "}
+								</label>
+								<input
+									className='hidden'
+									type='file'
+									id='ex_file'
+									onChange={(event) => {
+										let reader = new FileReader();
+										if (event.target.files[0]) {
+											setMenuImage(event.target.files[0]);
+											reader.readAsDataURL(event.target.files[0]);
+										}
+										reader.onloadend = () => {
+											const resultImage = reader.result;
+											setMenuImageUrl(resultImage);
+										};
+									}}
+								/>
 							</div>
 						)}
 					</MenuImageWrapper>
@@ -353,27 +415,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 						</div>
 					</div>
 				</MenuRegisterModalItemContainer>
-				<div className='flex my-3'>
-					<form>
-						<input
-							className='hidden text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'
-							id='file_input'
-							type='file'
-							onChange={(event) => {
-								console.log("read code executed");
-								let reader = new FileReader();
-								if (event.target.files[0]) {
-									setMenuImage(event.target.files[0]);
-									reader.readAsDataURL(event.target.files[0]);
-								}
-								reader.onloadend = () => {
-									const resultImage = reader.result;
-									setMenuImageUrl(resultImage);
-								};
-							}}
-						/>
-					</form>
-				</div>
+
 				<div className='w-full flex'>
 					<button
 						type='button'
