@@ -53,7 +53,7 @@ export default function Drawer() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			console.log(res.data.data);
+			// console.log(res.data.data);
 			setStoreList(res.data.data);
 			!currentStore && setCurrentStore([res.data.data[0]]);
 		});
@@ -130,12 +130,11 @@ export default function Drawer() {
 					<DropdownWrapper>
 						<SelectWrapper
 							onChange={(event) => {
-								setCurrentStore(() => {
-									const selectedStore = storeList.filter(
-										(store) => store.name == event.target.value
-									);
-									return selectedStore;
-								});
+								const selectedStore = storeList.filter(
+									(store) => store.name == event.target.value
+								);
+								setCurrentStore(selectedStore);
+								localStorage.setItem("storeId", selectedStore[0].storeId);
 							}}>
 							{storeList.length > 0 ? (
 								storeList.map((store, index) => {

@@ -13,6 +13,11 @@ const CouponWrapper = styled.div`
 	justify-content: center;
 	align-items: center;
 	overflow: auto;
+	@media screen and (max-width: 640px) {
+		padding: 10px;
+		width: 30%;
+		height: 270px;
+	}
 `;
 
 const EmptyStamp = styled.div`
@@ -21,6 +26,10 @@ const EmptyStamp = styled.div`
 	border-radius: 10px;
 	border: 3px dotted white;
 	background-color: #7d736c;
+	@media screen and (max-width: 640px) {
+		width: 30px;
+		height: 30px;
+	}
 `;
 const FilledStamp = styled.div`
 	width: 50px;
@@ -31,6 +40,10 @@ const FilledStamp = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	@media screen and (max-width: 640px) {
+		width: 30px;
+		height: 30px;
+	}
 `;
 export default function StampCoupon() {
 	return (

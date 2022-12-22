@@ -23,21 +23,23 @@ export default function ContentHeader(props) {
 		<Header className='flex align-middle drop-shadow-lg'>
 			<div
 				style={{ fontSize: "20px" }}
-				className='flex items-center w-3/5 sm:w-4/5'>
+				className='flex items-center w-4/5 sm:w-4/5'>
 				<span className='mx-2 sm:mx-3'>
 					<Arrow />
 				</span>
 				<div
 					style={{ color: "#00E1D4" }}
-					className='font-bold text-sm sm:text-lg'>
+					className='font-bold text-sm w-auto text-center sm:text-lg'>
 					{firstCategory}
 				</div>
 				<span className='mx-2 sm:mx-3'>
 					<Arrow />
 				</span>
-				<div className='font-bold text-sm sm:text-lg '>{secondCategory}</div>
+				<div className='font-bold text-sm  w-auto text-center sm:text-lg '>
+					{secondCategory}
+				</div>
 			</div>
-			<div className='flex justify-end items-center text-xs  w-2/5 sm:text-md sm:w-1/5'>
+			<div className='flex justify-end items-center text-xs  w-1/5 sm:text-md sm:w-1/5'>
 				사장님 이름
 				{/* (로고) */}
 			</div>

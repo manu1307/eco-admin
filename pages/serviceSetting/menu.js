@@ -94,25 +94,26 @@ const EditButton = styled.div`
 
 export default function ServiceSettingMenu() {
 	const currentStore = useRecoilValue(currentStoreState);
-
+	// console.log(currentStore[0].storeId);
 	const [menuData, setMenuData] = useState([]);
 	const [tagData, setTagData] = useState();
 
 	const currentPageMenuData = useRef();
 
-	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
 	const [modalData, setModalData] = useState();
 	const [modalDataMenuId, setModalDataMenuId] = useState();
+	const [menuEditModalOpen, setMenuEditModalOpen] = useState(false);
 	const [menuRegisterModalOpen, setMenuRegisterModalOpen] = useState(false);
 
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
+		const storeId = localStorage.getItem("storeId");
 		const getMenuData = () => {
 			axios({
 				method: "get",
-				url: `https://ecomap.kr/api/v1/${currentStore[0].storeId}/menus`,
+				url: `https://ecomap.kr/api/v1/${storeId}/menus`,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -209,6 +210,12 @@ export default function ServiceSettingMenu() {
 							</MenuSettingBodyContent>
 						);
 					})}
+					<MenuEditModal
+						open={menuEditModalOpen}
+						menuId={modalDataMenuId}
+						data={modalData}
+						changeOpen={setMenuEditModalOpen}
+					/>
 					<div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'
@@ -221,12 +228,6 @@ export default function ServiceSettingMenu() {
 							renderOnZeroPageCount={null}
 						/>
 					</div>
-					{menuEditModalOpen && (
-						<MenuEditModal
-							menuId={modalDataMenuId}
-							data={modalData}
-							changeOpen={setMenuEditModalOpen}></MenuEditModal>
-					)}
 				</MenuSettingBody>
 			</MenuSettingWrapper>
 		</Layout>

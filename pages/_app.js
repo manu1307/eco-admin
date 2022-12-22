@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }) {
 	// GA 설정 시작
 	const router = useRouter();
 	useEffect(() => {
-		const handleRouteChange = () => {
+		const handleRouteChange = (url) => {
 			gtag.pageview(url);
 		};
 		router.events.on("routeChangeComplete", handleRouteChange);

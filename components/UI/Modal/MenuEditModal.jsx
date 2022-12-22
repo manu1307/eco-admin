@@ -12,6 +12,9 @@ const MenuEditModalBackground = styled.div`
 	top: 0;
 	left: 0;
 	z-index: 2;
+	@media screen and (max-width: 640px) {
+		width: 100vw;
+	}
 `;
 
 const MenuEditModalContainer = styled.div`
@@ -111,7 +114,31 @@ const MenuTagSelected = styled.div`
 		color: black;
 	}
 `;
-
+const MenuFileInput = styled.input`
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+`;
+const MenuFileLabel = styled.label`
+	position: relative;
+	top: -40px;
+	left: 380px;
+	padding: 4px 6px;
+	color: #999;
+	font-size: 16px;
+	line-height: normal;
+	vertical-align: middle;
+	background-color: #fdfdfd;
+	cursor: pointer;
+	border: 1px solid #ebebeb;
+	border-bottom-color: #e2e2e2;
+	border-radius: 0.25em;
+`;
 const MenuEditModalItem = (props) => {
 	const { label, type, placeholder, onChange, value } = props;
 
@@ -142,22 +169,22 @@ const MenuEditModalItem = (props) => {
 };
 
 export default function MenuEditModal(props) {
-	const { data, menuId, changeOpen } = props;
+	const { open, data, menuId, changeOpen } = props;
 	console.log(data);
 	const [menuTagList, setMenuTagList] = useState([]);
 	const [selectedMenuTagList, setSelectedMenuTagList] = useState([]);
 	const [selectedMenuTagIdList, setSelectedMenuTagIdList] = useState(
-		data.tagMenus.tagId
+		data?.tagMenus.tagId
 	);
 
-	const [menuName, setMenuName] = useState(data.name);
-	const [menuPrice, setMenuPrice] = useState(data.price);
-	const [menuDescription, setMenuDescription] = useState(data.description);
-	const [menuSelectedTagList, setMenuSelectedTagList] = useState(data.tagMenus);
-	const [menuImage, setMenuImage] = useState(
-		data.imageUrl ? data.imageUrl : ""
+	const [menuName, setMenuName] = useState(data?.name);
+	const [menuPrice, setMenuPrice] = useState(data?.price);
+	const [menuDescription, setMenuDescription] = useState(data?.description);
+	const [menuSelectedTagList, setMenuSelectedTagList] = useState(
+		data?.tagMenus
 	);
-	const [menuImageUrl, setMenuImageUrl] = useState(data.imageUrl);
+	const [menuImage, setMenuImage] = useState(data?.imageUrl && data?.imageUrl);
+	const [menuImageUrl, setMenuImageUrl] = useState(data?.imageUrl);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
@@ -177,7 +204,6 @@ export default function MenuEditModal(props) {
 
 	const EditMenu = () => {
 		const token = localStorage.getItem("token");
-
 		const menuData = {
 			storeId: 1,
 			name: menuName,
@@ -213,7 +239,7 @@ export default function MenuEditModal(props) {
 	};
 
 	const deleteMenu = (menuId) => {
-		console.log(menuId);
+		// console.log(menuId);
 		const token = localStorage.getItem("token");
 
 		axios({
@@ -231,7 +257,7 @@ export default function MenuEditModal(props) {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
-				}).then((res) => {
+				}).then(() => {
 					changeOpen(() => {
 						return false;
 					});
@@ -245,25 +271,46 @@ export default function MenuEditModal(props) {
 		setMenuName("");
 		setMenuPrice("");
 		setMenuDescription("");
-		setMenuImage("");
-		setMenuSelectedImage("");
+		setMenuImage();
+		// setMenuSelectedImage("");
 	};
+	// console.log(menuImage);
 	return (
-		<MenuEditModalWrapper>
+		<MenuEditModalWrapper className={!open && "hidden"}>
 			<MenuEditModalContainer>
 				<div className='flex flex-col sm:flex-row gap-4 '>
 					<MenuImageWrapper className='my-3 sm:m-0 w-full'>
-						{menuImage ? (
-							<MenuImageContent
-								style={{
-									backgroundImage: `url(${menuImageUrl})`,
-								}}></MenuImageContent>
+						{menuImageUrl ? (
+							<div className='w-full h-full'>
+								<MenuImageContent
+									style={{
+										backgroundImage: `url(${menuImageUrl})`,
+									}}></MenuImageContent>
+								<div>
+									<MenuFileLabel for='ex_file'>업로드</MenuFileLabel>
+									<MenuFileInput
+										type='file'
+										id='ex_file'
+										onChange={(event) => {
+											let reader = new FileReader();
+											if (event.target.files[0]) {
+												setMenuImage(event.target.files[0]);
+												reader.readAsDataURL(event.target.files[0]);
+											}
+											reader.onloadend = () => {
+												const resultImage = reader.result;
+												setMenuImageUrl(resultImage);
+											};
+										}}
+									/>
+								</div>
+							</div>
 						) : (
-							<div className='flex items-center h-full  w-full text-slate-300 text-center'>
-								<MenuEditModalItemLabel
-									className='flex gap-3 items-center justify-center w-full mb-2 text-sm  text-gray-900 dark:text-gray-300'
-									htmlFor='file_input'>
-									메뉴 사진
+							<div className='w-full h-full flex justify-center items-center'>
+								<label
+									for='ex_file'
+									className='flex gap-2 font-extrabold text-gray-400'>
+									사진 업로드
 									<svg
 										xmlns='http://www.w3.org/2000/svg'
 										fill='none'
@@ -277,10 +324,27 @@ export default function MenuEditModal(props) {
 											d='M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'
 										/>
 									</svg>
-								</MenuEditModalItemLabel>{" "}
+								</label>
+								<MenuFileInput
+									type='file'
+									id='ex_file'
+									onChange={(event) => {
+										console.log(event.target);
+										let reader = new FileReader();
+										if (event.target.files[0]) {
+											setMenuImage(event.target.files[0]);
+											reader.readAsDataURL(event.target.files[0]);
+										}
+										reader.onloadend = () => {
+											const resultImage = reader.result;
+											setMenuImageUrl(resultImage);
+										};
+									}}
+								/>
 							</div>
 						)}
 					</MenuImageWrapper>
+					<div className='flex my-3'></div>
 					<div className='flex flex-col gap-5 w-full sm:w-2/5'>
 						<MenuEditModalItem
 							label='메뉴명'
@@ -376,33 +440,14 @@ export default function MenuEditModal(props) {
 						</div>
 					</div>
 				</MenuEditModalItemContainer>
-				<div className='flex my-3'>
-					<form>
-						<input
-							className='hidden text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400'
-							id='file_input'
-							type='file'
-							onChange={(event) => {
-								let reader = new FileReader();
-								if (event.target.files[0]) {
-									setMenuImage(event.target.files[0]);
-									reader.readAsDataURL(event.target.files[0]);
-								}
-								reader.onloadend = () => {
-									const resultImage = reader.result;
-									setMenuImageUrl(resultImage);
-								};
-							}}
-						/>
-					</form>
-				</div>
+
 				<div>
 					<button
 						type='button'
 						onClick={() => {
 							deleteMenu(menuId);
 						}}
-						className='text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
+						className='text-white bg-gray-500 hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>
 						메뉴 삭제
 					</button>
 				</div>

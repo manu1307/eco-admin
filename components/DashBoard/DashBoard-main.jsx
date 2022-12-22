@@ -111,10 +111,12 @@ const BoxWrapper = styled.div`
 
 export default function DashBoardMain() {
 	const [isFirst, setIsFirst] = useState(true);
-	const BASEURL = useRecoilValue(apiBaseAddressState);
+	const [storeId, setStoreId] = useState();
 	const currentStore = useRecoilValue(currentStoreState);
 
 	useEffect(() => {
+		const token = localStorage.getItem("token");
+		setStoreId(localStorage.getItem("storeId"));
 		currentStore && setIsFirst(false);
 	}, [currentStore]);
 
