@@ -10,6 +10,21 @@ import {
 } from "../../states/global/globalState";
 import axios from "axios";
 
+const QRCodeWrapper = styled.div`
+	@media screen and (max-width: 640px) {
+		width: 100%;
+		height: 50vh;
+		padding: 50px 20px 0;
+		align-items: center;
+	}
+`;
+const CountInput = styled.input`
+	width: 50%;
+	border: 1px solid lightgray;
+	border-radius: 25px;
+	padding: 10px 15px;
+`;
+
 export default function QrCode() {
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
@@ -63,6 +78,9 @@ export default function QrCode() {
 			alert(
 				`아이디 : ${qrCodeResult} \n 총 잔개수 : ${totalCoffeeCount} \n 텀블러 : ${tumblerCount}`
 			);
+			if (res.status < 300) {
+				window.location.href = "/storeManage/qrCode";
+			}
 		});
 	};
 
@@ -84,30 +102,40 @@ export default function QrCode() {
 			)}
 			{/* <p>{qrCodeResult}</p> */}
 			{qrCodeResult && (
-				<div className="text-black">
-					<div>
-						<label>잔 개수</label>
-						<input
-							type='number'
-							value={totalCoffeeCount}
-							onChange={(event) => {
-								setTotalCoffeeCount(event.target.value);
-							}}
-						/>
-					</div>
-					<div>
-						<label>텀블러 개수</label>
-						<input
-							type='number'
-							value={tumblerCount}
-							onChange={(event) => {
-								setTumblerCount(event.target.value);
-							}}
-						/>
-					</div>
+				<QRCodeWrapper>
+					<div className='text-black flex flex-col gap-8'>
+						<div className='flex flex-col gap-4 items-center'>
+							<label className='text-center text-2xl font-bold'>잔 개수</label>
+							<CountInput
+								type='number'
+								value={totalCoffeeCount}
+								onChange={(event) => {
+									setTotalCoffeeCount(event.target.value);
+								}}
+							/>
+						</div>
+						<div className='flex flex-col gap-4 items-center'>
+							<label className='text-center text-2xl font-bold '>
+								텀블러 개수
+							</label>
+							<CountInput
+								type='number'
+								value={tumblerCount}
+								onChange={(event) => {
+									setTumblerCount(event.target.value);
+								}}
+							/>
+						</div>
 
-					<button onClick={submitOrder}>확인</button>
-				</div>
+						<div className='w-full flex justify-center'>
+							<button
+								className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-1/2 sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+								onClick={submitOrder}>
+								확인
+							</button>
+						</div>
+					</div>
+				</QRCodeWrapper>
 			)}
 		</Layout>
 	);
