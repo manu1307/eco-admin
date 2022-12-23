@@ -20,7 +20,7 @@ const QRCodeWrapper = styled.div`
 `;
 const CountInput = styled.input`
 	width: 50%;
-	border: 1px solid lightgray;
+	border: 1px solid lightgrey;
 	border-radius: 25px;
 	padding: 10px 15px;
 `;
@@ -79,7 +79,7 @@ export default function QrCode() {
 				`아이디 : ${qrCodeResult} \n 총 잔개수 : ${totalCoffeeCount} \n 텀블러 : ${tumblerCount}`
 			);
 			if (res.status < 300) {
-				window.location.href = "/storeManage/qrCode";
+				window.location.href = "/storeManage";
 			}
 		});
 	};

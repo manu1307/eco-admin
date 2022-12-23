@@ -6,6 +6,7 @@ import styled from "styled-components";
 import {
 	apiBaseAddressState,
 	currentStoreState,
+	loginRoleState,
 	storeListState,
 } from "../../../states/global/globalState";
 import { SideBarOpenState } from "../../../states/ServiceSetting/SideBarOpenState";
@@ -41,6 +42,7 @@ export default function Drawer() {
 	const [sideBarOpen, setSideBarOpen] = useRecoilState(SideBarOpenState);
 	const [storeList, setStoreList] = useRecoilState(storeListState);
 	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
+	const loginRole = useRecoilValue(loginRoleState);
 
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
@@ -53,9 +55,9 @@ export default function Drawer() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			// console.log(res.data.data);
-			setStoreList(res.data.data);
-			!currentStore && setCurrentStore([res.data.data[0]]);
+			setStoreList(res.data.data.content);
+			!currentStore && setCurrentStore([res.data.data.content[0]]);
+			localStorage.setItem("storeId", res.data.data.content[0].storeId);
 		});
 	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 
@@ -136,9 +138,10 @@ export default function Drawer() {
 								setCurrentStore(selectedStore);
 								localStorage.setItem("storeId", selectedStore[0].storeId);
 							}}>
-							{storeList.length > 0 ? (
+							{storeList?.length > 0 ? (
 								storeList.map((store, index) => {
-									const selected = store.name == currentStore[0].name;
+									// console.log(currentStore);
+									const selected = store.name == currentStore.name;
 									return (
 										<SelectOption
 											key={index}

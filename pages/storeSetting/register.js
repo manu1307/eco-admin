@@ -97,7 +97,8 @@ export default function MarketSetting() {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setStoreTagList(res.data.data);
+				// console.log(res.data.data.content);
+				setStoreTagList(res.data.data.content);
 			});
 		};
 		getTagData();
@@ -142,17 +143,16 @@ export default function MarketSetting() {
 			},
 			data: formData,
 		}).then((res) => {
-			if (res.status == 200) {
+			if (res.status < 300) {
 				axios({
 					method: "get",
-					url: `${BASEURL}/api/v1/stores`,
+					url: `${BASEURL}/api/v1/stores?page=0`,
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
 				}).then((res) => {
-					setStoreList(() => {
-						return res.data;
-					});
+					console.log(res.data.data.content);
+					setStoreList(res.data.data.content);
 				});
 			}
 		});
@@ -165,7 +165,7 @@ export default function MarketSetting() {
 				{ text: "등록", url: "/storeSetting/register" },
 			]}>
 			<StoreSettingContainer>
-				<div className='font-bold text-3xl mb-3'>
+				<div className='font-bold text-3xl mb-3 text-black'>
 					매장 등록
 					<hr className='my-2' />
 				</div>
@@ -243,6 +243,9 @@ export default function MarketSetting() {
 									}
 								}}
 								onChange={(event) => {
+									if (!storeAddress) {
+										setAddressSearchModalOpen(true);
+									}
 									setStoreAddress(() => {
 										event.target.value;
 									});
@@ -299,7 +302,6 @@ export default function MarketSetting() {
 										setStoreImage((prev) => {
 											return [...prev, event.target.files];
 										});
-										console.log(storeImage);
 									}
 								}}
 							/>

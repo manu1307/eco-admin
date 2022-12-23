@@ -84,19 +84,20 @@ export default function MarketEdit() {
 		const getTagData = () => {
 			axios({
 				method: "get",
-				url: "https://ecomap.kr/api/v1/tags/type?type=store",
+				url: `${BASEURL}/api/v1/tags/type?type=store&page=0`,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				const tagData = res.data.data;
-				const selectedTag = tagData.filter((tag) => tag.check == true);
+				// console.log(res.data.data.content);
+				const tagData = res.data.data.content;
+				// const selectedTag = tagData.filter((tag) => tag.check == true);
 				setStoreTagList(tagData);
-				setSelectedStoreTagList(selectedTag);
+				// setSelectedStoreTagList(selectedTag);
 			});
 		};
 		getTagData();
-	}, []);
+	}, [BASEURL]);
 
 	//가게 리스트 가져오기
 	useEffect(() => {
@@ -117,7 +118,7 @@ export default function MarketEdit() {
 	//가게 정보 정보 조회
 	useEffect(() => {
 		const getSpecificStoreData = () => {
-			const storeId = currentStore[0]?.storeId;
+			const storeId = localStorage.getItem("storeId");
 			if (storeId) {
 				axios({
 					method: "get",
@@ -127,7 +128,7 @@ export default function MarketEdit() {
 					},
 				}).then((res) => {
 					const fetchedStoreData = res.data.data;
-					// console.log(fetchedStoreData);
+					console.log(fetchedStoreData);
 					setStoreData(fetchedStoreData);
 					setStoreName(fetchedStoreData.name);
 					setStorePhoneNumber(fetchedStoreData.phoneNumber);
@@ -151,7 +152,7 @@ export default function MarketEdit() {
 	//가게 정보 수정
 	const editStore = () => {
 		const token = localStorage.getItem("token");
-		const storeId = currentStore[0]?.storeId;
+		const storeId = localStorage.getItem("storeId");
 
 		const storeInfo = {
 			name: storeName,
@@ -184,7 +185,7 @@ export default function MarketEdit() {
 		}).then((res) => {
 			if (res.status == 200) {
 				alert("정보 수정이 완료되었습니다.");
-				window.location.href = "/storeSetting/edit";
+				window.location.href = "/storeSetting";
 			}
 		});
 	};
@@ -197,7 +198,7 @@ export default function MarketEdit() {
 			]}>
 			<div>
 				<StoreEditingContainer>
-					<div className='font-bold text-3xl mb-3'>
+					<div className='font-bold text-3xl mb-3 text-black'>
 						매장 정보 조회 및 수정
 						<hr className='my-2' />
 					</div>
@@ -316,12 +317,6 @@ export default function MarketEdit() {
 								/>{" "}
 							</div>
 						</div>
-						{/* <div>
-							<div>영업시간</div>
-							{StoreOpenTime.map((day, index) => {
-								return <DayInput day={day} key={index} />;
-							})}
-						</div> */}
 
 						<div>
 							<div className='flex items-center  w-full'>
@@ -419,14 +414,18 @@ export default function MarketEdit() {
 										})}
 									</div>
 									<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
-										{tagStoresList?.map((tag, i) => {
+										{storeTagList?.map((tag, i) => {
 											return (
 												<StoreTagItemButton
 													className='text-sm'
 													key={i}
 													onClick={(event) => {
-														const targetTag = tag.tagName;
-														if (selectedStoreTagList.length < 3) {
+														const targetTag = tag.name;
+														const checkedStoreTagList =
+															selectedStoreTagList.filter(
+																(tag) => tag.check == true
+															);
+														if (checkedStoreTagList.length < 3) {
 															setTagStoresList((prev) => {
 																const editedTag = prev.map((tag) => {
 																	if (tag.tagName == targetTag) {
@@ -446,7 +445,7 @@ export default function MarketEdit() {
 															alert("태그는 2개까지만 선택 가능합니다.");
 														}
 													}}>
-													#{tag.tagName}
+													#{tag.name}
 												</StoreTagItemButton>
 											);
 										})}

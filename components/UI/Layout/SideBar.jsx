@@ -50,11 +50,13 @@ export default function SideBar({ items }) {
 			<SideBarWrapper>
 				{items.map((item, index) => {
 					return (
-						<Link key={index} href={`${item.url}`}>
-							<SideBarButton onClick={handleOnClick} value={item.text}>
-								{item.text}
-							</SideBarButton>
-						</Link>
+						item.text && (
+							<Link key={index} href={`${item.url}`}>
+								<SideBarButton onClick={handleOnClick} value={item.text}>
+									{item.text}
+								</SideBarButton>
+							</Link>
+						)
 					);
 				})}
 			</SideBarWrapper>

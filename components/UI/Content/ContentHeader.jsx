@@ -32,12 +32,16 @@ export default function ContentHeader(props) {
 					className='font-bold text-sm w-auto text-center sm:text-lg'>
 					{firstCategory}
 				</div>
-				<span className='mx-2 sm:mx-3'>
-					<Arrow />
-				</span>
-				<div className='font-bold text-sm  w-auto text-center sm:text-lg '>
-					{secondCategory}
-				</div>
+				{secondCategory && (
+					<>
+						<span className='mx-2 sm:mx-3'>
+							<Arrow />
+						</span>
+						<div className='font-bold text-sm  w-auto text-center sm:text-lg text-black '>
+							{secondCategory}
+						</div>
+					</>
+				)}
 			</div>
 			<div className='flex justify-end items-center text-xs  w-1/5 sm:text-md sm:w-1/5'>
 				사장님 이름

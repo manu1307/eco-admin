@@ -105,7 +105,7 @@ export default function Stamp() {
 
 	// 주소 정보 가져오기
 	useEffect(() => {
-		const storeId = currentStore[0].storeId;
+		const storeId = localStorage.getItem("storeId");
 		const token = localStorage.getItem("token");
 		axios({
 			method: "get",
@@ -124,21 +124,6 @@ export default function Stamp() {
 		currentStamp == "tumbler"
 			? "텀블러 스탬프 설정"
 			: currentStamp == "normal" && "일반 스탬프 설정";
-
-	// const tumblerButton = useRef();
-	// const normalButton = useRef();
-	// let focusedButton = "tumblerButton";
-	// useEffect(() => {
-	// 	tumblerButton && tumblerButton.current.focus();
-	// }, []);
-	// const checkFocusedButton = () => {
-	// 	if (focusedButton == "tumblerButton") {
-	// 		tumblerButton.current.focus();
-	// 	} else if (focusedButton == "normalButton") {
-	// 		normalButton.current.focus();
-	// 	}
-	// };
-	// 스탬프 종류 클릭 버튼 코드 개선 필요
 
 	return (
 		<Layout
