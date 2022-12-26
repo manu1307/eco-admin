@@ -139,6 +139,18 @@ const MenuFileLabel = styled.label`
 	border-bottom-color: #e2e2e2;
 	border-radius: 0.25em;
 `;
+const MenuTagWrapper = styled.div`
+	border: 2px solid #00000038;
+`;
+
+const MenuTagItem = styled.div`
+	margin: 0 5px;
+	font-size: 15px;
+	font-weight: 400;
+	background-color: #dedede;
+	padding: 2px 4px;
+	border-radius: 5px;
+`;
 const MenuEditModalItem = (props) => {
 	const { label, type, placeholder, onChange, value } = props;
 
@@ -171,18 +183,38 @@ const MenuEditModalItem = (props) => {
 export default function MenuEditModal(props) {
 	const { open, data, menuId, changeOpen } = props;
 	console.log(data);
+	const [menuTagItem, setMenuTagItem] = useState("");
 	const [menuTagList, setMenuTagList] = useState([]);
-	const [selectedMenuTagList, setSelectedMenuTagList] = useState([]);
-	const [selectedMenuTagIdList, setSelectedMenuTagIdList] = useState(
-		data?.tagMenus.tagId
-	);
+
+	const onKeyPress = (event) => {
+		const currentTag = event.target.value;
+		if (currentTag.length !== 0 && event.key === "Enter") {
+			submitTagItem();
+		}
+	};
+	const submitTagItem = () => {
+		if (menuTagList.length >= 3) {
+			alert("태그는 최대 3개까지만 등록 가능합니다.");
+			setMenuTagItem("");
+			return;
+		}
+
+		setMenuTagList((prev) => {
+			return [...prev, menuTagItem];
+		});
+		setMenuTagItem("");
+	};
+	const deleteItem = (event) => {
+		const deleteTarget = event.target.parentElement.firstChild.innerText;
+		console.log(deleteTarget);
+		const filteredTagList = menuTagList.filter((tag) => tag !== deleteTarget);
+		setMenuTagList(filteredTagList);
+	};
 
 	const [menuName, setMenuName] = useState(data?.name);
 	const [menuPrice, setMenuPrice] = useState(data?.price);
 	const [menuDescription, setMenuDescription] = useState(data?.description);
-	const [menuSelectedTagList, setMenuSelectedTagList] = useState(
-		data?.tagMenus
-	);
+
 	const [menuImage, setMenuImage] = useState(data?.imageUrl && data?.imageUrl);
 	const [menuImageUrl, setMenuImageUrl] = useState(data?.imageUrl);
 
@@ -196,7 +228,8 @@ export default function MenuEditModal(props) {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setMenuTagList(res.data.data);
+				// console.log(res.data.data.content);
+				// setMenuTagList((prev) => [...prev, res.data.data]);
 			});
 		};
 		getTagData();
@@ -392,52 +425,32 @@ export default function MenuEditModal(props) {
 					<MenuEditModalItemLabel className='w-full text-sm'>
 						메뉴 태그 (최대 2개)
 					</MenuEditModalItemLabel>
-					<div>
-						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
-							{menuSelectedTagList?.map((tag, i) => {
+					<MenuTagWrapper className='w-4/6 max-w-lg rounded-xl'>
+						<div className='flex items-center w-full'>
+							{menuTagList.map((tag, index) => {
 								return (
-									<MenuTagSelected className='text-sm' key={i}>
-										#{tag.tagName}
-										<button
-											onClick={(event) => {
-												console.log(event.target.value);
-												const filteredList = selectedMenuTagList.filter(
-													(selectedTag) => {
-														return selectedTag !== tag.tagName;
-													}
-												);
-												setSelectedMenuTagList(filteredList);
-											}}>
-											×
-										</button>
-									</MenuTagSelected>
+									<MenuTagItem className='flex gap-1' key={index}>
+										<div>{tag}</div>
+										<button onClick={deleteItem}>X</button>
+									</MenuTagItem>
 								);
 							})}
+							<input
+								type='text'
+								placeholder='#태그 입력'
+								className='input border-0 rounded-xl w-1/3 font-normal'
+								value={menuTagItem}
+								onChange={(event) => {
+									setMenuTagItem(event.target.value);
+								}}
+								onKeyPress={onKeyPress}
+							/>{" "}
 						</div>
-						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
-							{menuTagList?.map((tag, i) => {
-								return (
-									<MenuTagItemButton
-										className='text-sm'
-										key={i}
-										onClick={() => {
-											if (selectedMenuTagList.length < 2) {
-												setSelectedMenuTagIdList((prev) => {
-													console.log(prev);
-													// return [...prev, tag.tagId];
-												});
-												setSelectedMenuTagList((prev) => {
-													return [...prev, tag.name];
-												});
-											} else {
-												alert("태그는 2개까지만 선택 가능합니다.");
-											}
-										}}>
-										#{tag.name}
-									</MenuTagItemButton>
-								);
-							})}
-						</div>
+					</MenuTagWrapper>
+					<div
+						style={{ position: "relative", top: "-5px" }}
+						className='text-gray-400 text-xs'>
+						태그 입력 후 Enter
 					</div>
 				</MenuEditModalItemContainer>
 

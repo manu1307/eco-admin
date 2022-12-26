@@ -11,8 +11,11 @@ export default function ClosingSale() {
 				{ text: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },
 				// { text: "알림 설정", url: "" },
-				{ text: "태그 설정", url: "/serviceSetting/tag" },
-				// { text: "댓글신고", url: "" },
+				// { text: "태그 설정", url: "/serviceSetting/tag" },
+				loginRole === "admin" && {
+					text: "관리자",
+					url: "/serviceSetting/admin",
+				},
 			]}>
 			<div>마감타임 세일</div>
 		</Layout>
