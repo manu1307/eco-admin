@@ -101,6 +101,7 @@ export default function SignIn() {
 					localStorage.setItem("token", loginToken.current);
 					window.location.href = "/dashboard";
 					setLoginRole(localStorage.getItem("role"));
+					localStorage.setItem("storeId", 1);
 				}
 			} else {
 				alert("아이디, 비밀번호를 다시 확인해주세요.");

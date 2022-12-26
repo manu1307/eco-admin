@@ -133,9 +133,18 @@ export default function Header() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			setStoreList(res.data.data.content);
-			!currentStore && setCurrentStore([res.data.data.content[0]]);
-			localStorage.setItem("storeId", res.data.data.content[0].storeId);
+			if (res.data.data.content.length > 0) {
+				setStoreList(res.data.data.content);
+				if (!currentStore) {
+					setCurrentStore([res.data.data.content[0]]);
+					localStorage.setItem("storeId", res.data.data.content[0].storeId);
+				} else {
+					// console.log(currentStore);
+					localStorage.setItem("storeId", currentStore.storeId);
+				}
+			} else {
+				console.log(res.data.data);
+			}
 		});
 	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 	// console.log(storeList.length);
@@ -151,7 +160,7 @@ export default function Header() {
 		<>
 			<HeaderWrapper>
 				<HeaderContent className='w-full flex flex-wrap justify-left items-center mx-auto'>
-					<LogoWrapper href='./dashboard' className='flex items-center'>
+					<LogoWrapper href='/dashboard' className='flex items-center'>
 						<Image
 							style={{ marginTop: "10px" }}
 							src={Logo}

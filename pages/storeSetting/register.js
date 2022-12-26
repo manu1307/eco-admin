@@ -39,31 +39,26 @@ const StoreRegisterModalItemLabel = styled.div`
 	}
 `;
 
-const StoreTagItemButton = styled.button`
-	padding: 1px 5px;
-	font-weight: 400;
-	color: #595959;
-	border-radius: 10px;
-	border: 1px solid #595959;
-	:hover {
-		color: black;
-	}
-`;
-const StoreTagSelected = styled.div`
-	padding: 1px 5px;
-	font-weight: 400;
-	color: black;
-	border-radius: 10px;
-	background-color: #a1d2ff;
-	border: 1px solid #5cb0ff;
-	:hover {
-		color: black;
-	}
-`;
 const StoreImageRegister = styled.label`
 	@media screen and (max-width: 640px) {
 		font-size: 11px;
 	}
+`;
+const StoreTagWrapper = styled.div`
+	border: 2px solid #00000038;
+`;
+
+const StoreTagItem = styled.div`
+	margin: 0 5px;
+	font-size: 15px;
+	font-weight: 400;
+	background-color: #dedede;
+	padding: 2px 4px;
+	border-radius: 5px;
+`;
+const TagInstruction = styled.div`
+	position: relative;
+	top: -10px;
 `;
 
 export default function MarketSetting() {
@@ -82,11 +77,34 @@ export default function MarketSetting() {
 
 	const [addressSearchModalOpen, setAddressSearchModalOpen] = useState(false);
 
+	// 태그 설정
+	const [storeTagItem, setStoreTagItem] = useState("");
 	const [storeTagList, setStoreTagList] = useState([]);
 
-	const [selectedStoreTagIdList, setSelectedStoreTagIdList] = useState([]);
-	const [selectedStoreTagList, setSelectedStoreTagList] = useState([]);
+	const onKeyPress = (event) => {
+		const currentTag = event.target.value;
+		if (currentTag.length !== 0 && event.key === "Enter") {
+			submitTagItem();
+		}
+	};
+	const submitTagItem = () => {
+		if (menuTagList.length >= 3) {
+			alert("태그는 최대 3개까지만 등록 가능합니다.");
+			setMenuTagItem("");
+			return;
+		}
 
+		setStoreTagList((prev) => {
+			return [...prev, menuTagItem];
+		});
+		setStoreTagItem("");
+	};
+	const deleteItem = (event) => {
+		const deleteTarget = event.target.parentElement.firstChild.innerText;
+		console.log(deleteTarget);
+		const filteredTagList = menuTagList.filter((tag) => tag !== deleteTarget);
+		setStoreTagList(filteredTagList);
+	};
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		const getTagData = () => {
@@ -150,10 +168,14 @@ export default function MarketSetting() {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
-				}).then((res) => {
-					console.log(res.data.data.content);
-					setStoreList(res.data.data.content);
-				});
+				})
+					.then((res) => {
+						console.log(res.data.data.content);
+						setStoreList(res.data.data.content);
+					})
+					.then(() => {
+						window.location.href = "/storeSetting";
+					});
 			}
 		});
 	};
@@ -310,7 +332,7 @@ export default function MarketSetting() {
 					<div className='text-slate-400'>
 						{storeImage?.map((image, index) => {
 							if (!image[0]) {
-								return;
+								return null;
 							}
 							const imageName = image[0].name;
 							return (
@@ -335,55 +357,31 @@ export default function MarketSetting() {
 							<StoreRegisterModalItemLabel className='w-full text-sm'>
 								매장 태그 (최대 3개)
 							</StoreRegisterModalItemLabel>
-							<div className='w-full'>
-								<div className='w-full flex flex-wrap m-0 gap-2 rounded-xl mb-3 sm:h-5'>
-									{selectedStoreTagList.map((tag, i) => {
+							<StoreTagWrapper className='w-full bg-white sm:w-4/6 max-w-lg rounded-xl'>
+								<div className='flex items-center w-full'>
+									{storeTagList.map((tag, index) => {
 										return (
-											<StoreTagSelected className='text-sm' key={i}>
-												#{tag}
-												<button
-													onClick={() => {
-														const filteredList = selectedStoreTagList.filter(
-															(selectedTag) => {
-																return selectedTag !== tag;
-															}
-														);
-														setSelectedStoreTagList(filteredList);
-													}}>
-													×
-												</button>
-											</StoreTagSelected>
+											<StoreTagItem className='flex gap-1' key={index}>
+												<div>{tag}</div>
+												<button onClick={deleteItem}>X</button>
+											</StoreTagItem>
 										);
 									})}
+									<input
+										type='text'
+										placeholder='#태그 입력'
+										className='input border-0 rounded-xl w-1/3 font-normal'
+										value={storeTagItem}
+										onChange={(event) => {
+											setStoreTagItem(event.target.value);
+										}}
+										onKeyPress={onKeyPress}
+									/>{" "}
 								</div>
-								<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
-									{storeTagList?.map((tag, i) => {
-										return (
-											<StoreTagItemButton
-												className='text-sm'
-												key={i}
-												onClick={() => {
-													if (selectedStoreTagList.length < 3) {
-														setSelectedStoreTagIdList((prev) => {
-															const set = new Set([...prev, tag.tagId]);
-															const noOverLapArr = [...set];
-															return noOverLapArr;
-														});
-														setSelectedStoreTagList((prev) => {
-															const set = new Set([...prev, tag.name]);
-															const noOverLapArr = [...set];
-															return noOverLapArr;
-														});
-													} else {
-														alert("태그는 2개까지만 선택 가능합니다.");
-													}
-												}}>
-												#{tag.name}
-											</StoreTagItemButton>
-										);
-									})}
-								</div>
-							</div>
+							</StoreTagWrapper>
+							<TagInstruction className='text-xs text-gray-600'>
+								태그 입력 후 Enter
+							</TagInstruction>
 						</StoreRegisterModalItemContainer>
 					</div>
 					<button

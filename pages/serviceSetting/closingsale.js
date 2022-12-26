@@ -1,7 +1,12 @@
+import { useEffect, useState } from "react";
 import Drawer from "../../components/UI/Layout/Drawer";
 import Layout from "../../components/UI/Layout/Layout";
 
 export default function ClosingSale() {
+	const [loginRole, setLoginRole] = useState("");
+	useEffect(() => {
+		setLoginRole(localStorage.getItem("role"));
+	}, []);
 	return (
 		<Layout
 			sideItems={[

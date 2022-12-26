@@ -71,7 +71,7 @@ const ModalWrapper = styled.div`
 	margin-top: 20px;
 	text-align: center;
 	@media screen and (max-width: 640px) {
-		width: 90%;
+		width: calc(100% - 20px);
 		margin: 0 auto;
 		margin-top: 20px;
 	}
@@ -113,6 +113,7 @@ export default function DashBoardMain() {
 	const [storeId, setStoreId] = useState();
 	const currentStore = useRecoilValue(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
+	console.log(currentStore);
 
 	useEffect(() => {
 		setStoreId(localStorage.getItem("storeId"));
@@ -156,7 +157,7 @@ export default function DashBoardMain() {
 						</EcoLevel>
 						<StoreName>
 							{currentStore ? (
-								currentStore.name
+								currentStore?.name
 							) : (
 								<div className='text-sm'>가게를 등록해주세요</div>
 							)}

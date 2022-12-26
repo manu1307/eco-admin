@@ -23,7 +23,6 @@ const AdminWrapper = styled.div`
 	padding: 20px 20px;
 `;
 
-// const StampGuideCoupon = styled.div``;
 export default function ServiceSettingAdmin() {
 	const [loginRole, setLoginRole] = useState("");
 

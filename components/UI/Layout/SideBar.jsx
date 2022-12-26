@@ -45,6 +45,7 @@ const SideBarButton = styled.button`
 
 export default function SideBar({ items }) {
 	const handleOnClick = (event) => {};
+
 	return (
 		<>
 			<SideBarWrapper>
