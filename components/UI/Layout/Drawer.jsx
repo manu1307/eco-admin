@@ -91,10 +91,10 @@ export default function Drawer() {
 			detail: [
 				{ name: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ name: "마감 할인 설정", url: "/serviceSetting/closingsale" },
-				loginRole === "admin" && {
-					name: "관리자",
-					url: "/serviceSetting/admin",
-				},
+				// loginRole === "admin" && {
+				// 	name: "관리자",
+				// 	url: "/serviceSetting/admin",
+				// },
 
 				// { name: "태그 설정", url: "/serviceSetting/tag" },
 			],
