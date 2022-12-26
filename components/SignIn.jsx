@@ -1,9 +1,14 @@
 import axios from "axios";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { apiTokenState } from "../states/global/globalState";
+import {
+	apiBaseAddressState,
+	apiTokenState,
+	loginRoleState,
+	storeListState,
+} from "../states/global/globalState";
 
 const Wrapper = styled.div`
 	width: 900px;
@@ -64,8 +69,9 @@ export default function SignIn() {
 	const [loginId, setLoginId] = useState("");
 	const [loginPassword, setLoginPassword] = useState("");
 	const loginToken = useRef("");
-
+	const BASEURL = useRecoilValue(apiBaseAddressState);
 	const [globalLoginToken, setGlobalLoginToken] = useRecoilState(apiTokenState);
+	const [loginRole, setLoginRole] = useRecoilState(loginRoleState);
 
 	const onChangeLoginId = (event) => {
 		setLoginId(() => event.target.value);
@@ -77,7 +83,7 @@ export default function SignIn() {
 	const Login = async () => {
 		axios({
 			method: "post",
-			url: "https://ecomap.kr/api/v1/members/login",
+			url: `${BASEURL}/api/v1/members/login`,
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -85,24 +91,22 @@ export default function SignIn() {
 				loginId: loginId,
 				password: loginPassword,
 			}),
-		})
-			.then((response) => {
-				console.log(response.data);
-				if (response.status === 200) {
-					loginToken.current = response.data.data.token;
-					localStorage.setItem("role", response.data.data.role);
-				} else {
-					alert("아이디, 비밀번호를 다시 확인해주세요.");
-				}
-			})
-			.then(() => {
+		}).then((response) => {
+			// console.log(response.data);
+			if (response.data.statusCode < 300 && response.data.success === true) {
+				loginToken.current = response.data.data.token;
+				localStorage.setItem("role", response.data.data.role);
 				if (loginToken) {
 					setGlobalLoginToken(loginToken.current);
 					localStorage.setItem("token", loginToken.current);
 					window.location.href = "/dashboard";
-				} else {
+					setLoginRole(localStorage.getItem("role"));
 				}
-			});
+			} else {
+				alert("아이디, 비밀번호를 다시 확인해주세요.");
+				return;
+			}
+		});
 	};
 
 	return (

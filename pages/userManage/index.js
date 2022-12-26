@@ -52,29 +52,7 @@ const ContentSettingBodyHeader = styled.div`
 		padding-right: 10px;
 	}
 `;
-const CategoryButtonWrapper = styled.div`
-	max-width: 1280px;
-`;
-const CategoryButton = styled.button`
-	width: 20%;
-	height: 55px;
-	line-height: 55px;
-	background-color: #121533;
-	color: white;
-	text-align: center;
-	font-size: 20px;
-	font-weight: bold;
-	cursor: pointer;
-	:hover {
-		background-color: #00e1d4;
-		color: #121533;
-	}
-	@media screen and (max-width: 640px) {
-		font-size: 12px;
-		height: 40px;
-		line-height: 40px;
-	}
-`;
+
 const ContentSettingBodyContent = styled.div`
 	width: 100%;
 	border-radius: 15px;
@@ -112,6 +90,7 @@ const SearchInput = (props) => {
 };
 
 const StoreManageHeader = {
+	frequent: ["아이디", "최근 구매 일자", "텀블러 스탬프", "일반 스탬프"],
 	order: [
 		"주문번호",
 		"주문날짜",
@@ -121,7 +100,6 @@ const StoreManageHeader = {
 		"스탬프",
 		"delYn",
 	],
-	frequent: ["아이디", "최근 구매 일자", "텀블러 스탬프", "일반 스탬프"],
 	stamp: ["스탬프 Id", "날짜", "Id", "매장 이름", "스탬프", "delYn"],
 	point: [
 		"포인트 Id",
@@ -142,34 +120,14 @@ const StoreManageHeader = {
 		"취소 여부",
 	],
 };
-const CategoryName = {
-	frequent: "단골 관리",
-	order: "주문 관리",
-	stamp: "스탬프 관리",
-	point: "포인트 관리",
-	coupon: "쿠폰 관리",
-};
 
-export default function StoreManage() {
+export default function UserAdmin() {
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 	const currentStore = useRecoilValue(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-	const [currentCategory, setCurrentCategory] = useState("order");
-	const getNormalStamp = () => {
-		const token = localStorage.getItem("token");
+	const [currentCategory, setCurrentCategory] = useState("frequent");
 
-		const storeId = currentStore[0].storeId;
-		axios({
-			method: "get",
-			url: `${BASEURL}/api/v1/stamps/owner/${storeId}/basic`,
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		}).then((res) => {
-			console.log(res);
-		});
-	};
 	const getOrder = () => {
 		const storeId = currentStore[0].storeId;
 		const token = localStorage.getItem("token");
@@ -187,48 +145,12 @@ export default function StoreManage() {
 	return (
 		<Layout
 			sideItems={[
-				{ text: "매장 관리", url: "/storeManage" },
-				{ text: "QR 태그", url: "/storeManage/qrCode" },
+				{ text: "회원 관리", url: "/userManage" },
+				{ text: "관리자", url: "/userManage/admin" },
 			]}>
 			<ContentSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
-				<ContentHeader
-					firstCategory='매장 관리'
-					secondCategory={CategoryName[currentCategory]}
-				/>
-				<CategoryButtonWrapper className='flex gap-2 w-full mt-5'>
-					<CategoryButton
-						onClick={() => {
-							getOrder();
-							setCurrentCategory("order");
-						}}>
-						주문
-					</CategoryButton>
-					<CategoryButton
-						onClick={() => {
-							setCurrentCategory("frequent");
-						}}>
-						단골
-					</CategoryButton>
-					<CategoryButton
-						onClick={() => {
-							getNormalStamp();
-							setCurrentCategory("stamp");
-						}}>
-						스탬프
-					</CategoryButton>
-					<CategoryButton
-						onClick={() => {
-							setCurrentCategory("point");
-						}}>
-						포인트
-					</CategoryButton>
-					<CategoryButton
-						onClick={() => {
-							setCurrentCategory("coupon");
-						}}>
-						쿠폰
-					</CategoryButton>
-				</CategoryButtonWrapper>
+				<ContentHeader firstCategory='회원 관리' />
+
 				<ContentSettingBody className='flex flex-col items-center'>
 					<div className='w-full sm:flex justify-around hidden'>
 						<div className='w-11/12 flex justify-between mb-3'>

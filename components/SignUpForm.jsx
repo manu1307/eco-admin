@@ -1,9 +1,8 @@
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { idState, signUpSelector } from "../states/SignUp/signUpState";
+import { signUpSelector } from "../states/SignUp/signUpState";
 import GenderInput from "./UI/Input/GenderInput";
 import NormalInput from "./UI/Input/NormalInput";
-import { useRouter } from "next/router";
 import axios from "axios";
 import Link from "next/link";
 
@@ -97,14 +96,15 @@ export default function SignUpForm() {
 				password: password,
 				confirmPassword: passwordConfirm,
 				name: name,
-				// businessNumber: businessNumber ? businessNumber : "123-123-1234",
+				businessNumber: businessNumber && businessNumber,
 				phoneNumber: phoneNumber,
 				birthday: birthday,
 				gender: gender,
 			}),
 		}).then((response) => {
 			console.log(response);
-			if (response.status === 200) {
+			if (response.data.statusCode < 300 && response.data.success === true) {
+				alert("로그인 창에서 다시 로그인해주세요.");
 				window.location.href = "/";
 			} else {
 				alert("입력을 확인해주세요");
@@ -117,17 +117,17 @@ export default function SignUpForm() {
 			.get(`https://ecomap.kr/api/v1/members/check?loginId=${id}`)
 			.then((res) => {
 				console.log(res.data);
-				// if (!res.data.check) {
-				// 	alert("사용 가능한 아이디입니다.");
-				// } else {
-				// 	alert("이미 존재하는 아이디입니다.");
-				// }
+				if (res.data.data.check) {
+					alert("사용 가능한 아이디입니다.");
+				} else {
+					alert("이미 존재하는 아이디입니다.");
+				}
 			});
 	};
 
 	return (
 		<div className='overflow-visible'>
-			<div className='font-bold text-2xl mt-5 sm:mt-0 sm:text-3xl text-center sm:mb-10 max-w-screen-xl'>
+			<div className='font-bold text-2xl pt-5 sm:mt-5  sm:text-3xl text-center sm:mb-10 max-w-screen-xl'>
 				에코맵 사업자 회원가입
 			</div>
 			<form
@@ -215,7 +215,7 @@ export default function SignUpForm() {
 				<FormItemLayout label='성별' input={<GenderInput />}></FormItemLayout>
 
 				{/* <div>이용약관 동의 여러 개</div> */}
-				<div className='w-full text-center mt-10'>
+				<div className='w-full flex justify-center gap-4 text-center mt-10'>
 					<Link href='/'>
 						<SubmitButton>취소</SubmitButton>
 					</Link>

@@ -110,24 +110,21 @@ const BoxWrapper = styled.div`
 `;
 
 export default function DashBoardMain() {
-	const [isFirst, setIsFirst] = useState(true);
 	const [storeId, setStoreId] = useState();
 	const currentStore = useRecoilValue(currentStoreState);
+	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-		setStoreId(localStorage.getItem("storeId"));
-		currentStore && setIsFirst(false);
-	}, [currentStore]);
-
-	const confirmSetting = (event) => {};
-
-	const data = isFirst ? "" : "300";
+	const data = !currentStore?.storeId ? "" : "300";
 
 	const date = new Date();
 	const year = date.getFullYear();
 	const month = date.getMonth() + 1;
 	const day = date.getUTCDate();
+
+	const sentSettingPage = () => {
+		window.location.href = "/storeSetting";
+	};
+
 	return (
 		<>
 			<DashBoardWrapper className='flex flex-col items-left'>
@@ -155,7 +152,7 @@ export default function DashBoardMain() {
 						</EcoLevel>
 						<StoreName>
 							{currentStore ? (
-								currentStore[0].name
+								currentStore.name
 							) : (
 								<div className='text-sm'>가게를 등록해주세요</div>
 							)}
@@ -163,7 +160,7 @@ export default function DashBoardMain() {
 					</div>
 				</StoreNameWrapper>
 				<div>
-					{isFirst && (
+					{!currentStore.storeId && (
 						<div className='flex justify-center'>
 							<ModalWrapper>
 								<ModalContainer>
@@ -171,8 +168,8 @@ export default function DashBoardMain() {
 									<ModalMessage fontSize={30}>
 										매장설정을 먼저 해주세요.
 									</ModalMessage>
-									<Link href='/storeSetting'>
-										<ModalButton onClick={confirmSetting}>
+									<Link href='/storeSetting/register'>
+										<ModalButton onClick={sentSettingPage}>
 											매장 설정 가기
 										</ModalButton>
 									</Link>

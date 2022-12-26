@@ -64,9 +64,21 @@ const NavButton = styled.li`
 	@media screen and (max-width: 500px) {
 	}
 `;
+const LogoutButton = styled.li`
+	width: 100px;
+	height: 100px;
+	text-align: center;
+	line-height: 100px;
+	font-size: 14px;
+	color: white;
+	font-weight: 700;
+	border-left: 1px solid #072f53;
+	cursor: pointer;
+`;
 
 const DropdownWrapper = styled.div`
 	width: 40%;
+	max-width: 450px;
 	@media screen and (max-width: 500px) {
 	}
 `;
@@ -116,17 +128,23 @@ export default function Header() {
 		const token = localStorage.getItem("token");
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/stores`,
+			url: `${BASEURL}/api/v1/stores?page=0`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			// console.log(res.data.data);
-			setStoreList(res.data.data);
-			!currentStore && setCurrentStore([res.data.data[0]]);
-			localStorage.setItem("storeId", res.data.data[0].storeId);
+			setStoreList(res.data.data.content);
+			!currentStore && setCurrentStore([res.data.data.content[0]]);
+			localStorage.setItem("storeId", currentStore.storeId);
 		});
 	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
+	// console.log(storeList.length);
+
+	const logout = () => {
+		localStorage.removeItem("token");
+		localStorage.removeItem("role");
+		window.location.href = "/";
+	};
 
 	return (
 		<>
@@ -153,22 +171,27 @@ export default function Header() {
 						<Link href='/serviceSetting'>
 							<NavButton>서비스 설정</NavButton>
 						</Link>
-						{/* <Link href="/payback">
-              <NavButton>정산</NavButton>
-            </Link> */}
+						<Link href='/userManage'>
+							<NavButton>회원 관리</NavButton>
+						</Link>
+
 						<DropdownWrapper>
 							<SelectWrapper
 								onChange={(event) => {
 									const selectedStore = storeList.filter(
 										(store) => store.name == event.target.value
 									);
-									setCurrentStore(selectedStore);
+									setCurrentStore(selectedStore[0]);
 									localStorage.setItem("storeId", selectedStore[0].storeId);
-								}}>
+								}}
+								value={currentStore.name}>
 								{storeList.length > 0 ? (
 									storeList.map((store, index) => {
+										const selected = currentStore.name === store.name;
 										return (
-											<SelectOption key={index}>{store.name}</SelectOption>
+											<SelectOption key={index} selected={selected}>
+												{store.name}
+											</SelectOption>
 										);
 									})
 								) : (
@@ -176,6 +199,7 @@ export default function Header() {
 								)}
 							</SelectWrapper>
 						</DropdownWrapper>
+						<LogoutButton onClick={logout}>로그아웃</LogoutButton>
 					</NavButtonWrapper>
 				</HeaderContent>
 			</HeaderWrapper>

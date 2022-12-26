@@ -14,5 +14,9 @@ export const storeListState = atom({
 });
 export const currentStoreState = atom({
 	key: "currentStoreState",
+	default: {},
+});
+export const loginRoleState = atom({
+	key: "loginRoleState",
 	default: "",
 });

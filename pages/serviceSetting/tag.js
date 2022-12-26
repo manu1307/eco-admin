@@ -119,13 +119,13 @@ const TagItem = (props) => {
 			if (res.status === 200) {
 				axios({
 					method: "get",
-					url: `${BASEURL}/api/v1/tags`,
+					url: `${BASEURL}/api/v1/tags?page=0`,
 					headers: {
 						"Content-Type": "application/json",
 						Authorization: `Bearer ${token}`,
 					},
 				}).then((res) => {
-					handleTagActivate(res.data.data);
+					handleTagActivate(res.data.data.content);
 				});
 			}
 		});
@@ -188,13 +188,13 @@ export default function ServiceSettingMenu() {
 		const token = localStorage.getItem("token");
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/tags`,
+			url: `${BASEURL}/api/v1/tags?page=0`,
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((response) => {
-			setTagList(response.data.data);
+			setTagList(response.data.data.content);
 		});
 	}, [BASEURL, tagRegisterModalOpen, tagEditModalOpen]);
 
