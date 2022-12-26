@@ -97,11 +97,12 @@ const StampGuideComment = styled.div`
 		width: 250px;
 	}
 `;
-const StampGuideCoupon = styled.div``;
+// const StampGuideCoupon = styled.div``;
 export default function Stamp() {
 	const currentStore = useRecoilValue(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 	const [storeAddress, setStoreAddress] = useState("");
+	const [loginRole, setLoginRole] = useState("");
 
 	// 주소 정보 가져오기
 	useEffect(() => {
@@ -117,6 +118,7 @@ export default function Stamp() {
 			// console.log(res.data.data);
 			setStoreAddress(res.data.data.addrDetail.trim());
 		});
+		setLoginRole(localStorage.getItem("role"));
 	}, [BASEURL, currentStore, setStoreAddress]);
 
 	const [currentStamp, setCurrentStamp] = useState("tumbler");
@@ -134,8 +136,11 @@ export default function Stamp() {
 				{ text: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },
 				// { text: "알림 설정", url: "" },
-				{ text: "태그 설정", url: "/serviceSetting/tag" },
-				// { text: "댓글신고", url: "" },
+				// { text: "태그 설정", url: "/serviceSetting/tag" },
+				loginRole === "admin" && {
+					text: "관리자",
+					url: "/serviceSetting/admin",
+				},
 			]}>
 			<StampPageContainer>
 				<ContentHeader

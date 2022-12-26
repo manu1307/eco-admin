@@ -31,6 +31,9 @@ const MenuRegisterModalContainer = styled.div`
 	top: 100px;
 	left: 200px;
 	z-index: 3;
+	@media screen and (max-width: 1920px) {
+		top: 30px;
+	}
 	@media screen and (max-width: 1140px) {
 		height: 90vh;
 	}
@@ -147,6 +150,19 @@ const MenuFileLabel = styled.label`
 	border-bottom-color: #e2e2e2;
 	border-radius: 0.25em;
 `;
+const MenuTagWrapper = styled.div`
+	border: 2px solid #00000038;
+`;
+
+const MenuTagItem = styled.div`
+	margin: 0 5px;
+	font-size: 15px;
+	font-weight: 400;
+	background-color: #dedede;
+	padding: 2px 4px;
+	border-radius: 5px;
+`;
+
 const MenuRegisterModalItem = (props) => {
 	const { label, type, placeholder, onChange } = props;
 
@@ -176,15 +192,39 @@ const MenuRegisterModalItem = (props) => {
 
 export default function MenuRegisterModal({ open, changeOpen }) {
 	const currentStore = useRecoilValue(currentStoreState);
+	// console.log(currentStore);
 	const [menuName, setMenuName] = useState("");
 	const [menuPrice, setMenuPrice] = useState("");
 	const [menuDescription, setMenuDescription] = useState("");
 	const [menuOrder, setMenuOrder] = useState("");
 
+	const [menuTagItem, setMenuTagItem] = useState("");
 	const [menuTagList, setMenuTagList] = useState([]);
 
-	const [selectedMenuTagIdList, setSelectedMenuTagIdList] = useState([]);
-	const [selectedMenuTagList, setSelectedMenuTagList] = useState([]);
+	const onKeyPress = (event) => {
+		const currentTag = event.target.value;
+		if (currentTag.length !== 0 && event.key === "Enter") {
+			submitTagItem();
+		}
+	};
+	const submitTagItem = () => {
+		if (menuTagList.length >= 3) {
+			alert("태그는 최대 3개까지만 등록 가능합니다.");
+			setMenuTagItem("");
+			return;
+		}
+
+		setMenuTagList((prev) => {
+			return [...prev, menuTagItem];
+		});
+		setMenuTagItem("");
+	};
+	const deleteItem = (event) => {
+		const deleteTarget = event.target.parentElement.firstChild.innerText;
+		console.log(deleteTarget);
+		const filteredTagList = menuTagList.filter((tag) => tag !== deleteTarget);
+		setMenuTagList(filteredTagList);
+	};
 
 	const [menuImage, setMenuImage] = useState("");
 	const [menuImageUrl, setMenuImageUrl] = useState("");
@@ -192,31 +232,31 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 	const [itemOffset, setItemOffset] = useState(0);
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-		const getTagData = () => {
-			axios({
-				method: "get",
-				url: "https://ecomap.kr/api/v1/tags/type?type=menu",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}).then((res) => {
-				setMenuTagList(res.data.data);
-			});
-		};
-		getTagData();
+		// const token = localStorage.getItem("token");
+		// const getTagData = () => {
+		// 	axios({
+		// 		method: "get",
+		// 		url: "https://ecomap.kr/api/v1/tags/type?type=menu",
+		// 		headers: {
+		// 			Authorization: `Bearer ${token}`,
+		// 		},
+		// 	}).then((res) => {
+		// 		setMenuTagList(res.data.data);
+		// 	});
+		// };
+		// getTagData();
 	}, []);
 
 	const registerMenu = () => {
 		const token = localStorage.getItem("token");
-		console.log(currentStore[0].storeId);
+		console.log(currentStore.storeId);
 		const menuData = {
-			storeId: currentStore[0].storeId,
+			storeId: currentStore.storeId,
 			name: menuName,
 			price: parseInt(menuPrice),
 			description: menuDescription ? menuDescription : null,
 			orders: menuOrder,
-			tagIds: selectedMenuTagIdList,
+			tagIds: [],
 		};
 		console.log(menuData);
 		const json = JSON.stringify(menuData);
@@ -236,7 +276,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 			},
 			data: data,
 		}).then((response) => {
-			if (response.status === 200) {
+			if (response.status < 300) {
 				clearModal();
 				changeOpen(false);
 				console.log("메뉴 등록 되었습니다.");
@@ -369,51 +409,28 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 					<MenuRegisterModalItemLabel className='w-full text-sm'>
 						메뉴 태그 (최대 2개)
 					</MenuRegisterModalItemLabel>
-					<div>
-						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
-							{selectedMenuTagList.map((tag, i) => {
+					<MenuTagWrapper className='w-4/6 max-w-lg rounded-xl'>
+						<div className='flex items-center w-full'>
+							{menuTagList.map((tag, index) => {
 								return (
-									<MenuTagSelected className='text-sm' key={i}>
-										#{tag}
-										<button
-											onClick={() => {
-												const filteredList = selectedMenuTagList.filter(
-													(selectedTag) => {
-														return selectedTag !== tag;
-													}
-												);
-												setSelectedMenuTagList(filteredList);
-											}}>
-											×
-										</button>
-									</MenuTagSelected>
+									<MenuTagItem className='flex gap-1' key={index}>
+										<div>{tag}</div>
+										<button onClick={deleteItem}>X</button>
+									</MenuTagItem>
 								);
 							})}
+							<input
+								type='text'
+								placeholder='#태그 입력'
+								className='input border-0 rounded-xl w-1/3 font-normal'
+								value={menuTagItem}
+								onChange={(event) => {
+									setMenuTagItem(event.target.value);
+								}}
+								onKeyPress={onKeyPress}
+							/>{" "}
 						</div>
-						<div className='w-full flex flex-wrap gap-2 max-w-lg rounded-xl mb-3 sm:h-5'>
-							{menuTagList?.map((tag, i) => {
-								return (
-									<MenuTagItemButton
-										className='text-sm'
-										key={i}
-										onClick={() => {
-											if (selectedMenuTagList.length < 2) {
-												setSelectedMenuTagIdList((prev) => {
-													return [...prev, tag.tagId];
-												});
-												setSelectedMenuTagList((prev) => {
-													return [...prev, tag.name];
-												});
-											} else {
-												alert("태그는 2개까지만 선택 가능합니다.");
-											}
-										}}>
-										#{tag.name}
-									</MenuTagItemButton>
-								);
-							})}
-						</div>
-					</div>
+					</MenuTagWrapper>
 				</MenuRegisterModalItemContainer>
 
 				<div className='w-full flex'>

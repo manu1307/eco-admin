@@ -135,7 +135,7 @@ export default function Header() {
 		}).then((res) => {
 			setStoreList(res.data.data.content);
 			!currentStore && setCurrentStore([res.data.data.content[0]]);
-			localStorage.setItem("storeId", currentStore.storeId);
+			localStorage.setItem("storeId", res.data.data.content[0].storeId);
 		});
 	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 	// console.log(storeList.length);
@@ -143,6 +143,7 @@ export default function Header() {
 	const logout = () => {
 		localStorage.removeItem("token");
 		localStorage.removeItem("role");
+		localStorage.removeItem("storeId");
 		window.location.href = "/";
 	};
 

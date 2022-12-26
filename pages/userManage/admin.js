@@ -3,7 +3,7 @@ import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	apiBaseAddressState,
 	currentStoreState,
@@ -128,13 +128,17 @@ const FormItemLayout = (props) => {
 	);
 };
 
-const role = localStorage.getItem("role");
 export default function UserAdmin() {
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
 	const currentStore = useRecoilValue(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 	const [modalIsOpen, setModalIsOpen] = useState(false);
-	const loginRole = useRecoilValue(loginRoleState);
+	const [loginRole, setLoginRole] = useRecoilState(loginRoleState);
+
+	useEffect(() => {
+		const role = localStorage.getItem("role");
+		setLoginRole(role);
+	}, [setLoginRole]);
 
 	const signUpPost = async (event) => {
 		event.preventDefault();
@@ -170,7 +174,7 @@ export default function UserAdmin() {
 
 	const sideItems = [
 		{ text: "회원 관리", url: "/userManage" },
-		role === "admin" ? { text: "관리자", url: "/userManage/admin" } : [],
+		loginRole === "admin" ? { text: "관리자", url: "/userManage/admin" } : [],
 	];
 	return (
 		<Layout sideItems={sideItems}>

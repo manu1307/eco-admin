@@ -114,7 +114,11 @@ export default function DashBoardMain() {
 	const currentStore = useRecoilValue(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-	const data = !currentStore?.storeId ? "" : "300";
+	useEffect(() => {
+		setStoreId(localStorage.getItem("storeId"));
+	}, []);
+
+	const data = !storeId ? "" : "300";
 
 	const date = new Date();
 	const year = date.getFullYear();
@@ -122,7 +126,7 @@ export default function DashBoardMain() {
 	const day = date.getUTCDate();
 
 	const sentSettingPage = () => {
-		window.location.href = "/storeSetting";
+		window.location.href = "/storeSetting/register";
 	};
 
 	return (
@@ -160,7 +164,7 @@ export default function DashBoardMain() {
 					</div>
 				</StoreNameWrapper>
 				<div>
-					{!currentStore.storeId && (
+					{!storeId && (
 						<div className='flex justify-center'>
 							<ModalWrapper>
 								<ModalContainer>

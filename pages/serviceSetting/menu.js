@@ -98,6 +98,8 @@ export default function ServiceSettingMenu() {
 	const [menuData, setMenuData] = useState([]);
 	const [tagData, setTagData] = useState();
 
+	const [loginRole, setLoginRole] = useState("");
+
 	const currentPageMenuData = useRef();
 
 	const [modalData, setModalData] = useState();
@@ -110,19 +112,17 @@ export default function ServiceSettingMenu() {
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		const storeId = localStorage.getItem("storeId");
-		const getMenuData = () => {
-			axios({
-				method: "get",
-				url: `https://ecomap.kr/api/v1/${storeId}/menus`,
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}).then((res) => {
-				setMenuData(res.data.data);
-			});
-		};
-
-		getMenuData();
+		axios({
+			method: "get",
+			url: `https://ecomap.kr/api/v1/${storeId}/menus`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			console.log(res.data.data);
+			res.data.statusCode < 300 && setMenuData(res.data.data);
+		});
+		setLoginRole(localStorage.getItem("role"));
 	}, [menuRegisterModalOpen, menuEditModalOpen, currentStore]);
 
 	const [itemOffset, setItemOffset] = useState(0);
@@ -152,8 +152,11 @@ export default function ServiceSettingMenu() {
 				{ text: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },
 				// { text: "알림 설정", url: "" },
-				{ text: "태그 설정", url: "/serviceSetting/tag" },
-				// { text: "댓글신고", url: "" },
+				// { text: "태그 설정", url: "/serviceSetting/tag" },
+				loginRole === "admin" && {
+					text: "관리자",
+					url: "/serviceSetting/admin",
+				},
 			]}>
 			<MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>
 				<ContentHeader firstCategory='서비스 설정' secondCategory='메뉴 설정' />
@@ -172,11 +175,13 @@ export default function ServiceSettingMenu() {
 								className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
 								등록
 							</button>
-							<MenuRegisterModal
-								open={menuRegisterModalOpen}
-								changeOpen={setMenuRegisterModalOpen}
-								tagData={tagData}
-							/>
+							{menuRegisterModalOpen && (
+								<MenuRegisterModal
+									open={menuRegisterModalOpen}
+									changeOpen={setMenuRegisterModalOpen}
+									tagData={tagData}
+								/>
+							)}
 						</EditButton>
 					</MenuSettingBodyHeader>
 					{currentPageMenuData.current?.map((data, index) => {
@@ -199,6 +204,7 @@ export default function ServiceSettingMenu() {
 													Authorization: `Bearer ${token}`,
 												},
 											}).then((res) => {
+												console.log(res.data.data);
 												openModal(res.data.data, data.menuId);
 											});
 										}}
@@ -210,12 +216,14 @@ export default function ServiceSettingMenu() {
 							</MenuSettingBodyContent>
 						);
 					})}
-					<MenuEditModal
-						open={menuEditModalOpen}
-						menuId={modalDataMenuId}
-						data={modalData}
-						changeOpen={setMenuEditModalOpen}
-					/>
+					{menuEditModalOpen && (
+						<MenuEditModal
+							open={menuEditModalOpen}
+							menuId={modalDataMenuId}
+							data={modalData}
+							changeOpen={setMenuEditModalOpen}
+						/>
+					)}
 					<div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'
