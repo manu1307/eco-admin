@@ -10,6 +10,9 @@ const AddressSearchModalBackground = styled.div`
 	top: 0;
 	left: 0;
 	z-index: 2;
+	@media screen and (max-width: 640px) {
+		width: 100%;
+	}
 `;
 const AddressSearchModalContainer = styled.div`
 	width: 500px;
@@ -27,7 +30,7 @@ const AddressSearchModalContainer = styled.div`
 	@media screen and (max-width: 640px) {
 		width: 90%;
 		top: 20px;
-		left: 0%;
+		left: 5%;
 		height: 500px;
 		margin: 0 auto;
 		overflow-y: scroll;

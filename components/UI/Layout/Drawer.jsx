@@ -1,6 +1,6 @@
 import axios from "axios";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
@@ -42,7 +42,7 @@ export default function Drawer() {
 	const [sideBarOpen, setSideBarOpen] = useRecoilState(SideBarOpenState);
 	const [storeList, setStoreList] = useRecoilState(storeListState);
 	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
-	const loginRole = useRecoilValue(loginRoleState);
+	const [loginRole, setLoginRole] = useState("");
 
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
@@ -55,10 +55,19 @@ export default function Drawer() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			setStoreList(res.data.data.content);
-			!currentStore && setCurrentStore([res.data.data.content[0]]);
-			localStorage.setItem("storeId", res.data.data.content[0].storeId);
+			if (res.data.data.content.length > 0) {
+				// console.log("data store executed");
+
+				setStoreList(res.data.data.content);
+				if (!currentStore) {
+					setCurrentStore([res.data.data.content[0]]);
+					localStorage.setItem("storeId", res.data.data.content[0].storeId);
+				} else {
+					localStorage.setItem("storeId", currentStore.storeId);
+				}
+			}
 		});
+		setLoginRole(localStorage.getItem("role"));
 	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 
 	const DrawerMenu = [
@@ -82,7 +91,12 @@ export default function Drawer() {
 			detail: [
 				{ name: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ name: "마감 할인 설정", url: "/serviceSetting/closingsale" },
-				{ name: "태그 설정", url: "/serviceSetting/tag" },
+				loginRole === "admin" && {
+					name: "관리자",
+					url: "/serviceSetting/admin",
+				},
+
+				// { name: "태그 설정", url: "/serviceSetting/tag" },
 			],
 		},
 	];
@@ -135,7 +149,9 @@ export default function Drawer() {
 								const selectedStore = storeList.filter(
 									(store) => store.name == event.target.value
 								);
+								console.log(selectedStore);
 								setCurrentStore(selectedStore);
+								console.log(selectedStore[0].storeId);
 								localStorage.setItem("storeId", selectedStore[0].storeId);
 							}}>
 							{storeList?.length > 0 ? (

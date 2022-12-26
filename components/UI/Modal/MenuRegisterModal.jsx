@@ -104,27 +104,6 @@ const MenuImageContent = styled.div`
 	}
 `;
 
-const MenuTagItemButton = styled.button`
-	padding: 1px 5px;
-	font-weight: 400;
-	color: #595959;
-	border-radius: 10px;
-	border: 1px solid #595959;
-	:hover {
-		color: black;
-	}
-`;
-const MenuTagSelected = styled.div`
-	padding: 1px 5px;
-	font-weight: 400;
-	color: black;
-	border-radius: 10px;
-	background-color: #a1d2ff;
-	border: 1px solid #5cb0ff;
-	:hover {
-		color: black;
-	}
-`;
 const MenuFileInput = styled.input`
 	position: absolute;
 	width: 1px;
@@ -230,22 +209,6 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 	const [menuImageUrl, setMenuImageUrl] = useState("");
 
 	const [itemOffset, setItemOffset] = useState(0);
-
-	useEffect(() => {
-		// const token = localStorage.getItem("token");
-		// const getTagData = () => {
-		// 	axios({
-		// 		method: "get",
-		// 		url: "https://ecomap.kr/api/v1/tags/type?type=menu",
-		// 		headers: {
-		// 			Authorization: `Bearer ${token}`,
-		// 		},
-		// 	}).then((res) => {
-		// 		setMenuTagList(res.data.data);
-		// 	});
-		// };
-		// getTagData();
-	}, []);
 
 	const registerMenu = () => {
 		const token = localStorage.getItem("token");

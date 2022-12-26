@@ -128,7 +128,7 @@ export default function MarketEdit() {
 					},
 				}).then((res) => {
 					const fetchedStoreData = res.data.data;
-					console.log(fetchedStoreData);
+					// console.log(fetchedStoreData);
 					setStoreData(fetchedStoreData);
 					setStoreName(fetchedStoreData.name);
 					setStorePhoneNumber(fetchedStoreData.phoneNumber);
@@ -272,7 +272,7 @@ export default function MarketEdit() {
 									id='address'
 									className=' bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block sm:hidden w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='주소'
-									value={storeAddressDetail}
+									value={storeAddress}
 									required
 									onClick={() => {
 										if (!storeAddress) {
@@ -283,6 +283,17 @@ export default function MarketEdit() {
 										setStoreAddress(() => {
 											event.target.value;
 										});
+									}}
+								/>
+								<input
+									type='text'
+									id='address'
+									value={storeAddressDetail}
+									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:hidden  w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+									placeholder='상세 주소'
+									required
+									onChange={(event) => {
+										setStoreAddressDetail(event.target.value);
 									}}
 								/>
 								{/* PC 주소 */}
@@ -357,20 +368,23 @@ export default function MarketEdit() {
 						</div>
 						<div className='text-slate-400'>
 							{storeImage?.map((image, index) => {
+								if (!image[0]) {
+									return;
+								}
 								const imageName = image[0].name;
 								return (
 									<div key={index}>
-										<Image src={image} width={50} height={50} alt='매장 사진' />
-										{/* {imageName}
+										{imageName}
 										<button
+											className='font-extrabold ml-2'
 											onClick={() => {
 												const filteredImage = storeImage?.filter((image) => {
-													return image[0].name != imageName;
+													return image[0]?.name != imageName;
 												});
 												setStoreImage(filteredImage);
 											}}>
 											X
-										</button>{" "} */}
+										</button>{" "}
 									</div>
 								);
 							})}
