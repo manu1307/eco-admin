@@ -6,6 +6,7 @@ import styled from "styled-components";
 import {
 	apiBaseAddressState,
 	apiTokenState,
+	currentStoreState,
 	loginRoleState,
 	storeListState,
 } from "../states/global/globalState";
@@ -72,6 +73,7 @@ export default function SignIn() {
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 	const [globalLoginToken, setGlobalLoginToken] = useRecoilState(apiTokenState);
 	const [loginRole, setLoginRole] = useRecoilState(loginRoleState);
+	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
 
 	const onChangeLoginId = (event) => {
 		setLoginId(() => event.target.value);
@@ -99,9 +101,8 @@ export default function SignIn() {
 				if (loginToken) {
 					setGlobalLoginToken(loginToken.current);
 					localStorage.setItem("token", loginToken.current);
-					window.location.href = "/dashboard";
 					setLoginRole(localStorage.getItem("role"));
-					localStorage.setItem("storeId", 1);
+					window.location.href = "/dashboard";
 				}
 			} else {
 				alert("아이디, 비밀번호를 다시 확인해주세요.");
