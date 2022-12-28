@@ -6,6 +6,8 @@ import { useRecoilValue } from "recoil";
 import { apiBaseAddressState } from "../../states/global/globalState";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
+import CodeRegisterModal from "../../components/ServiceSetting/CodeRegisterModal";
+import CodeEditModal from "../../components/ServiceSetting/CodeEditModal";
 
 const AdminPageContainer = styled.div`
 	width: 100%;
@@ -74,15 +76,21 @@ export default function AdminCode() {
 	const [adminCode, setAdminCode] = useState();
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
-	// const [codeName, setCodeName] = useState("");
 	// const [codeDesc, setCodeDesc] = useState("");
-	// const [codeGroup, setCodeGroup] = useState("");
+	const [codeGroup, setCodeGroup] = useState();
+	const [selectedGroup, setSelectedGroup] = useState("all");
 
-	const [codeList, setCodeList] = useState();
+	// 모달 관련 state
+	const [codeRegisterModalOpen, setCodeRegisterModalOpen] = useState(false);
+	const [codeEditModalOpen, setCodeEditModalOpen] = useState(false);
+	const [editModalCodeData, setEditModalCodeData] = useState();
+	const [editModalCodeId, setEditModalCodeId] = useState();
 
+	const [codeList, setCodeList] = useState([]);
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		setLoginRole(localStorage.getItem("role"));
+
 		axios({
 			method: "get",
 			url: `${BASEURL}/api/v1/codes`,
@@ -90,40 +98,68 @@ export default function AdminCode() {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
-			setCodeList(res.data.data);
+			const responseData = res.data.data;
+
+			const set = new Set();
+			responseData.map((code) => {
+				set.add(code.group);
+			});
+			setCodeGroup([...set]);
 		});
 	}, [BASEURL]);
 
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		const codeUrl =
+			selectedGroup === "all"
+				? `${BASEURL}/api/v1/codes`
+				: `${BASEURL}/api/v1/codes/type?type=${selectedGroup}`;
+		axios({
+			method: "get",
+			url: codeUrl,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			const responseData = res.data.data;
+			setCodeList(responseData);
+		});
+		setLoginRole(localStorage.getItem("role"));
+		axios({
+			method: "get",
+			url: `${BASEURL}/api/v1/codes/`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			console.log(res.data.data);
+		});
+	}, [BASEURL, codeRegisterModalOpen, selectedGroup]);
+
+	//페이지네이션
 	const [itemOffset, setItemOffset] = useState(0);
 	const itemsPerPage = 10;
 	const endOffset = itemOffset + itemsPerPage;
 	const currentItems = codeList?.slice(itemOffset, endOffset);
 
 	const pageCount = Math.ceil(codeList?.length / itemsPerPage);
-
-	const registerCode = () => {
-		const token = localStorage.getItem("token");
-		axios({
-			method: "post",
-			url: `${BASEURL}/api/v1/codes`,
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-			data: {
-				name: codeName,
-				desc: codeDesc,
-				group: codeGroup,
-			},
-		}).then((res) => console.log(res.data));
+	const handlePageClick = (event) => {
+		const newOffset = (event.selected * itemsPerPage) % menuData.length;
+		setItemOffset(newOffset);
 	};
 
+	//수정 모달 열기
+	const openEditModal = (data, id) => {
+		setEditModalCodeData(data);
+		setEditModalCodeId(id);
+	};
 	return (
 		<Layout
 			sideItems={[
 				{ text: "단골 스탬프 설정", url: "/serviceSetting" },
 				{ text: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },
-				{
+				loginRole === "admin" && {
 					text: "관리자",
 					url: "/serviceSetting/admin",
 				},
@@ -138,77 +174,84 @@ export default function AdminCode() {
 					secondCategory='관리자 코드 설정'
 				/>
 				<CodeSettingBody className='flex flex-col items-center'>
+					<div className='w-full mb-5'>
+						<select
+							className='border-2 border-gray-400 rounded-full'
+							onChange={(event) => {
+								setSelectedGroup(event.target.value);
+							}}>
+							<option value='all'>전체</option>
+							{codeGroup?.map((code, index) => {
+								return <option key={index}>{code}</option>;
+							})}
+						</select>
+					</div>
 					<CodeSettingBodyHeader className='flex justify-between px-5 items-center'>
-						<div>그룹</div>
-						<div>코드</div>
-						<div>이름</div>
-						<div>description</div>
-						<div>order.</div>
-						<div>delYn</div>
+						<div className='basis-1/12'>Id</div>
+						<div className='basis-1/12'>그룹</div>
+						<div className='basis-2/12'>코드</div>
+						<div className='basis-1/12'>이름</div>
+						<div className='basis-4/12'>description</div>
+						<div className='basis-1/12'>order.</div>
+						<div className='basis-1/12'>delYn</div>
 						<button
 							type='button'
 							onClick={() => {
-								setMenuRegisterModalOpen(true);
+								setCodeRegisterModalOpen(true);
 							}}
 							className='text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center'>
 							등록
 						</button>
-						{/* {menuRegisterModalOpen && (
-								<MenuRegisterModal
-									open={menuRegisterModalOpen}
-									changeOpen={setMenuRegisterModalOpen}
-									tagData={tagData}
-								/>
-							)} */}
+						{codeRegisterModalOpen && (
+							<CodeRegisterModal
+								open={codeRegisterModalOpen}
+								changeOpen={setCodeRegisterModalOpen}
+							/>
+						)}
 					</CodeSettingBodyHeader>
 					{currentItems?.map((data, index) => {
 						return (
-							<CodeSettingBodyContent key={index}>
-								<div>
-									<input type='checkbox' />
+							<CodeSettingBodyContent
+								className='flex justify-between px-5'
+								key={index}>
+								<div className='basis-1/12'>
+									{selectedGroup === "all" ? data.shopCommonCodeId : data.id}
 								</div>
-								{/* <div>{data.menuId && data.menuId}</div>
-								<div>{data.name}</div>
-								<div>{data.price}원</div>{" "}
-								<EditButton>
-									<button
-										onClick={() => {
-											const token = localStorage.getItem("token");
-											axios({
-												method: "get",
-												url: `https://ecomap.kr/api/v1/menus/${data.menuId}`,
-												headers: {
-													Authorization: `Bearer ${token}`,
-												},
-											}).then((res) => {
-												console.log(res.data.data);
-												openModal(res.data.data, data.menuId);
-											});
-										}}
-										type='button'
-										className='text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
-										수정
-									</button>
-								</EditButton> */}
+								<div className='basis-1/12'>
+									{selectedGroup === "all" ? data.group : selectedGroup}
+								</div>
+								<div className='basis-2/12'>{data.code}</div>
+								<div className='basis-1/12'>{data.name}</div>
+								<div className='basis-4/12'>{data.desc}</div>
+								<div className='basis-1/12'>{data.orderNo}</div>
+								<div className='basis-1/12'></div>
+								<button
+									type='button'
+									onClick={() => {
+										openEditModal(data, data.shopCommonCodeId);
+									}}
+									className=' text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs sm:text-sm px-1 py-1 sm:px-5 sm:py-2.5 text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
+									수정
+								</button>
 							</CodeSettingBodyContent>
 						);
 					})}
-					{/* {menuEditModalOpen && (
-						<MenuEditModal
-							open={menuEditModalOpen}
-							menuId={modalDataMenuId}
-							data={modalData}
-							changeOpen={setMenuEditModalOpen}
+					{codeEditModalOpen && (
+						<CodeEditModal
+							open={codeEditModalOpen}
+							codeId={editModalCodeId}
+							data={editModalCodeData}
+							changeOpen={setCodeEditModalOpen}
 						/>
-					)} */}
+					)}
 					<div className='w-full mt-5 '>
 						<ReactPaginate
 							className='w-full flex gap-5 justify-center'
 							breakLabel='...'
 							nextLabel='다음 >'
-							// onPageChange={handlePageClick}
+							onPageChange={handlePageClick}
 							pageRangeDisplayed={3}
-							// pageCount={pageCount}
+							pageCount={pageCount}
 							previousLabel='< 이전'
 							renderOnZeroPageCount={null}
 						/>

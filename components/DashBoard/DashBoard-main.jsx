@@ -117,7 +117,7 @@ export default function DashBoardMain() {
 	const [storeList, setStoreList] = useRecoilState(storeListState);
 	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
-	console.log(currentStore);
+	// console.log(currentStore);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
