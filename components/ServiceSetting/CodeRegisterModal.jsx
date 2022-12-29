@@ -47,7 +47,7 @@ const CodeRegisterModalContainer = styled.div`
 		left: 5%;
 		position: absolute;
 		padding: 15px;
-		height: 700px;
+		height: auto;
 		margin: 0 auto;
 		overflow-y: scroll;
 		display: flex;

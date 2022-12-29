@@ -99,14 +99,13 @@ export default function AdminCode() {
 			},
 		}).then((res) => {
 			const responseData = res.data.data;
-
 			const set = new Set();
 			responseData.map((code) => {
 				set.add(code.group);
 			});
 			setCodeGroup([...set]);
 		});
-	}, [BASEURL]);
+	}, [BASEURL, codeRegisterModalOpen]);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
@@ -134,7 +133,7 @@ export default function AdminCode() {
 		}).then((res) => {
 			console.log(res.data.data);
 		});
-	}, [BASEURL, codeRegisterModalOpen, selectedGroup]);
+	}, [BASEURL, codeRegisterModalOpen, selectedGroup, codeEditModalOpen]);
 
 	//페이지네이션
 	const [itemOffset, setItemOffset] = useState(0);
@@ -150,6 +149,7 @@ export default function AdminCode() {
 
 	//수정 모달 열기
 	const openEditModal = (data, id) => {
+		setCodeEditModalOpen(true);
 		setEditModalCodeData(data);
 		setEditModalCodeId(id);
 	};
@@ -187,13 +187,13 @@ export default function AdminCode() {
 						</select>
 					</div>
 					<CodeSettingBodyHeader className='flex justify-between px-5 items-center'>
-						<div className='basis-1/12'>Id</div>
-						<div className='basis-1/12'>그룹</div>
+						<div className='hidden sm:basis-1/12 sm:block'>Id</div>
+						<div className='hidden sm:basis-1/12 sm:block'>그룹</div>
 						<div className='basis-2/12'>코드</div>
-						<div className='basis-1/12'>이름</div>
-						<div className='basis-4/12'>description</div>
-						<div className='basis-1/12'>order.</div>
-						<div className='basis-1/12'>delYn</div>
+						<div className='basis-2/12 sm:basis-1/12'>이름</div>
+						<div className='basis-6/12 sm:basis-4/12'>description</div>
+						<div className='hidden sm:basis-1/12 sm:block'>order.</div>
+						<div className='hidden sm:basis-1/12 sm:block'>delYn</div>
 						<button
 							type='button'
 							onClick={() => {
@@ -214,17 +214,19 @@ export default function AdminCode() {
 							<CodeSettingBodyContent
 								className='flex justify-between px-5'
 								key={index}>
-								<div className='basis-1/12'>
+								<div className='hidden sm:basis-1/12 sm:block'>
 									{selectedGroup === "all" ? data.shopCommonCodeId : data.id}
 								</div>
-								<div className='basis-1/12'>
+								<div className='hidden sm:basis-1/12 sm:block'>
 									{selectedGroup === "all" ? data.group : selectedGroup}
 								</div>
 								<div className='basis-2/12'>{data.code}</div>
-								<div className='basis-1/12'>{data.name}</div>
-								<div className='basis-4/12'>{data.desc}</div>
-								<div className='basis-1/12'>{data.orderNo}</div>
-								<div className='basis-1/12'></div>
+								<div className='basis-2/12 sm:basis-1/12'>{data.name}</div>
+								<div className='basis-6/12 sm:basis-4/12'>{data.desc}</div>
+								<div className='hidden sm:basis-1/12 sm:block'>
+									{data.orderNo}
+								</div>
+								<div className='hidden sm:basis-1/12 sm:block'></div>
 								<button
 									type='button'
 									onClick={() => {
