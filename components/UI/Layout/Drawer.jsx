@@ -60,9 +60,12 @@ export default function Drawer() {
 
 				setStoreList(res.data.data.content);
 				if (!currentStore) {
-					setCurrentStore([res.data.data.content[0]]);
+					// console.log("no current Store");
+					setCurrentStore(res.data.data.content[0]);
 					localStorage.setItem("storeId", res.data.data.content[0].storeId);
 				} else {
+					// console.log("there is current Store");
+					// 					console.log(currentStore);
 					localStorage.setItem("storeId", currentStore.storeId);
 				}
 			}
@@ -91,10 +94,14 @@ export default function Drawer() {
 			detail: [
 				{ name: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ name: "마감 할인 설정", url: "/serviceSetting/closingsale" },
-				// loginRole === "admin" && {
-				// 	name: "관리자",
-				// 	url: "/serviceSetting/admin",
-				// },
+				loginRole === "admin" && {
+					name: "관리자",
+					url: "/serviceSetting/admin",
+				},
+				loginRole === "admin" && {
+					name: "코드 등록",
+					url: "/serviceSetting/adminCode",
+				},
 
 				// { name: "태그 설정", url: "/serviceSetting/tag" },
 			],
@@ -149,22 +156,15 @@ export default function Drawer() {
 								const selectedStore = storeList.filter(
 									(store) => store.name == event.target.value
 								);
-								console.log(selectedStore);
-								setCurrentStore(selectedStore);
-								console.log(selectedStore[0].storeId);
+								setCurrentStore(selectedStore[0]);
 								localStorage.setItem("storeId", selectedStore[0].storeId);
-							}}>
-							{storeList?.length > 0 ? (
+							}}
+							value={currentStore.name}>
+							{storeList.length > 0 ? (
 								storeList.map((store, index) => {
-									// console.log(currentStore);
-									const selected = store.name == currentStore.name;
+									const selected = currentStore.name === store.name;
 									return (
-										<SelectOption
-											key={index}
-											onChange={(event) => {
-												setCurrentStore(event.target.value);
-											}}
-											selected={selected}>
+										<SelectOption key={index} selected={selected}>
 											{store.name}
 										</SelectOption>
 									);
@@ -177,14 +177,14 @@ export default function Drawer() {
 					{DrawerMenu.map((menuItem, index) => {
 						return (
 							<li key={index}>
-								<Link href={menuItem.bnameURL}>
-									<a>{menuItem.bname}</a>
-								</Link>
+								<Link href={menuItem.bnameURL}>{menuItem.bname}</Link>
 								{menuItem.detail?.map((detailMenu, index) => {
 									return (
-										<Link key={index} href={detailMenu.url}>
-											<a className='indent-2'>- {detailMenu.name}</a>
-										</Link>
+										detailMenu.url && (
+											<Link key={index} href={detailMenu.url}>
+												<a className='indent-2'>- {detailMenu.name}</a>
+											</Link>
+										)
 									);
 								})}
 							</li>

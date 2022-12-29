@@ -9,6 +9,7 @@ import Box from "./Box";
 import {
 	apiBaseAddressState,
 	currentStoreState,
+	storeListState,
 } from "../../states/global/globalState";
 
 const DashBoardWrapper = styled.div`
@@ -110,10 +111,40 @@ const BoxWrapper = styled.div`
 `;
 
 export default function DashBoardMain() {
+	// console.log("대시보드 먼저");
+
 	const [storeId, setStoreId] = useState();
-	const currentStore = useRecoilValue(currentStoreState);
+	const [storeList, setStoreList] = useRecoilState(storeListState);
+	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
-	console.log(currentStore);
+	// console.log(currentStore);
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		axios({
+			method: "get",
+			url: `${BASEURL}/api/v1/stores?page=0`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			if (res.data.data.content.length > 0) {
+				setStoreList(res.data.data.content);
+
+				if (!currentStore.name) {
+					// console.log(res.data.data.content[0]);
+					setCurrentStore(res.data.data.content[0]);
+					localStorage.setItem("storeId", res.data.data.content[0].storeId);
+				} else {
+					// console.log("there is current Store");
+					// console.log(currentStore);
+					localStorage.setItem("storeId", currentStore.storeId);
+				}
+			} else {
+				console.log(res.data.data);
+			}
+		});
+	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
 
 	useEffect(() => {
 		setStoreId(localStorage.getItem("storeId"));
@@ -156,8 +187,8 @@ export default function DashBoardMain() {
 							</span>
 						</EcoLevel>
 						<StoreName>
-							{currentStore ? (
-								currentStore?.name
+							{currentStore.name ? (
+								currentStore.name
 							) : (
 								<div className='text-sm'>가게를 등록해주세요</div>
 							)}

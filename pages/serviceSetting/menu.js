@@ -1,10 +1,10 @@
 import Layout from "../../components/UI/Layout/Layout";
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import MenuEditModal from "../../components/UI/Modal/MenuEditModal";
+import MenuEditModal from "../../components/ServiceSetting/MenuEditModal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
-import MenuRegisterModal from "../../components/UI/Modal/MenuRegisterModal";
+import MenuRegisterModal from "../../components/ServiceSetting/MenuRegisterModal";
 import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
@@ -146,16 +146,16 @@ export default function ServiceSettingMenu() {
 	return (
 		<Layout
 			sideItems={[
-				// { text: "텀블러 할인 설정", url: "" },
 				{ text: "단골 스탬프 설정", url: "/serviceSetting" },
-				// { text: "단골 리스트", url: "" },
 				{ text: "메뉴 설정", url: "/serviceSetting/menu" },
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },
-				// { text: "알림 설정", url: "" },
-				// { text: "태그 설정", url: "/serviceSetting/tag" },
-				loginRole === "admin" && {
+				{
 					text: "관리자",
 					url: "/serviceSetting/admin",
+				},
+				loginRole === "admin" && {
+					text: "코드 설정",
+					url: "/serviceSetting/adminCode",
 				},
 			]}>
 			<MenuSettingWrapper className={sideBarOpen ? "z-0" : "z-10"}>

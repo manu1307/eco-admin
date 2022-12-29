@@ -120,6 +120,7 @@ const MobileWrapper = styled.div`
 `;
 
 export default function Header() {
+	// console.log("header 먼저");
 	const [storeList, setStoreList] = useRecoilState(storeListState);
 	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
@@ -135,10 +136,12 @@ export default function Header() {
 		}).then((res) => {
 			if (res.data.data.content.length > 0) {
 				setStoreList(res.data.data.content);
-				if (!currentStore) {
-					setCurrentStore([res.data.data.content[0]]);
+				if (!currentStore.name) {
+					// console.log("no current Store");
+					setCurrentStore(res.data.data.content[0]);
 					localStorage.setItem("storeId", res.data.data.content[0].storeId);
 				} else {
+					// console.log("there is current Store");
 					// console.log(currentStore);
 					localStorage.setItem("storeId", currentStore.storeId);
 				}

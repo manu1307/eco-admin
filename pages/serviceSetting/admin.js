@@ -41,9 +41,13 @@ export default function ServiceSettingAdmin() {
 				{ text: "마감타임 설정", url: "/serviceSetting/closingsale" },
 				// { text: "알림 설정", url: "" },
 				// { text: "태그 설정", url: "/serviceSetting/tag" },
-				loginRole === "admin" && {
+				{
 					text: "관리자",
 					url: "/serviceSetting/admin",
+				},
+				loginRole === "admin" && {
+					text: "코드 설정",
+					url: "/serviceSetting/adminCode",
 				},
 			]}>
 			<AdminPageContainer>

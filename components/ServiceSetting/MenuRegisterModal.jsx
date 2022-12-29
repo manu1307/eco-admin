@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { currentStoreState } from "../../../states/global/globalState";
+import { currentStoreState } from "../../states/global/globalState";
 
 const MenuRegisterModalWrapper = styled.div``;
 const MenuRegisterModalBackground = styled.div`
