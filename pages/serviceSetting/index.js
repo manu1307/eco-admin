@@ -6,6 +6,7 @@ import StampCoupon from "../../components/ServiceSetting/Coupon";
 import { useRecoilValue } from "recoil";
 import {
 	apiBaseAddressState,
+	currentShopState,
 	currentStoreState,
 } from "../../states/global/globalState";
 import axios from "axios";
@@ -99,27 +100,28 @@ const StampGuideComment = styled.div`
 `;
 // const StampGuideCoupon = styled.div``;
 export default function Stamp() {
-	const currentStore = useRecoilValue(currentStoreState);
+	const currentShop = useRecoilValue(currentShopState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
-	const [storeAddress, setStoreAddress] = useState("");
+	const [shopAddress, setShopAddress] = useState("");
 	const [loginRole, setLoginRole] = useState("");
 
 	// 주소 정보 가져오기
 	useEffect(() => {
-		const storeId = localStorage.getItem("storeId");
+		const shopId = localStorage.getItem("shopId");
 		const token = localStorage.getItem("token");
-		axios({
-			method: "get",
-			url: `${BASEURL}/api/v1/stores/${storeId}`,
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		}).then((res) => {
-			// console.log(res.data.data);
-			setStoreAddress(res.data.data.addrDetail.trim());
-		});
+		shopId &&
+			axios({
+				method: "get",
+				url: `${BASEURL}/api/v1/shops/${shopId}`,
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}).then((res) => {
+				// console.log(res.data.data);
+				setShopAddress(res.data.data.addr.trim());
+			});
 		setLoginRole(localStorage.getItem("role"));
-	}, [BASEURL, currentStore, setStoreAddress]);
+	}, [BASEURL, currentShop, setShopAddress]);
 
 	const [currentStamp, setCurrentStamp] = useState("tumbler");
 	const secondCategory =
@@ -224,7 +226,7 @@ export default function Stamp() {
 						<div className='font-bold text-lg mb-3'>스타벅스 단골 스탬프</div>
 						<StampGuide>
 							<StampGuideComment>
-								<div className='p-3 text-sm'>{storeAddress}</div>
+								<div className='p-3 text-sm'>{shopAddress && shopAddress}</div>
 								<hr />
 								<div className='p-3 text-xl font-bold'>
 									10번 방문시 <br /> 아메리카노 무료

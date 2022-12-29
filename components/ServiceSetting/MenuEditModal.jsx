@@ -218,22 +218,22 @@ export default function MenuEditModal(props) {
 	const [menuImage, setMenuImage] = useState(data?.imageUrl && data?.imageUrl);
 	const [menuImageUrl, setMenuImageUrl] = useState(data?.imageUrl);
 
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-		const getTagData = () => {
-			axios({
-				method: "get",
-				url: "https://ecomap.kr/api/v1/tags/type?type=menu",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}).then((res) => {
-				// console.log(res.data.data.content);
-				// setMenuTagList((prev) => [...prev, res.data.data]);
-			});
-		};
-		getTagData();
-	}, []);
+	// useEffect(() => {
+	// 	const token = localStorage.getItem("token");
+	// 	const getTagData = () => {
+	// 		axios({
+	// 			method: "get",
+	// 			url: "https://ecomap.kr/api/v1/tags/type?type=menu",
+	// 			headers: {
+	// 				Authorization: `Bearer ${token}`,
+	// 			},
+	// 		}).then((res) => {
+	// 			// console.log(res.data.data.content);
+	// 			// setMenuTagList((prev) => [...prev, res.data.data]);
+	// 		});
+	// 	};
+	// 	getTagData();
+	// }, []);
 
 	const EditMenu = () => {
 		const token = localStorage.getItem("token");

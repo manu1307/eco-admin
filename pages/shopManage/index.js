@@ -6,6 +6,7 @@ import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import { useState } from "react";
 import {
 	apiBaseAddressState,
+	currentShopState,
 	currentStoreState,
 } from "../../states/global/globalState";
 import axios from "axios";
@@ -111,7 +112,7 @@ const SearchInput = (props) => {
 	return <SearchInputStyled type={type} placeholder={placeholder} />;
 };
 
-const StoreManageHeader = {
+const ShopManageHeader = {
 	order: [
 		"주문번호",
 		"주문날짜",
@@ -150,19 +151,18 @@ const CategoryName = {
 	coupon: "쿠폰 관리",
 };
 
-export default function StoreManage() {
+export default function ShopManage() {
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
-	const currentStore = useRecoilValue(currentStoreState);
+	const currentShop = useRecoilValue(currentShopState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
 	const [currentCategory, setCurrentCategory] = useState("order");
 	const getNormalStamp = () => {
 		const token = localStorage.getItem("token");
-
-		const storeId = currentStore[0].storeId;
+		const shopId = currentShop.shopId;
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/stamps/owner/${storeId}/basic`,
+			url: `${BASEURL}/api/v1/stamps/owner/${shopId}/basic`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -171,12 +171,12 @@ export default function StoreManage() {
 		});
 	};
 	const getOrder = () => {
-		const storeId = currentStore[0].storeId;
+		const shopId = currentShop.shopId;
 		const token = localStorage.getItem("token");
 
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/orders/owner/${storeId}`,
+			url: `${BASEURL}/api/v1/orders/owner/${shopId}`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -255,27 +255,17 @@ export default function StoreManage() {
 					</div>
 					<ContentSettingBodyHeader className='flex items-center justify-around'>
 						<div className='w-8 sm:w-32 text-center'>Check</div>
-						{StoreManageHeader[currentCategory].map((item, i) => {
+						{ShopManageHeader[currentCategory].map((item, i) => {
 							return <div key={i}>{item}</div>;
 						})}
-						{/* <div>사용자 ID</div>
-						<div>Date</div>
-						<div>Id</div>
-						<div>텀블러 스탬프</div>
-						<div>일반 스탬프</div> */}
 					</ContentSettingBodyHeader>
 					<ContentSettingBodyContent className='flex items-center justify-around'>
 						<div className='w-8 sm:w-32 text-center'>
 							<input type='checkbox' />
 						</div>
-						{StoreManageHeader[currentCategory].map((item, i) => {
+						{ShopManageHeader[currentCategory].map((item, i) => {
 							return <div key={i}>{item}</div>;
 						})}
-						{/* <div>철수</div>
-						<div>날짜</div>
-						<div>Id</div>
-						<div>20회</div>
-						<div>3회</div> */}
 					</ContentSettingBodyContent>
 				</ContentSettingBody>
 			</ContentSettingWrapper>

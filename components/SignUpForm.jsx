@@ -5,6 +5,7 @@ import GenderInput from "./UI/Input/GenderInput";
 import NormalInput from "./UI/Input/NormalInput";
 import axios from "axios";
 import Link from "next/link";
+import { useState } from "react";
 
 const AuthButton = styled.button`
 	border: 1px solid #00aea4;
@@ -77,39 +78,74 @@ export default function SignUpForm() {
 		gender,
 	} = SignUpData;
 
-	const PhoneAuth = (event) => {
+	const [businessConfirm, setBusinessConfirm] = useState(false);
+
+	const phoneAuth = (event) => {
 		event.preventDefault();
 		console.log("phone auth start");
+	};
+	const businessAuth = (event) => {
+		event.preventDefault();
+		axios({
+			method: "post",
+			url: `http://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${process.env.NEXT_PUBLIC_BUSSINESS_CONFIRM_KEY}`,
+			data: {
+				b_no: [businessNumber],
+			},
+			contentType: "application/json",
+			accept: "application/json",
+		})
+			.then((res) => {
+				console.log(res.data.data);
+				if (
+					res.data.data[0].tax_type ===
+					"국세청에 등록되지 않은 사업자등록번호입니다."
+				) {
+					alert("사업자 번호 인증에 실패하였습니다.");
+					return;
+				}
+				setBusinessConfirm(true);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	const signUpPost = async (event) => {
 		event.preventDefault();
-
-		axios({
-			method: "post",
-			url: "https://ecomap.kr/api/v1/members/signup",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			data: JSON.stringify({
-				loginId: id,
-				password: password,
-				confirmPassword: passwordConfirm,
-				name: name,
-				businessNumber: businessNumber && businessNumber,
-				phoneNumber: phoneNumber,
-				birthday: birthday,
-				gender: gender,
-			}),
-		}).then((response) => {
-			console.log(response);
-			if (response.data.statusCode < 300 && response.data.success === true) {
-				alert("로그인 창에서 다시 로그인해주세요.");
-				window.location.href = "/";
-			} else {
-				alert("입력을 확인해주세요");
+		if (businessNumber) {
+			if (!businessConfirm) {
+				alert("사업자 번호 인증을 완료해주세요");
+				return;
 			}
-		});
+		} else {
+			setBusinessConfirm(true);
+			axios({
+				method: "post",
+				url: "https://ecomap.kr/api/v1/members/signup",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				data: JSON.stringify({
+					loginId: id,
+					password: password,
+					confirmPassword: passwordConfirm,
+					name: name,
+					businessNumber: businessNumber && businessNumber,
+					phoneNumber: phoneNumber,
+					birthday: birthday,
+					gender: gender,
+				}),
+			}).then((response) => {
+				console.log(response);
+				if (response.data.statusCode < 300 && response.data.success === true) {
+					alert("로그인 창에서 다시 로그인해주세요.");
+					window.location.href = "/";
+				} else {
+					alert("입력을 확인해주세요");
+				}
+			});
+		}
 	};
 
 	const doubleCheckId = async () => {
@@ -195,7 +231,7 @@ export default function SignUpForm() {
 						/>
 					}
 					button={
-						<AuthButton onClick={PhoneAuth}>인증하기</AuthButton>
+						<AuthButton onClick={phoneAuth}>인증하기</AuthButton>
 					}></FormItemLayout>
 				<FormItemLayout
 					label='사업자번호'
@@ -207,7 +243,7 @@ export default function SignUpForm() {
 						/>
 					}
 					button={
-						<AuthButton onClick={PhoneAuth}>인증하기</AuthButton>
+						<AuthButton onClick={businessAuth}>인증하기</AuthButton>
 					}></FormItemLayout>
 				<FormItemLayout
 					label='생년월일'

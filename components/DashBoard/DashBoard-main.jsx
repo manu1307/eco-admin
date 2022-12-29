@@ -8,9 +8,12 @@ import Arrow from "../../assets/arrow-dashboard.svg";
 import Box from "./Box";
 import {
 	apiBaseAddressState,
+	currentShopState,
 	currentStoreState,
+	shopListState,
 	storeListState,
 } from "../../states/global/globalState";
+import { current } from "daisyui/src/colors";
 
 const DashBoardWrapper = styled.div`
 	padding: 28px;
@@ -114,41 +117,43 @@ export default function DashBoardMain() {
 	// console.log("대시보드 먼저");
 
 	const [storeId, setStoreId] = useState();
-	const [storeList, setStoreList] = useRecoilState(storeListState);
-	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
+	const [shopList, setShopList] = useRecoilState(shopListState);
+	const [currentShop, setCurrentShop] = useRecoilState(currentShopState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
-	// console.log(currentStore);
+	console.log(currentShop);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
+		setStoreId(localStorage.getItem("storeId"));
+
+		if (!token) {
+			alert("로그인을 해주세요");
+			window.location.href = "/";
+		}
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/stores?page=0`,
+			url: `${BASEURL}/api/v1/shops?page=0`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
 			if (res.data.data.content.length > 0) {
-				setStoreList(res.data.data.content);
+				setShopList(res.data.data.content);
 
-				if (!currentStore.name) {
+				if (!currentShop.name) {
 					// console.log(res.data.data.content[0]);
-					setCurrentStore(res.data.data.content[0]);
+					setCurrentShop(res.data.data.content[0]);
 					localStorage.setItem("storeId", res.data.data.content[0].storeId);
 				} else {
 					// console.log("there is current Store");
-					// console.log(currentStore);
-					localStorage.setItem("storeId", currentStore.storeId);
+					// console.log(currentShop);
+					localStorage.setItem("storeId", currentShop.storeId);
 				}
 			} else {
 				console.log(res.data.data);
 			}
 		});
-	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
-
-	useEffect(() => {
-		setStoreId(localStorage.getItem("storeId"));
-	}, []);
+	}, [BASEURL, setShopList, currentShop, setCurrentShop]);
 
 	const data = !storeId ? "" : "300";
 
@@ -187,8 +192,8 @@ export default function DashBoardMain() {
 							</span>
 						</EcoLevel>
 						<StoreName>
-							{currentStore.name ? (
-								currentStore.name
+							{currentShop.name ? (
+								currentShop.name
 							) : (
 								<div className='text-sm'>가게를 등록해주세요</div>
 							)}
@@ -215,10 +220,18 @@ export default function DashBoardMain() {
 					)}
 					<BoxWrapper className='justify-center mt-5 sm:flex sm:gap-x-5'>
 						<div className='w-full sm:inline-block'>
-							<Box title='텀블러 적립금' data={data} unit='P' />{" "}
+							<Box
+								title='텀블러 적립금'
+								data={currentShop.basePoint}
+								unit='P'
+							/>{" "}
 						</div>
 						<div className='w-full  sm:inline'>
-							<Box title='최저 결제 금액' data={data} unit='원' />{" "}
+							<Box
+								title='최저 결제 금액'
+								data={currentShop.basePrice}
+								unit='원'
+							/>{" "}
 						</div>
 						<div className='hidden w-full  sm:inline'>
 							<Box title='포인트 현황' data={data} unit='원' />

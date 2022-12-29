@@ -5,9 +5,9 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import {
 	apiBaseAddressState,
-	currentStoreState,
+	currentShopState,
 	loginRoleState,
-	storeListState,
+	shopListState,
 } from "../../../states/global/globalState";
 import { SideBarOpenState } from "../../../states/ServiceSetting/SideBarOpenState";
 
@@ -40,8 +40,8 @@ const SelectOption = styled.option`
 
 export default function Drawer() {
 	const [sideBarOpen, setSideBarOpen] = useRecoilState(SideBarOpenState);
-	const [storeList, setStoreList] = useRecoilState(storeListState);
-	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
+	const [shopList, setShopList] = useRecoilState(shopListState);
+	const [currentShop, setCurrentShop] = useRecoilState(currentShopState);
 	const [loginRole, setLoginRole] = useState("");
 
 	const BASEURL = useRecoilValue(apiBaseAddressState);
@@ -50,7 +50,7 @@ export default function Drawer() {
 		const token = localStorage.getItem("token");
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/stores`,
+			url: `${BASEURL}/api/v1/shops`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -58,20 +58,20 @@ export default function Drawer() {
 			if (res.data.data.content.length > 0) {
 				// console.log("data store executed");
 
-				setStoreList(res.data.data.content);
-				if (!currentStore) {
+				setShopList(res.data.data.content);
+				if (!currentShop) {
 					// console.log("no current Store");
-					setCurrentStore(res.data.data.content[0]);
+					setCurrentShop(res.data.data.content[0]);
 					localStorage.setItem("storeId", res.data.data.content[0].storeId);
 				} else {
 					// console.log("there is current Store");
-					// 					console.log(currentStore);
-					localStorage.setItem("storeId", currentStore.storeId);
+					// 					console.log(currentShop);
+					localStorage.setItem("storeId", currentShop.storeId);
 				}
 			}
 		});
 		setLoginRole(localStorage.getItem("role"));
-	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
+	}, [BASEURL, setShopList, currentShop, setCurrentShop]);
 
 	const DrawerMenu = [
 		{
@@ -80,13 +80,13 @@ export default function Drawer() {
 		},
 		{
 			bname: "매장 설정",
-			bnameURL: "/storeSetting",
-			detail: [{ name: "매장 등록", url: "/storeSetting/register" }],
+			bnameURL: "/shopSetting",
+			detail: [{ name: "매장 등록", url: "/shopSetting/register" }],
 		},
 		{
 			bname: "매장 관리",
-			bnameURL: "/storeManage",
-			detail: [{ name: "qr 코드", url: "/storeManage/qrCode" }],
+			bnameURL: "/shopManage",
+			detail: [{ name: "qr 코드", url: "/shopManage/qrCode" }],
 		},
 		{
 			bname: "서비스 설정",
@@ -153,16 +153,16 @@ export default function Drawer() {
 					<DropdownWrapper>
 						<SelectWrapper
 							onChange={(event) => {
-								const selectedStore = storeList.filter(
+								const selectedStore = shopList.filter(
 									(store) => store.name == event.target.value
 								);
-								setCurrentStore(selectedStore[0]);
+								setCurrentShop(selectedStore[0]);
 								localStorage.setItem("storeId", selectedStore[0].storeId);
 							}}
-							value={currentStore.name}>
-							{storeList.length > 0 ? (
-								storeList.map((store, index) => {
-									const selected = currentStore.name === store.name;
+							value={currentShop.name}>
+							{shopList.length > 0 ? (
+								shopList.map((store, index) => {
+									const selected = currentShop.name === store.name;
 									return (
 										<SelectOption key={index} selected={selected}>
 											{store.name}

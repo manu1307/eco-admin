@@ -3,7 +3,10 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { currentStoreState } from "../../states/global/globalState";
+import {
+	apiBaseAddressState,
+	currentShopState,
+} from "../../states/global/globalState";
 
 const MenuRegisterModalWrapper = styled.div``;
 const MenuRegisterModalBackground = styled.div`
@@ -170,8 +173,9 @@ const MenuRegisterModalItem = (props) => {
 };
 
 export default function MenuRegisterModal({ open, changeOpen }) {
-	const currentStore = useRecoilValue(currentStoreState);
-	// console.log(currentStore);
+	const BASEURL = useRecoilValue(apiBaseAddressState);
+	const currentShop = useRecoilValue(currentShopState);
+	// console.log(currentShop);
 	const [menuName, setMenuName] = useState("");
 	const [menuPrice, setMenuPrice] = useState("");
 	const [menuDescription, setMenuDescription] = useState("");
@@ -212,9 +216,9 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 
 	const registerMenu = () => {
 		const token = localStorage.getItem("token");
-		console.log(currentStore.storeId);
+		console.log(currentShop.storeId);
 		const menuData = {
-			storeId: currentStore.storeId,
+			storeId: currentShop.storeId,
 			name: menuName,
 			price: parseInt(menuPrice),
 			description: menuDescription ? menuDescription : null,
@@ -232,7 +236,7 @@ export default function MenuRegisterModal({ open, changeOpen }) {
 
 		axios({
 			method: "post",
-			url: "https://ecomap.kr/api/v1/menus",
+			url: `${BASEURL}/api/v1/menus`,
 			headers: {
 				"Content-Type": "multipart/form-data",
 				Authorization: `Bearer ${token}`,

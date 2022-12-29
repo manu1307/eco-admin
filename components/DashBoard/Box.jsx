@@ -40,12 +40,13 @@ const Stats = styled.div`
 
 export default function Box(props) {
 	const { title, data, unit } = props;
+
 	return (
 		<BoxWrapper>
 			<VerticalCenter>
 				<Title>{title}</Title>
 				<Data>
-					{data ? data : "-"}
+					{data >= 0 ? data : "-"}
 					<span>{unit}</span>
 				</Data>
 				<Stats>15.5% 상승</Stats>

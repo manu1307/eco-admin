@@ -25,7 +25,7 @@ export const storeAddrYCoordState = atom({
 	default: "",
 });
 
-export const storeAddrState = selector({
+export const shopAddrState = selector({
 	key: "storeAddrState",
 	get: ({ get }) => {
 		const storeAddrDetail = get(storeAddrDetailState);
