@@ -6,6 +6,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { QrCodeReaderState } from "../../states/ServiceSetting/QrCodeReaderState";
 import {
 	apiBaseAddressState,
+	shopListState,
 	storeListState,
 } from "../../states/global/globalState";
 import axios from "axios";
@@ -34,9 +35,9 @@ export default function QrCode() {
 
 	const [qrCodeResult, setQrCodeResult] = useRecoilState(QrCodeReaderState);
 
-	const storeData = useRecoilValue(storeListState);
-	const testStore = storeData[0];
-	console.log(testStore);
+	const shopData = useRecoilValue(shopListState);
+	const testShop = shopData[0];
+	console.log(testShop);
 
 	const onReadResult = (result, error) => {
 		if (!result) {
@@ -58,7 +59,7 @@ export default function QrCode() {
 		const token = localStorage.getItem("token");
 
 		const data = {
-			storeId: testStore.storeId,
+			storeId: testShop.storeId,
 			loginId: qrCodeResult,
 			price: 5000,
 			totalCoffeeCount: parseInt(totalCoffeeCount),
@@ -79,7 +80,7 @@ export default function QrCode() {
 				`아이디 : ${qrCodeResult} \n 총 잔개수 : ${totalCoffeeCount} \n 텀블러 : ${tumblerCount}`
 			);
 			if (res.status < 300) {
-				window.location.href = "/storeManage";
+				window.location.href = "/shopManage";
 			}
 		});
 	};
@@ -87,8 +88,8 @@ export default function QrCode() {
 	return (
 		<Layout
 			sideItems={[
-				{ text: "매장 관리", url: "/storeManage" },
-				{ text: "QR 태그", url: "/storeManage/qrCode" },
+				{ text: "매장 관리", url: "/shopManage" },
+				{ text: "QR 태그", url: "/shopManage/qrCode" },
 			]}>
 			{!data && !qrCodeResult && (
 				<>

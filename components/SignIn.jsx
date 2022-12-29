@@ -6,9 +6,8 @@ import styled from "styled-components";
 import {
 	apiBaseAddressState,
 	apiTokenState,
-	currentStoreState,
+	currentShopState,
 	loginRoleState,
-	storeListState,
 } from "../states/global/globalState";
 
 const Wrapper = styled.div`
@@ -73,7 +72,7 @@ export default function SignIn() {
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 	const [globalLoginToken, setGlobalLoginToken] = useRecoilState(apiTokenState);
 	const [loginRole, setLoginRole] = useRecoilState(loginRoleState);
-	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
+	const [currentShop, setCurrentShop] = useRecoilState(currentShopState);
 
 	const onChangeLoginId = (event) => {
 		setLoginId(() => event.target.value);

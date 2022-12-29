@@ -8,7 +8,7 @@ import MenuRegisterModal from "../../components/ServiceSetting/MenuRegisterModal
 import axios from "axios";
 import ContentHeader from "../../components/UI/Content/ContentHeader";
 import ReactPaginate from "react-paginate";
-import { currentStoreState } from "../../states/global/globalState";
+import { currentShopState } from "../../states/global/globalState";
 
 const MenuSettingWrapper = styled.div`
 	width: 100%;
@@ -93,10 +93,10 @@ const EditButton = styled.div`
 `;
 
 export default function ServiceSettingMenu() {
-	const currentStore = useRecoilValue(currentStoreState);
-	// console.log(currentStore[0].storeId);
+	const currentShop = useRecoilValue(currentShopState);
+	// console.log(currentShop[0].shopId);
 	const [menuData, setMenuData] = useState([]);
-	const [tagData, setTagData] = useState();
+	// const [tagData, setTagData] = useState();
 
 	const [loginRole, setLoginRole] = useState("");
 
@@ -111,10 +111,10 @@ export default function ServiceSettingMenu() {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-		const storeId = localStorage.getItem("storeId");
+		const shopId = localStorage.getItem("shopId");
 		axios({
 			method: "get",
-			url: `https://ecomap.kr/api/v1/${storeId}/menus`,
+			url: `https://ecomap.kr/api/v1/${shopId}/menus`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -123,7 +123,7 @@ export default function ServiceSettingMenu() {
 			res.data.statusCode < 300 && setMenuData(res.data.data);
 		});
 		setLoginRole(localStorage.getItem("role"));
-	}, [menuRegisterModalOpen, menuEditModalOpen, currentStore]);
+	}, [menuRegisterModalOpen, menuEditModalOpen, currentShop]);
 
 	const [itemOffset, setItemOffset] = useState(0);
 	const itemsPerPage = 10;
@@ -179,7 +179,7 @@ export default function ServiceSettingMenu() {
 								<MenuRegisterModal
 									open={menuRegisterModalOpen}
 									changeOpen={setMenuRegisterModalOpen}
-									tagData={tagData}
+									// tagData={tagData}
 								/>
 							)}
 						</EditButton>

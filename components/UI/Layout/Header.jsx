@@ -8,8 +8,8 @@ import Logo from "../../../assets/ecomap-logo.png";
 import {
 	apiBaseAddressState,
 	apiTokenState,
-	currentStoreState,
-	storeListState,
+	currentShopState,
+	shopListState,
 } from "../../../states/global/globalState";
 import Drawer from "./Drawer";
 
@@ -121,41 +121,41 @@ const MobileWrapper = styled.div`
 
 export default function Header() {
 	// console.log("header 먼저");
-	const [storeList, setStoreList] = useRecoilState(storeListState);
-	const [currentStore, setCurrentStore] = useRecoilState(currentStoreState);
+	const [shopList, setShopList] = useRecoilState(shopListState);
+	const [currentShop, setCurrentShop] = useRecoilState(currentShopState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		axios({
 			method: "get",
-			url: `${BASEURL}/api/v1/stores?page=0`,
+			url: `${BASEURL}/api/v1/shops?page=0`,
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		}).then((res) => {
 			if (res.data.data.content.length > 0) {
-				setStoreList(res.data.data.content);
-				if (!currentStore.name) {
+				setShopList(res.data.data.content);
+				if (!currentShop.name) {
 					// console.log("no current Store");
-					setCurrentStore(res.data.data.content[0]);
-					localStorage.setItem("storeId", res.data.data.content[0].storeId);
+					setCurrentShop(res.data.data.content[0]);
+					localStorage.setItem("shopId", res.data.data.content[0].shopId);
 				} else {
 					// console.log("there is current Store");
-					// console.log(currentStore);
-					localStorage.setItem("storeId", currentStore.storeId);
+					// console.log(currentShop);
+					localStorage.setItem("shopId", currentShop.shopId);
 				}
 			} else {
 				console.log(res.data.data);
 			}
 		});
-	}, [BASEURL, setStoreList, currentStore, setCurrentStore]);
-	// console.log(storeList.length);
+	}, [BASEURL, setShopList, currentShop, setCurrentShop]);
+	// console.log(shopList.length);
 
 	const logout = () => {
 		localStorage.removeItem("token");
 		localStorage.removeItem("role");
-		localStorage.removeItem("storeId");
+		localStorage.removeItem("shopId");
 		window.location.href = "/";
 	};
 
@@ -175,10 +175,10 @@ export default function Header() {
 						<Link href='/dashboard'>
 							<NavButton>대시보드</NavButton>
 						</Link>
-						<Link href='/storeSetting'>
+						<Link href='/shopSetting'>
 							<NavButton>매장 설정</NavButton>
 						</Link>
-						<Link href='/storeManage'>
+						<Link href='/shopManage'>
 							<NavButton>매장 관리</NavButton>
 						</Link>
 						<Link href='/serviceSetting'>
@@ -191,19 +191,19 @@ export default function Header() {
 						<DropdownWrapper>
 							<SelectWrapper
 								onChange={(event) => {
-									const selectedStore = storeList.filter(
-										(store) => store.name == event.target.value
+									const selectedShop = shopList.filter(
+										(shop) => shop.name == event.target.value
 									);
-									setCurrentStore(selectedStore[0]);
-									localStorage.setItem("storeId", selectedStore[0].storeId);
+									setCurrentShop(selectedShop[0]);
+									localStorage.setItem("shopId", selectedShop[0].shopId);
 								}}
-								value={currentStore.name}>
-								{storeList.length > 0 ? (
-									storeList.map((store, index) => {
-										const selected = currentStore.name === store.name;
+								value={currentShop.name}>
+								{shopList.length > 0 ? (
+									shopList.map((shop, index) => {
+										const selected = currentShop.name === shop.name;
 										return (
 											<SelectOption key={index} selected={selected}>
-												{store.name}
+												{shop.name}
 											</SelectOption>
 										);
 									})

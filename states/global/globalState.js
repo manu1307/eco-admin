@@ -8,12 +8,12 @@ export const apiTokenState = atom({
 	key: "apiTokenState",
 	default: "",
 });
-export const storeListState = atom({
-	key: "storeListState",
+export const shopListState = atom({
+	key: "shopListState",
 	default: [],
 });
-export const currentStoreState = atom({
-	key: "currentStoreState",
+export const currentShopState = atom({
+	key: "currentShopState",
 	default: {},
 });
 export const loginRoleState = atom({

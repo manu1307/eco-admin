@@ -3,12 +3,16 @@ import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import {
 	apiBaseAddressState,
+	currentShopState,
 	currentStoreState,
 } from "../../states/global/globalState";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { storeAddrState } from "../../states/StoreSetting/storeAddressState";
+import {
+	shopAddrState,
+	storeAddrState,
+} from "../../states/StoreSetting/storeAddressState";
 import AddressSearchModal from "../../components/UI/Modal/AddressSearchModal";
 
 const StoreEditingContainer = styled.div`
@@ -56,115 +60,89 @@ const StoreTagSelected = styled.div`
 
 export default function MarketEdit() {
 	const BASEURL = useRecoilValue(apiBaseAddressState);
-	const currentStore = useRecoilValue(currentStoreState);
+	const currentShop = useRecoilValue(currentShopState);
 
-	const [storeList, setStoreList] = useState([]);
-	const [selectedStore, setSelectedStore] = useState({});
-	const [storeData, setStoreData] = useState({});
+	const [shopList, setShopList] = useState([]);
+	const [selectedShop, setSelectedShop] = useState({});
+	const [shopData, setShopData] = useState({});
 
-	const [storeName, setStoreName] = useState();
-	const [storePhoneNumber, setStorePhoneNumber] = useState();
-	const [storeDescription, setStoreDescription] = useState();
-	const [storeAddress, setStoreAddress] = useState();
-	const [storeImage, setStoreImage] = useState();
+	const [shopName, setShopName] = useState();
+	const [shopPhoneNumber, setShopPhoneNumber] = useState();
+	const [shopDescription, setShopDescription] = useState();
+	const [shopAddress, setShopAddress] = useState();
+	const [shopImage, setShopImage] = useState();
 
-	const storeAddressData = useRecoilValue(storeAddrState);
-	const [storeAddressDetail, setStoreAddressDetail] = useState("");
+	const shopAddressData = useRecoilValue(shopAddrState);
+	const [shopAddressDetail, setShopAddressDetail] = useState("");
 
 	const [addressSearchModalOpen, setAddressSearchModalOpen] = useState(false);
 
-	const [storeTagList, setStoreTagList] = useState([]);
+	const [shopTagList, setShopTagList] = useState([]);
 
-	const [selectedStoreTagList, setSelectedStoreTagList] = useState([]);
-	const [tagStoresList, setTagStoresList] = useState([]);
-
-	//가게 태그 가져오기
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-		const getTagData = () => {
-			axios({
-				method: "get",
-				url: `${BASEURL}/api/v1/tags/type?type=store&page=0`,
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			}).then((res) => {
-				// console.log(res.data.data.content);
-				const tagData = res.data.data.content;
-				// const selectedTag = tagData.filter((tag) => tag.check == true);
-				setStoreTagList(tagData);
-				// setSelectedStoreTagList(selectedTag);
-			});
-		};
-		getTagData();
-	}, [BASEURL]);
+	const [selectedShopTagList, setSelectedShopTagList] = useState([]);
+	const [tagShopsList, setTagShopsList] = useState([]);
 
 	//가게 리스트 가져오기
 	useEffect(() => {
-		if (!selectedStore.name) {
+		if (!selectedShop.name) {
 			const token = localStorage.getItem("token");
 			axios({
 				method: "get",
-				url: `${BASEURL}/api/v1/stores`,
+				url: `${BASEURL}/api/v1/shops`,
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			}).then((res) => {
-				setStoreList(res.data);
+				setShopList(res.data);
 			});
 		}
-	}, [BASEURL, selectedStore.name]);
+	}, [BASEURL, selectedShop.name]);
 
 	//가게 정보 정보 조회
 	useEffect(() => {
-		const getSpecificStoreData = () => {
-			const storeId = localStorage.getItem("storeId");
-			if (storeId) {
-				axios({
-					method: "get",
-					url: `${BASEURL}/api/v1/stores/${storeId}`,
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("token")}`,
-					},
-				}).then((res) => {
-					const fetchedStoreData = res.data.data;
-					// console.log(fetchedStoreData);
-					setStoreData(fetchedStoreData);
-					setStoreName(fetchedStoreData.name);
-					setStorePhoneNumber(fetchedStoreData.phoneNumber);
-					setStoreDescription(fetchedStoreData.description);
-					setStoreImage(fetchedStoreData.images);
-					setStoreAddressDetail(fetchedStoreData.addrDetail.trim());
-					const checkedStoreTagList = fetchedStoreData.tagList.filter(
-						(tag) => tag.check == true
-					);
-					setSelectedStoreTagList((prev) => {
-						return checkedStoreTagList;
-					});
-					setTagStoresList(fetchedStoreData.tagList);
-				});
-			} else {
-				return;
-			}
-		};
-		getSpecificStoreData();
-	}, [selectedStore, BASEURL, currentStore]);
+		const shopId = localStorage.getItem("shopId");
+		if (shopId) {
+			axios({
+				method: "get",
+				url: `${BASEURL}/api/v1/shops/${shopId}`,
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+			}).then((res) => {
+				const fetchedShopData = res.data.data;
+				// console.log(fetchedShopData);
+				setShopData(fetchedShopData);
+				setShopName(fetchedShopData.name);
+				setShopPhoneNumber(fetchedShopData.phone);
+				setShopDescription(fetchedShopData.desc);
+				setShopImage(fetchedShopData.images);
+				setShopAddressDetail(fetchedShopData.addr.trim());
+
+				// setSelectedShopTagList((prev) => {
+				// 	return checkedStoreTagList;
+				// });
+				setTagShopsList(fetchedShopData.tagList);
+			});
+		} else {
+			return;
+		}
+	}, [selectedShop, BASEURL, currentShop]);
 	//가게 정보 수정
 	const editStore = () => {
 		const token = localStorage.getItem("token");
-		const storeId = localStorage.getItem("storeId");
+		const shopId = localStorage.getItem("shopId");
 
 		const storeInfo = {
-			name: storeName,
-			phoneNumber: storePhoneNumber,
-			description: storeDescription,
-			addrDetail: `${storeAddressData.addrDetail} ${storeAddressDetail}`,
-			addrDepth01: storeAddressData.addrDepth01,
-			addrDepth02: storeAddressData.addrDepth02,
-			addrDepth03: storeAddressData.addrDepth03,
-			latitude: Number(storeAddressData.latitude),
-			longitude: Number(storeAddressData.longitude),
-			tagStores: tagStoresList,
+			name: shopName,
+			phone: shopPhoneNumber,
+			desc: shopDescription,
+			addrDetail: `${shopAddressData.addrDetail} ${shopAddressDetail}`,
+			addrDepth01: shopAddressData.addrDepth01,
+			addrDepth02: shopAddressData.addrDepth02,
+			addrDepth03: shopAddressData.addrDepth03,
+			latitude: Number(shopAddressData.latitude),
+			longitude: Number(shopAddressData.longitude),
+			// tagStores: tagShopsList,
 		};
 		const json = JSON.stringify(storeInfo);
 		const blob = new Blob([json], {
@@ -172,11 +150,11 @@ export default function MarketEdit() {
 		});
 		const formData = new FormData();
 		formData.append("updateStoreInfoRequest", blob);
-		formData.append("files", storeImage);
+		formData.append("files", shopImage);
 		// 이미지 변환 안하고 그냥 보내면 됨 (추후 DB 정해지는 대로 수정)
 		axios({
 			method: "put",
-			url: `https://ecomap.kr/api/v1/stores/${storeId}`,
+			url: `https://ecomap.kr/api/v1/shops/${shopId}`,
 			headers: {
 				"Content-Type": "multipart/form-data",
 				Authorization: `Bearer ${token}`,
@@ -213,12 +191,12 @@ export default function MarketEdit() {
 								<input
 									type='text'
 									id='store_name'
-									value={storeName}
+									value={shopName}
 									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='가게 이름'
 									required
 									onChange={(event) => {
-										setStoreName(event.target.value);
+										setShopName(event.target.value);
 									}}
 								/>
 							</div>
@@ -231,31 +209,31 @@ export default function MarketEdit() {
 								<input
 									type='tel'
 									id='phone'
-									value={storePhoneNumber}
+									value={shopPhoneNumber}
 									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='01012345678'
 									pattern='[0-9]{3}[0-9]{4}[0-9]{4}'
 									required
 									onChange={(event) => {
-										setStorePhoneNumber(event.target.value);
+										setShopPhoneNumber(event.target.value);
 									}}
 								/>
 							</div>
 						</div>
 						<div className='mb-2'>
 							<label
-								htmlFor='description'
+								htmlFor='desc'
 								className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
 								가게 한줄 설명
 							</label>
 							<input
 								type='text'
-								id='description'
-								value={storeDescription}
+								id='desc'
+								value={shopDescription}
 								className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 								placeholder='가게 설명입니다.'
 								onChange={(event) => {
-									setStoreDescription(event.target.value);
+									setShopDescription(event.target.value);
 								}}
 							/>
 						</div>
@@ -272,15 +250,15 @@ export default function MarketEdit() {
 									id='address'
 									className=' bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block sm:hidden w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='주소'
-									value={storeAddress}
+									value={shopAddress}
 									required
 									onClick={() => {
-										if (!storeAddress) {
+										if (!shopAddress) {
 											setAddressSearchModalOpen(true);
 										}
 									}}
 									onChange={(event) => {
-										setStoreAddress(() => {
+										setShopAddress(() => {
 											event.target.value;
 										});
 									}}
@@ -288,12 +266,12 @@ export default function MarketEdit() {
 								<input
 									type='text'
 									id='address'
-									value={storeAddressDetail}
+									value={shopAddressDetail}
 									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:hidden  w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='상세 주소'
 									required
 									onChange={(event) => {
-										setStoreAddressDetail(event.target.value);
+										setShopAddressDetail(event.target.value);
 									}}
 								/>
 								{/* PC 주소 */}
@@ -302,15 +280,15 @@ export default function MarketEdit() {
 									id='address'
 									className=' bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 hidden sm:block w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='주소'
-									value={storeAddress}
+									value={shopAddress}
 									required
 									onClick={() => {
-										if (!storeAddress) {
+										if (!shopAddress) {
 											setAddressSearchModalOpen(true);
 										}
 									}}
 									onChange={(event) => {
-										setStoreAddress(() => {
+										setShopAddress(() => {
 											event.target.value;
 										});
 									}}
@@ -318,12 +296,12 @@ export default function MarketEdit() {
 								<input
 									type='text'
 									id='address'
-									value={storeAddressDetail}
+									value={shopAddressDetail}
 									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 hidden sm:block w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='상세 주소'
 									required
 									onChange={(event) => {
-										setStoreAddressDetail(event.target.value);
+										setShopAddressDetail(event.target.value);
 									}}
 								/>{" "}
 							</div>
@@ -357,17 +335,17 @@ export default function MarketEdit() {
 									type='file'
 									onChange={(event) => {
 										if (event.target.files) {
-											setStoreImage((prev) => {
+											setShopImage((prev) => {
 												return [...prev, event.target.files];
 											});
-											console.log(storeImage);
+											console.log(shopImage);
 										}
 									}}
 								/>
 							</form>
 						</div>
 						<div className='text-slate-400'>
-							{storeImage?.map((image, index) => {
+							{shopImage?.map((image, index) => {
 								if (!image[0]) {
 									return;
 								}
@@ -378,10 +356,10 @@ export default function MarketEdit() {
 										<button
 											className='font-extrabold ml-2'
 											onClick={() => {
-												const filteredImage = storeImage?.filter((image) => {
+												const filteredImage = shopImage?.filter((image) => {
 													return image[0]?.name != imageName;
 												});
-												setStoreImage(filteredImage);
+												setShopImage(filteredImage);
 											}}>
 											X
 										</button>{" "}
@@ -396,7 +374,7 @@ export default function MarketEdit() {
 								</StoreRegisterModalItemLabel>
 								<div className='w-full'>
 									<div className='w-full flex flex-wrap m-0 gap-2 rounded-xl mb-3 sm:h-5'>
-										{selectedStoreTagList?.map((tag, i) => {
+										{selectedShopTagList?.map((tag, i) => {
 											const { tagId, tagName, check } = tag;
 											return (
 												check && (
@@ -404,12 +382,13 @@ export default function MarketEdit() {
 														#{tagName}
 														<button
 															onClick={() => {
-																const filteredList =
-																	selectedStoreTagList.filter((tag) => {
+																const filteredList = selectedShopTagList.filter(
+																	(tag) => {
 																		return tag !== tagName;
-																	});
-																setSelectedStoreTagList(filteredList);
-																setTagStoresList((prev) => {
+																	}
+																);
+																setSelectedShopTagList(filteredList);
+																setTagShopsList((prev) => {
 																	const editedTag = prev.map((prevTag) => {
 																		if (prevTag.tagName == tagName) {
 																			prevTag.check == true &&
@@ -428,7 +407,7 @@ export default function MarketEdit() {
 										})}
 									</div>
 									<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
-										{storeTagList?.map((tag, i) => {
+										{shopTagList?.map((tag, i) => {
 											return (
 												<StoreTagItemButton
 													className='text-sm'
@@ -436,11 +415,11 @@ export default function MarketEdit() {
 													onClick={(event) => {
 														const targetTag = tag.name;
 														const checkedStoreTagList =
-															selectedStoreTagList.filter(
+															selectedShopTagList.filter(
 																(tag) => tag.check == true
 															);
 														if (checkedStoreTagList.length < 3) {
-															setTagStoresList((prev) => {
+															setTagShopsList((prev) => {
 																const editedTag = prev.map((tag) => {
 																	if (tag.tagName == targetTag) {
 																		tag.check == false &&
@@ -450,7 +429,7 @@ export default function MarketEdit() {
 																});
 																return editedTag;
 															});
-															setSelectedStoreTagList((prev) => {
+															setSelectedShopTagList((prev) => {
 																const set = new Set([...prev, targetTag]);
 																const noOverLapArr = [...set];
 																return noOverLapArr;
@@ -479,7 +458,7 @@ export default function MarketEdit() {
 						{addressSearchModalOpen && (
 							<AddressSearchModal
 								changeOpen={setAddressSearchModalOpen}
-								changeAddress={setStoreAddress}
+								changeAddress={setShopAddress}
 							/>
 						)}
 					</div>

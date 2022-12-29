@@ -129,6 +129,14 @@ export default function CodeRegisterModal({ open, changeOpen }) {
 			<CodeRegisterModalContainer>
 				<div className='flex flex-col gap-5 w-full mb-5 sm:w-2/5'>
 					<CodeRegisterModalItem
+						label='코드 그룹'
+						type='text'
+						placeholder='ex) SHC'
+						onChange={(event) => {
+							setCodeGroup(event.target.value);
+						}}
+					/>
+					<CodeRegisterModalItem
 						label='코드 이름'
 						type='text'
 						placeholder='ex) 카페'
@@ -142,14 +150,6 @@ export default function CodeRegisterModal({ open, changeOpen }) {
 						placeholder='ex) 업체 카테고리 : 카페 '
 						onChange={(event) => {
 							setCodeDescription(event.target.value);
-						}}
-					/>
-					<CodeRegisterModalItem
-						label='코드 그룹'
-						type='text'
-						placeholder='ex) SHC'
-						onChange={(event) => {
-							setCodeGroup(event.target.value);
 						}}
 					/>
 				</div>

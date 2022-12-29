@@ -6,7 +6,7 @@ import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import { useState } from "react";
 import {
 	apiBaseAddressState,
-	currentStoreState,
+	currentShopState,
 } from "../../states/global/globalState";
 import axios from "axios";
 
@@ -123,13 +123,13 @@ const StoreManageHeader = {
 
 export default function UserAdmin() {
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
-	const currentStore = useRecoilValue(currentStoreState);
+	const currentShop = useRecoilValue(currentShopState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 
 	const [currentCategory, setCurrentCategory] = useState("frequent");
 
 	const getOrder = () => {
-		const storeId = currentStore[0].storeId;
+		const storeId = currentShop[0].storeId;
 		const token = localStorage.getItem("token");
 
 		axios({

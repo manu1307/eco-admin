@@ -6,7 +6,7 @@ import { SideBarOpenState } from "../../states/ServiceSetting/SideBarOpenState";
 import { useEffect, useState } from "react";
 import {
 	apiBaseAddressState,
-	currentStoreState,
+	currentShopState,
 	loginRoleState,
 } from "../../states/global/globalState";
 import NormalInput from "../../components/UI/Input/NormalInput";
@@ -130,7 +130,7 @@ const FormItemLayout = (props) => {
 
 export default function UserAdmin() {
 	const [sideBarOpen, setSideBarOpenState] = useRecoilState(SideBarOpenState);
-	const currentStore = useRecoilValue(currentStoreState);
+	const currentShop = useRecoilValue(currentShopState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 	const [loginRole, setLoginRole] = useRecoilState(loginRoleState);
