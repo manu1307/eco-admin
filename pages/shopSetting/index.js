@@ -14,6 +14,7 @@ import {
 	storeAddrState,
 } from "../../states/StoreSetting/storeAddressState";
 import AddressSearchModal from "../../components/UI/Modal/AddressSearchModal";
+import TimeSelect from "../../components/ShopSetting/TimeSelect";
 
 const StoreEditingContainer = styled.div`
 	width: 100%;
@@ -22,10 +23,10 @@ const StoreEditingContainer = styled.div`
 	@media screen and (max-width: 640px) {
 	}
 `;
-const StoreRegisterModalItemContainer = styled.div`
+const StoreRegisterTagItemContainer = styled.div`
 	width: 100%;
 `;
-const StoreRegisterModalItemLabel = styled.div`
+const StoreRegisterTagItemLabel = styled.div`
 	@media screen and (max-width: 640px) {
 		font-size: 11px;
 	}
@@ -36,26 +37,21 @@ const StoreImageRegister = styled.label`
 	}
 `;
 
-const StoreTagItemButton = styled.button`
-	padding: 1px 5px;
-	font-weight: 400;
-	color: #595959;
-	border-radius: 10px;
-	border: 1px solid #595959;
-	:hover {
-		color: black;
-	}
+const StoreTagWrapper = styled.div`
+	border: 2px solid #00000038;
 `;
-const StoreTagSelected = styled.div`
-	padding: 1px 5px;
+
+const StoreTagItem = styled.div`
+	margin: 0 5px;
+	font-size: 15px;
 	font-weight: 400;
-	color: black;
-	border-radius: 10px;
-	background-color: #a1d2ff;
-	border: 1px solid #5cb0ff;
-	:hover {
-		color: black;
-	}
+	background-color: #dedede;
+	padding: 2px 4px;
+	border-radius: 5px;
+`;
+const TagInstruction = styled.div`
+	position: relative;
+	top: -10px;
 `;
 
 export default function MarketEdit() {
@@ -73,14 +69,19 @@ export default function MarketEdit() {
 	const [shopImage, setShopImage] = useState();
 
 	const shopAddressData = useRecoilValue(shopAddrState);
-	const [shopAddressDetail, setShopAddressDetail] = useState("");
+	const [shopAddr, setShopAddr] = useState("");
 
 	const [addressSearchModalOpen, setAddressSearchModalOpen] = useState(false);
 
-	const [shopTagList, setShopTagList] = useState([]);
+	//매장 영업시간 코드
+	const [shopCodeList, setShopCodeList] = useState([]);
+	const [shopHourRequests, setShopHourRequests] = useState([
+		{ codeId: "", name: "", fromTime: "", toTime: "", desc: "" },
+	]);
 
+	const [shopTagItem, setShopTagItem] = useState("");
+	const [shopTagList, setShopTagList] = useState([]);
 	const [selectedShopTagList, setSelectedShopTagList] = useState([]);
-	const [tagShopsList, setTagShopsList] = useState([]);
 
 	//가게 리스트 가져오기
 	useEffect(() => {
@@ -116,17 +117,67 @@ export default function MarketEdit() {
 				setShopPhoneNumber(fetchedShopData.phone);
 				setShopDescription(fetchedShopData.desc);
 				setShopImage(fetchedShopData.images);
-				setShopAddressDetail(fetchedShopData.addr.trim());
-
-				// setSelectedShopTagList((prev) => {
-				// 	return checkedStoreTagList;
-				// });
-				setTagShopsList(fetchedShopData.tagList);
+				setShopAddr(fetchedShopData.addr.trim());
+				setShopTagList(fetchedShopData.shopHashcodeInfoResponses);
+				const shopHourInfo = fetchedShopData.shopHourInfoResponses;
+				// shopHourInfo.codeId = shopHourInfo.sho
+				setShopHourRequests(fetchedShopData.shopHourInfoResponses);
 			});
 		} else {
 			return;
 		}
 	}, [selectedShop, BASEURL, currentShop]);
+	//매장 영업시간 코드 조회
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		axios({
+			method: "get",
+			url: `${BASEURL}/api/v1/codes/type?type=BHC`,
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((res) => {
+			res.data.success = true && setShopCodeList(res.data.data);
+		});
+	}, [BASEURL]);
+	//영업시간 수정
+	const deleteRequest = (index) => {
+		shopHourRequests.length >= 2 &&
+			setShopHourRequests((prev) => {
+				const tmpArr = [...prev];
+				tmpArr.splice(index);
+				return tmpArr;
+			});
+	};
+
+	// 태그 설정
+	const onKeyPress = (event) => {
+		const currentTag = event.target.value;
+		if (currentTag.length !== 0 && event.key === "Enter") {
+			submitTagItem();
+		}
+	};
+	const submitTagItem = () => {
+		if (shopTagList.length >= 3) {
+			alert("태그는 최대 3개까지만 등록 가능합니다.");
+			setShopTagItem("");
+			return;
+		}
+
+		setShopTagList((prev) => {
+			return [...prev, { hashtag: shopTagItem }];
+		});
+		setShopTagItem("");
+	};
+	const deleteItem = (event) => {
+		const deleteTarget = event.target.parentElement.firstChild.innerText;
+		console.log(deleteTarget);
+		const filteredTagList = shopTagList.filter(
+			(tag) => tag.hashtag !== deleteTarget
+		);
+		setShopTagList(filteredTagList);
+	};
+
 	//가게 정보 수정
 	const editStore = () => {
 		const token = localStorage.getItem("token");
@@ -136,7 +187,7 @@ export default function MarketEdit() {
 			name: shopName,
 			phone: shopPhoneNumber,
 			desc: shopDescription,
-			addrDetail: `${shopAddressData.addrDetail} ${shopAddressDetail}`,
+			addrDetail: `${shopAddressData.addrDetail} ${shopAddr}`,
 			addrDepth01: shopAddressData.addrDepth01,
 			addrDepth02: shopAddressData.addrDepth02,
 			addrDepth03: shopAddressData.addrDepth03,
@@ -163,7 +214,7 @@ export default function MarketEdit() {
 		}).then((res) => {
 			if (res.status == 200) {
 				alert("정보 수정이 완료되었습니다.");
-				window.location.href = "/storeSetting";
+				window.location.href = "/shopSetting";
 			}
 		});
 	};
@@ -171,8 +222,8 @@ export default function MarketEdit() {
 	return (
 		<Layout
 			sideItems={[
-				{ text: "조회 및 수정", url: "/storeSetting" },
-				{ text: "등록", url: "/storeSetting/register" },
+				{ text: "조회 및 수정", url: "/shopSetting" },
+				{ text: "등록", url: "/shopSetting/register" },
 			]}>
 			<div>
 				<StoreEditingContainer>
@@ -266,12 +317,12 @@ export default function MarketEdit() {
 								<input
 									type='text'
 									id='address'
-									value={shopAddressDetail}
+									value={shopAddr}
 									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:hidden  w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='상세 주소'
 									required
 									onChange={(event) => {
-										setShopAddressDetail(event.target.value);
+										setShopAddr(event.target.value);
 									}}
 								/>
 								{/* PC 주소 */}
@@ -296,17 +347,56 @@ export default function MarketEdit() {
 								<input
 									type='text'
 									id='address'
-									value={shopAddressDetail}
+									value={shopAddr}
 									className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 hidden sm:block w-full sm:w-1/2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 									placeholder='상세 주소'
 									required
 									onChange={(event) => {
-										setShopAddressDetail(event.target.value);
+										setShopAddr(event.target.value);
 									}}
 								/>{" "}
 							</div>
 						</div>
-
+						<div>
+							<label className='block mb-2 text-sm font-medium  text-gray-900 '>
+								영업시간 <sup style={{ color: "red" }}>*</sup>
+							</label>
+							{shopHourRequests.map((request, index) => {
+								// console.log(request);
+								return (
+									<div key={index} className='my-2'>
+										<TimeSelect
+											requestData={request}
+											shopCodeList={shopCodeList}
+											id={index}
+											deleteItem={deleteRequest}
+											shopHourRequests={shopHourRequests}
+											setShopHourRequests={setShopHourRequests}
+										/>
+									</div>
+								);
+							})}
+							<div className='my-2 w-1/4 m-auto flex justify-center'>
+								<button
+									className=' text-xl font-extrabold border-gray-300 border-4 rounded-full w-10 h-10 flex align-middle justify-center hover:bg-slate-500 hover:text-white'
+									onClick={() => {
+										setShopHourRequests((prev) => {
+											return [
+												...prev,
+												{
+													codeId: "",
+													name: "",
+													fromTime: "",
+													toTime: "",
+													desc: "",
+												},
+											];
+										});
+									}}>
+									+
+								</button>
+							</div>
+						</div>
 						<div>
 							<div className='flex items-center  w-full'>
 								<StoreImageRegister
@@ -368,83 +458,40 @@ export default function MarketEdit() {
 							})}
 						</div>
 						<div>
-							<StoreRegisterModalItemContainer className='w-full flex flex-col items-start gap-3 mt-6'>
-								<StoreRegisterModalItemLabel className='w-full text-sm'>
+							<StoreRegisterTagItemContainer className='w-full flex flex-col items-start gap-3 mt-6'>
+								<StoreRegisterTagItemLabel className='w-full text-sm'>
 									매장 태그 (최대 3개)
-								</StoreRegisterModalItemLabel>
-								<div className='w-full'>
-									<div className='w-full flex flex-wrap m-0 gap-2 rounded-xl mb-3 sm:h-5'>
-										{selectedShopTagList?.map((tag, i) => {
-											const { tagId, tagName, check } = tag;
+								</StoreRegisterTagItemLabel>
+								<StoreTagWrapper className='w-full bg-white sm:w-4/6 max-w-lg rounded-xl'>
+									<div className='flex items-center w-full h-10'>
+										{shopTagList.map((tag) => {
 											return (
-												check && (
-													<StoreTagSelected className='text-sm' key={i}>
-														#{tagName}
-														<button
-															onClick={() => {
-																const filteredList = selectedShopTagList.filter(
-																	(tag) => {
-																		return tag !== tagName;
-																	}
-																);
-																setSelectedShopTagList(filteredList);
-																setTagShopsList((prev) => {
-																	const editedTag = prev.map((prevTag) => {
-																		if (prevTag.tagName == tagName) {
-																			prevTag.check == true &&
-																				(prevTag.check = !prevTag.check);
-																		}
-																		return prevTag;
-																	});
-																	return editedTag;
-																});
-															}}>
-															×
-														</button>
-													</StoreTagSelected>
-												)
+												<StoreTagItem
+													className='flex gap-1'
+													key={tag.shopHashcodeId}>
+													<div>{tag.hashtag}</div>
+													<button onClick={deleteItem}>X</button>
+												</StoreTagItem>
 											);
 										})}
+										{shopTagList.length < 3 && (
+											<input
+												type='text'
+												placeholder='#태그 입력'
+												className='input border-0 rounded-xl w-auto font-normal h-10'
+												value={shopTagItem}
+												onChange={(event) => {
+													setShopTagItem(event.target.value);
+												}}
+												onKeyPress={onKeyPress}
+											/>
+										)}
 									</div>
-									<div className='w-full flex flex-wrap gap-2  rounded-xl mb-3 sm:h-5'>
-										{shopTagList?.map((tag, i) => {
-											return (
-												<StoreTagItemButton
-													className='text-sm'
-													key={i}
-													onClick={(event) => {
-														const targetTag = tag.name;
-														const checkedStoreTagList =
-															selectedShopTagList.filter(
-																(tag) => tag.check == true
-															);
-														if (checkedStoreTagList.length < 3) {
-															setTagShopsList((prev) => {
-																const editedTag = prev.map((tag) => {
-																	if (tag.tagName == targetTag) {
-																		tag.check == false &&
-																			(tag.check = !tag.check);
-																	}
-																	return tag;
-																});
-																return editedTag;
-															});
-															setSelectedShopTagList((prev) => {
-																const set = new Set([...prev, targetTag]);
-																const noOverLapArr = [...set];
-																return noOverLapArr;
-															});
-														} else {
-															alert("태그는 2개까지만 선택 가능합니다.");
-														}
-													}}>
-													#{tag.name}
-												</StoreTagItemButton>
-											);
-										})}
-									</div>
-								</div>
-							</StoreRegisterModalItemContainer>
+								</StoreTagWrapper>
+								<TagInstruction className='text-xs text-gray-600'>
+									태그 입력 후 Enter
+								</TagInstruction>
+							</StoreRegisterTagItemContainer>{" "}
 						</div>
 						<button
 							type='submit'

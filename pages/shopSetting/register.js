@@ -1,21 +1,15 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Layout from "../../components/UI/Layout/Layout";
-import Image from "next/image";
 import styled from "styled-components";
 import Postcode from "../../components/MarketSetting/PostCode";
 import AddressSearchModal from "../../components/UI/Modal/AddressSearchModal";
 import { useRecoilState, useRecoilValue } from "recoil";
-import {
-	shopAddrState,
-	storeAddrState,
-} from "../../states/StoreSetting/storeAddressState";
+import { shopAddrState } from "../../states/StoreSetting/storeAddressState";
 import {
 	apiBaseAddressState,
 	shopListState,
-	storeListState,
 } from "../../states/global/globalState";
-import DayInput from "../../components/ShopSetting/DayInput";
 import TimeSelect from "../../components/ShopSetting/TimeSelect";
 
 // const StoreOpenTime = [
@@ -35,10 +29,10 @@ const StoreSettingContainer = styled.div`
 	background-color: #f6f6f6;
 `;
 
-const StoreRegisterModalItemContainer = styled.div`
+const StoreRegisterTagItemContainer = styled.div`
 	width: 100%;
 `;
-const StoreRegisterModalItemLabel = styled.div`
+const StoreRegisterTagItemLabel = styled.div`
 	@media screen and (max-width: 640px) {
 		font-size: 11px;
 	}
@@ -92,6 +86,7 @@ export default function MarketSetting() {
 		{ codeId: "", name: "", fromTime: "", toTime: "", desc: "" },
 	]);
 
+	//태그 입력 및 등록
 	const onKeyPress = (event) => {
 		const currentTag = event.target.value;
 		if (currentTag.length !== 0 && event.key === "Enter") {
@@ -112,7 +107,7 @@ export default function MarketSetting() {
 	};
 	const deleteItem = (event) => {
 		const deleteTarget = event.target.parentElement.firstChild.innerText;
-		console.log(deleteTarget);
+		// console.log(deleteTarget);
 		const filteredTagList = shopTagList.filter((tag) => tag !== deleteTarget);
 		setShopTagList(filteredTagList);
 	};
@@ -131,6 +126,18 @@ export default function MarketSetting() {
 
 	const registerStore = () => {
 		const token = localStorage.getItem("token");
+		if (
+			!shopName ||
+			!shopPhoneNumber ||
+			!shopAddressData.addrDetail ||
+			!shopHourRequests[0].codeId
+		) {
+			alert("필수 입력을 다 입력해주세요");
+			return;
+		}
+		const hashTagRequests = shopTagList.map((tag) => {
+			return { hashtag: tag };
+		});
 
 		const storeInfo = {
 			shopCommonCodeId: 1,
@@ -144,40 +151,9 @@ export default function MarketSetting() {
 			addrDepth03: shopAddressData.addrDepth03,
 			latitude: Number(shopAddressData.latitude),
 			longitude: Number(shopAddressData.longitude),
-			createShopHourRequests: [
-				{
-					codeId: 1,
-					name: "월-금",
-					fromTime: "0900",
-					toTime: "2100",
-					desc: "월-금 영업",
-				},
-			],
-			createShopHashcodeRequests: [{ hashtag: "맛있는 아메리카노" }],
+			createShopHourRequests: shopHourRequests,
+			createShopHashcodeRequests: hashTagRequests,
 		};
-		// const storeInfo = {
-		// 	shopCommonCodeId: 1,
-		// 	name: "스타벅스",
-		// 	phone: "01012341234",
-		// 	desc: "맛있는 스타벅스",
-		// 	addr: "경기도 남양주시 다산동",
-		// 	addrDetail: "경기도 남양주시 다산동",
-		// 	addrDepth01: "경기도",
-		// 	addrDepth02: "남양주시",
-		// 	addrDepth03: "다산동",
-		// 	latitude: 37.5576984952347,
-		// 	longitude: 127.079226104632,
-		// 	createShopHourRequests: [
-		// 		{
-		// 			codeId: 1,
-		// 			name: "평일",
-		// 			fromTime: "0900",
-		// 			toTime: "2100",
-		// 			desc: "평일 영업",
-		// 		},
-		// 	],
-		// 	createShopHashcodeRequests: [{ hashtag: "맛있는 아메리카노" }],
-		// };
 		const json = JSON.stringify(storeInfo);
 		const blob = new Blob([json], {
 			type: "application/json",
@@ -204,24 +180,29 @@ export default function MarketSetting() {
 					},
 				})
 					.then((res) => {
-						console.log(res.data.data.content);
+						// console.log(res.data.data.content);
 						setShopList(res.data.data.content);
 					})
 					.then(() => {
-						window.location.href = "/storeSetting";
+						window.location.href = "/shopSetting";
 					});
 			}
 		});
 	};
-	const deleteRequest = (event) => {
-		console.log(event.target);
+	const deleteRequest = (index) => {
+		shopHourRequests.length >= 2 &&
+			setShopHourRequests((prev) => {
+				const tmpArr = [...prev];
+				tmpArr.splice(index);
+				return tmpArr;
+			});
 	};
 
 	return (
 		<Layout
 			sideItems={[
-				{ text: "조회 및 수정", url: "/storeSetting" },
-				{ text: "등록", url: "/storeSetting/register" },
+				{ text: "조회 및 수정", url: "/shopSetting" },
+				{ text: "등록", url: "/shopSetting/register" },
 			]}>
 			<StoreSettingContainer>
 				<div className='font-bold text-3xl mb-3 text-black'>
@@ -235,7 +216,9 @@ export default function MarketSetting() {
 								htmlFor='store_name'
 								className='block mb-2 text-sm font-medium  text-gray-900 '>
 								가게 이름
+								<sup style={{ color: "red" }}>*</sup>
 							</label>
+
 							<input
 								type='text'
 								id='store_name'
@@ -252,6 +235,7 @@ export default function MarketSetting() {
 								htmlFor='phone'
 								className='block mb-2 text-sm font-medium text-gray-900 '>
 								전화번호
+								<sup style={{ color: "red" }}>*</sup>
 							</label>
 							<input
 								type='tel'
@@ -287,6 +271,7 @@ export default function MarketSetting() {
 							htmlFor='address'
 							className='block mb-2 text-sm font-medium text-gray-900 '>
 							주소
+							<sup style={{ color: "red" }}>*</sup>
 						</label>
 						<div className='flex gap-6'>
 							<input
@@ -324,39 +309,42 @@ export default function MarketSetting() {
 						</div>
 					</div>
 					<div>
-						<div>영업시간</div>
+						<label className='block mb-2 text-sm font-medium  text-gray-900 '>
+							영업시간 <sup style={{ color: "red" }}>*</sup>
+						</label>
 						{shopHourRequests.map((request, index) => {
 							return (
-								<div key={index}>
+								<div key={index} className='my-2'>
 									<TimeSelect
-										codeList={shopCodeList}
-										key={index}
+										shopCodeList={shopCodeList}
+										id={index}
 										deleteItem={deleteRequest}
+										shopHourRequests={shopHourRequests}
+										setShopHourRequests={setShopHourRequests}
 									/>
 								</div>
 							);
 						})}
-						<button
-							onClick={() => {
-								setShopHourRequests((prev) => {
-									return [
-										...prev,
-										{
-											codeId: "",
-											name: "",
-											fromTime: "",
-											toTime: "",
-											desc: "",
-										},
-									];
-								});
-							}}>
-							+
-						</button>
-
-						{/* {StoreOpenTime.map((day, index) => {
-							return <DayInput day={day} key={index} />;
-						})} */}
+						<div className='my-2 w-1/4 m-auto flex justify-center'>
+							<button
+								className=' text-xl font-extrabold border-gray-300 border-4 rounded-full w-10 h-10 flex align-middle justify-center hover:bg-slate-500 hover:text-white'
+								onClick={() => {
+									setShopHourRequests((prev) => {
+										return [
+											...prev,
+											{
+												codeId: "",
+												name: "",
+												fromTime: "",
+												toTime: "",
+												desc: "",
+											},
+										];
+									});
+								}}>
+								+
+							</button>
+						</div>
 					</div>
 
 					<div>
@@ -419,12 +407,12 @@ export default function MarketSetting() {
 						})}
 					</div>
 					<div>
-						<StoreRegisterModalItemContainer className='w-full flex flex-col items-start gap-3 mt-6'>
-							<StoreRegisterModalItemLabel className='w-full text-sm'>
+						<StoreRegisterTagItemContainer className='w-full flex flex-col items-start gap-3 mt-6'>
+							<StoreRegisterTagItemLabel className='w-full text-sm'>
 								매장 태그 (최대 3개)
-							</StoreRegisterModalItemLabel>
+							</StoreRegisterTagItemLabel>
 							<StoreTagWrapper className='w-full bg-white sm:w-4/6 max-w-lg rounded-xl'>
-								<div className='flex items-center w-full'>
+								<div className='flex items-center w-full h-10'>
 									{shopTagList.map((tag, index) => {
 										return (
 											<StoreTagItem className='flex gap-1' key={index}>
@@ -433,22 +421,24 @@ export default function MarketSetting() {
 											</StoreTagItem>
 										);
 									})}
-									<input
-										type='text'
-										placeholder='#태그 입력'
-										className='input border-0 rounded-xl w-auto font-normal'
-										value={shopTagItem}
-										onChange={(event) => {
-											setShopTagItem(event.target.value);
-										}}
-										onKeyPress={onKeyPress}
-									/>{" "}
+									{shopTagList.length < 3 && (
+										<input
+											type='text'
+											placeholder='#태그 입력'
+											className='input border-0 rounded-xl w-auto font-normal h-10'
+											value={shopTagItem}
+											onChange={(event) => {
+												setShopTagItem(event.target.value);
+											}}
+											onKeyPress={onKeyPress}
+										/>
+									)}
 								</div>
 							</StoreTagWrapper>
 							<TagInstruction className='text-xs text-gray-600'>
 								태그 입력 후 Enter
 							</TagInstruction>
-						</StoreRegisterModalItemContainer>
+						</StoreRegisterTagItemContainer>
 					</div>
 					<button
 						type='submit'

@@ -1,41 +1,112 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function TimeSelect(props) {
-	const { codeList } = props;
-	// console.log(codeList);
-	const [timeCode, setTimeCode] = useState();
-	const [timeCodeName, setTimeCodeName] = useState("");
-	const [fromTime, setFromTime] = useState("");
-	const [toTime, setToTime] = useState("");
-	const [timeDesc, setTimeDesc] = useState("");
+	const {
+		requestData,
+		shopCodeList,
+		id,
+		deleteItem,
+		shopHourRequests,
+		setShopHourRequests,
+	} = props;
+	// console.log(requestData);
+	// console.log(id);
+	// console.log(shopCodeList);
+
+	const [timeCode, setTimeCode] = useState({});
+	// const [timeCodeName, setTimeCodeName] = useState();
+	const [fromTime, setFromTime] = useState();
+	const [toTime, setToTime] = useState();
+	const [timeDesc, setTimeDesc] = useState();
+	useEffect(() => {
+		setTimeCode(requestData?.name);
+		// setTimeCode(requestData?.shopHourId);
+		// setTimeCodeName(requestData?.name);
+		// setFromTime(requestData?.fromTime);
+		// setToTime(requestData?.toTime);
+		setTimeDesc(requestData?.desc);
+	}, [requestData?.name, requestData?.codeId, requestData?.desc]);
+	const translateTime = (data) => {
+		const hour = data.slice(0, 2);
+		const minute = data.slice(-2);
+		console.log(`${hour}${minute}`);
+		return `${hour}${minute}`;
+	};
+	const findCodeItem = (name) => {
+		const foundItem = shopCodeList.find((code) => {
+			return code.name === name;
+		});
+		return foundItem;
+	};
+
 	return (
 		<div>
-			<div className='flex'>
-				<select onChange={(event) => setTimeCodeName(event.target.value)}>
-					{codeList.map((codeData) => {
-						return <option key={codeData.id}>{codeData.name}</option>;
+			<div className='flex flex-col sm:flex-row gap-2'>
+				<select
+					value={timeCode}
+					className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-40 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+					onChange={(event) => {
+						const timeCodeName = event.target.value;
+						const foundItem = findCodeItem(timeCodeName);
+						setShopHourRequests((prev) => {
+							const tmpData = [...prev];
+							tmpData[id].codeId = foundItem.id;
+							tmpData[id].name = foundItem.name;
+							console.log(prev);
+							return tmpData;
+						});
+						setTimeCode(foundItem.name);
+					}}>
+					{shopCodeList.map((codeData) => {
+						return (
+							<option key={codeData.id} value={codeData.name}>
+								{codeData.name}
+							</option>
+						);
 					})}
 				</select>
-				<div className='flex '>
+				<div className='flex gap-2'>
 					<input
 						type='time'
 						value={fromTime}
-						onChange={(event) => setFromTime(event.target.value)}
+						className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-48 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+						onChange={(event) => {
+							setShopHourRequests((prev) => {
+								const tmpData = [...prev];
+								tmpData[id].fromTime = translateTime(event.target.value);
+								return tmpData;
+							});
+							setFromTime(event.target.value);
+						}}
 					/>
-					<div>~</div>
+					<div className='py-2.5 font-extrabold'>~</div>
 					<input
 						type='time'
-						value={toTime}
-						onChange={(event) => setToTime(event.target.value)}
+						className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-48  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+						onChange={(event) => {
+							setShopHourRequests((prev) => {
+								const tmpData = [...prev];
+								tmpData[id].toTime = translateTime(event.target.value);
+								return tmpData;
+							});
+						}}
 					/>
 				</div>
 				<input
 					type='text'
-					placeholder='비고'
 					value={timeDesc}
-					onChange={(event) => setTimeDesc(event.target.value)}
+					placeholder='비고'
+					className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+					onChange={(event) => {
+						setShopHourRequests((prev) => {
+							const tmpData = [...prev];
+							tmpData[id].desc = event.target.value;
+							return tmpData;
+						});
+						setTimeDesc(event.target.value);
+					}}
 				/>
-				<button>
+				<button onClick={() => deleteItem(id)}>
 					<svg
 						xmlns='http://www.w3.org/2000/svg'
 						fill='none'

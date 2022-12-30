@@ -62,11 +62,11 @@ export default function Drawer() {
 				if (!currentShop) {
 					// console.log("no current Store");
 					setCurrentShop(res.data.data.content[0]);
-					localStorage.setItem("storeId", res.data.data.content[0].storeId);
+					localStorage.setItem("shopId", res.data.data.content[0].shopId);
 				} else {
 					// console.log("there is current Store");
 					// 					console.log(currentShop);
-					localStorage.setItem("storeId", currentShop.storeId);
+					localStorage.setItem("shopId", currentShop.shopId);
 				}
 			}
 		});
@@ -157,7 +157,7 @@ export default function Drawer() {
 									(store) => store.name == event.target.value
 								);
 								setCurrentShop(selectedStore[0]);
-								localStorage.setItem("storeId", selectedStore[0].storeId);
+								localStorage.setItem("shopId", selectedStore[0].shopId);
 							}}
 							value={currentShop.name}>
 							{shopList.length > 0 ? (
