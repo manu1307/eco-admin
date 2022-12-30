@@ -12,16 +12,6 @@ import {
 } from "../../states/global/globalState";
 import TimeSelect from "../../components/ShopSetting/TimeSelect";
 
-// const StoreOpenTime = [
-// 	{ day: "월요일", openTime: "", closeTime: "" },
-// 	{ day: "화요일", openTime: "", closeTime: "" },
-// 	{ day: "수요일", openTime: "", closeTime: "" },
-// 	{ day: "목요일", openTime: "", closeTime: "" },
-// 	{ day: "금요일", openTime: "", closeTime: "" },
-// 	{ day: "토요일", openTime: "", closeTime: "" },
-// 	{ day: "일요일", openTime: "", closeTime: "" },
-// ];
-
 const StoreSettingContainer = styled.div`
 	width: 100%;
 	max-width: 1140px;
