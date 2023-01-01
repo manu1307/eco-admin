@@ -116,7 +116,7 @@ const BoxWrapper = styled.div`
 export default function DashBoardMain() {
 	// console.log("대시보드 먼저");
 
-	const [storeId, setStoreId] = useState();
+	const [shopId, setShopId] = useState();
 	const [shopList, setShopList] = useRecoilState(shopListState);
 	const [currentShop, setCurrentShop] = useRecoilState(currentShopState);
 	const BASEURL = useRecoilValue(apiBaseAddressState);
@@ -124,7 +124,7 @@ export default function DashBoardMain() {
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
-		setStoreId(localStorage.getItem("storeId"));
+		setShopId(localStorage.getItem("shopId"));
 
 		if (!token) {
 			alert("로그인을 해주세요");
@@ -143,11 +143,11 @@ export default function DashBoardMain() {
 				if (!currentShop.name) {
 					// console.log(res.data.data.content[0]);
 					setCurrentShop(res.data.data.content[0]);
-					localStorage.setItem("storeId", res.data.data.content[0].storeId);
+					localStorage.setItem("shopId", res.data.data.content[0].shopId);
 				} else {
 					// console.log("there is current Store");
 					// console.log(currentShop);
-					localStorage.setItem("storeId", currentShop.storeId);
+					localStorage.setItem("shopId", currentShop.shopId);
 				}
 			} else {
 				console.log(res.data.data);
@@ -155,7 +155,7 @@ export default function DashBoardMain() {
 		});
 	}, [BASEURL, setShopList, currentShop, setCurrentShop]);
 
-	const data = !storeId ? "" : "300";
+	const data = !shopId ? "" : "300";
 
 	const date = new Date();
 	const year = date.getFullYear();
@@ -163,7 +163,7 @@ export default function DashBoardMain() {
 	const day = date.getUTCDate();
 
 	const sentSettingPage = () => {
-		window.location.href = "/storeSetting/register";
+		window.location.href = "/shopSetting/register";
 	};
 
 	return (
@@ -201,7 +201,7 @@ export default function DashBoardMain() {
 					</div>
 				</StoreNameWrapper>
 				<div>
-					{!storeId && (
+					{!shopId && (
 						<div className='flex justify-center'>
 							<ModalWrapper>
 								<ModalContainer>
@@ -209,7 +209,7 @@ export default function DashBoardMain() {
 									<ModalMessage fontSize={30}>
 										매장설정을 먼저 해주세요.
 									</ModalMessage>
-									<Link href='/storeSetting/register'>
+									<Link href='/shopSetting/register'>
 										<ModalButton onClick={sentSettingPage}>
 											매장 설정 가기
 										</ModalButton>

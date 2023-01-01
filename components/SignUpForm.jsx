@@ -139,7 +139,7 @@ export default function SignUpForm() {
 			}).then((response) => {
 				console.log(response);
 				if (response.data.statusCode < 300 && response.data.success === true) {
-					alert("로그인 창에서 다시 로그인해주세요.");
+					alert("회원가입이 완료되었습니다! 로그인 창에서 다시 로그인해주세요.");
 					window.location.href = "/";
 				} else {
 					alert("입력을 확인해주세요");

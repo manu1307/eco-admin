@@ -98,11 +98,11 @@ export default function MarketEdit() {
 	}, [BASEURL, selectedShop.name]);
 	useEffect(() => {
 		setShopId(localStorage.getItem("shopId"));
-	}, []);
+	}, [currentShop]);
 	//가게 정보 정보 조회
 	useEffect(() => {
 		if (shopId) {
-			// console.log(shopId);
+			console.log(shopId);
 			axios({
 				method: "get",
 				url: `${BASEURL}/api/v1/shops/${shopId}`,
@@ -112,7 +112,7 @@ export default function MarketEdit() {
 			})
 				.then((res) => {
 					const fetchedShopData = res.data.data;
-					// console.log(fetchedShopData);
+					console.log(fetchedShopData);
 					setShopData(fetchedShopData);
 					setShopName(fetchedShopData.name);
 					setShopPhoneNumber(fetchedShopData.phone);
@@ -137,14 +137,20 @@ export default function MarketEdit() {
 								return;
 							}
 							shopHourInfo[0].codeId = initialCodeId.id;
-
 							setShopHourRequests(shopHourInfo);
 						})();
 				});
 		} else {
 			return;
 		}
-	}, [selectedShop, BASEURL, currentShop, shopCodeList, shopId]);
+	}, [
+		selectedShop,
+		BASEURL,
+		currentShop,
+		shopCodeList,
+		shopId,
+		// oldHourRequests,
+	]);
 
 	//매장 영업시간 코드 조회
 	useEffect(() => {
@@ -209,9 +215,15 @@ export default function MarketEdit() {
 			phone: shopPhoneNumber,
 			desc: shopDescription,
 			addrDetail: `${shopAddressData.addrDetail} ${shopAddr}`,
-			addrDepth01: shopAddressData.addrDepth01,
-			addrDepth02: shopAddressData.addrDepth02,
-			addrDepth03: shopAddressData.addrDepth03,
+			addrDepth01: shopAddressData.addrDepth01
+				? shopAddressData.addrDepth01
+				: "",
+			addrDepth02: shopAddressData.addrDepth02
+				? shopAddressData.addrDepth02
+				: "",
+			addrDepth03: shopAddressData.addrDepth03
+				? shopAddressData.addrDepth03
+				: "",
 			latitude: Number(shopAddressData.latitude),
 			longitude: Number(shopAddressData.longitude),
 			// tagStores: tagShopsList,
