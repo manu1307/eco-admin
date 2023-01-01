@@ -9,10 +9,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-	shopAddrState,
-	storeAddrState,
-} from "../../states/StoreSetting/storeAddressState";
+import { shopAddrState } from "../../states/StoreSetting/storeAddressState";
 import AddressSearchModal from "../../components/UI/Modal/AddressSearchModal";
 import TimeSelect from "../../components/ShopSetting/TimeSelect";
 
@@ -57,6 +54,7 @@ const TagInstruction = styled.div`
 export default function MarketEdit() {
 	const BASEURL = useRecoilValue(apiBaseAddressState);
 	const currentShop = useRecoilValue(currentShopState);
+	const [shopId, setShopId] = useState();
 
 	const [shopList, setShopList] = useState([]);
 	const [selectedShop, setSelectedShop] = useState({});
@@ -66,7 +64,7 @@ export default function MarketEdit() {
 	const [shopPhoneNumber, setShopPhoneNumber] = useState();
 	const [shopDescription, setShopDescription] = useState();
 	const [shopAddress, setShopAddress] = useState();
-	const [shopImage, setShopImage] = useState();
+	const [shopImage, setShopImage] = useState([]);
 
 	const shopAddressData = useRecoilValue(shopAddrState);
 	const [shopAddr, setShopAddr] = useState("");
@@ -78,10 +76,10 @@ export default function MarketEdit() {
 	const [shopHourRequests, setShopHourRequests] = useState([
 		{ codeId: "", name: "", fromTime: "", toTime: "", desc: "" },
 	]);
+	const [oldHourRequests, setOldHourRequests] = useState();
 
 	const [shopTagItem, setShopTagItem] = useState("");
 	const [shopTagList, setShopTagList] = useState([]);
-	const [selectedShopTagList, setSelectedShopTagList] = useState([]);
 
 	//가게 리스트 가져오기
 	useEffect(() => {
@@ -98,35 +96,56 @@ export default function MarketEdit() {
 			});
 		}
 	}, [BASEURL, selectedShop.name]);
-
+	useEffect(() => {
+		setShopId(localStorage.getItem("shopId"));
+	}, []);
 	//가게 정보 정보 조회
 	useEffect(() => {
-		const shopId = localStorage.getItem("shopId");
 		if (shopId) {
+			// console.log(shopId);
 			axios({
 				method: "get",
 				url: `${BASEURL}/api/v1/shops/${shopId}`,
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
-			}).then((res) => {
-				const fetchedShopData = res.data.data;
-				// console.log(fetchedShopData);
-				setShopData(fetchedShopData);
-				setShopName(fetchedShopData.name);
-				setShopPhoneNumber(fetchedShopData.phone);
-				setShopDescription(fetchedShopData.desc);
-				setShopImage(fetchedShopData.images);
-				setShopAddr(fetchedShopData.addr.trim());
-				setShopTagList(fetchedShopData.shopHashcodeInfoResponses);
-				const shopHourInfo = fetchedShopData.shopHourInfoResponses;
-				// shopHourInfo.codeId = shopHourInfo.sho
-				setShopHourRequests(fetchedShopData.shopHourInfoResponses);
-			});
+			})
+				.then((res) => {
+					const fetchedShopData = res.data.data;
+					// console.log(fetchedShopData);
+					setShopData(fetchedShopData);
+					setShopName(fetchedShopData.name);
+					setShopPhoneNumber(fetchedShopData.phone);
+					setShopDescription(fetchedShopData.desc);
+					setShopImage((prev) => {
+						return fetchedShopData.images ? fetchedShopData.images : [...prev];
+					});
+					setShopAddr(fetchedShopData.addr.trim());
+					setShopTagList(fetchedShopData.shopHashcodeInfoResponses);
+					setOldHourRequests(fetchedShopData.shopHourInfoResponses);
+					// console.log(fetchedShopData.shopHourInfoResponses);
+				})
+				.then(() => {
+					oldHourRequests &&
+						(() => {
+							const shopHourInfo = [...oldHourRequests];
+							delete shopHourInfo[0].shopHourId;
+							const initialCodeId = shopCodeList.find((code) => {
+								return code.name === shopHourInfo[0].name;
+							});
+							if (!initialCodeId) {
+								return;
+							}
+							shopHourInfo[0].codeId = initialCodeId.id;
+
+							setShopHourRequests(shopHourInfo);
+						})();
+				});
 		} else {
 			return;
 		}
-	}, [selectedShop, BASEURL, currentShop]);
+	}, [selectedShop, BASEURL, currentShop, shopCodeList, shopId]);
+
 	//매장 영업시간 코드 조회
 	useEffect(() => {
 		const token = localStorage.getItem("token");
@@ -140,6 +159,7 @@ export default function MarketEdit() {
 			res.data.success = true && setShopCodeList(res.data.data);
 		});
 	}, [BASEURL]);
+
 	//영업시간 수정
 	const deleteRequest = (index) => {
 		shopHourRequests.length >= 2 &&
@@ -181,9 +201,10 @@ export default function MarketEdit() {
 	//가게 정보 수정
 	const editStore = () => {
 		const token = localStorage.getItem("token");
-		const shopId = localStorage.getItem("shopId");
-
-		const storeInfo = {
+		// console.log(shopHourRequests);
+		// console.log(oldHourRequests);
+		// console.log(shopTagList);
+		const shopInfo = {
 			name: shopName,
 			phone: shopPhoneNumber,
 			desc: shopDescription,
@@ -194,13 +215,17 @@ export default function MarketEdit() {
 			latitude: Number(shopAddressData.latitude),
 			longitude: Number(shopAddressData.longitude),
 			// tagStores: tagShopsList,
+			createShopHourRequests: shopHourRequests,
+			updateShopHourRequests: oldHourRequests,
+			updateShopHashcodeRequests: shopTagList,
 		};
-		const json = JSON.stringify(storeInfo);
+		console.log(shopInfo);
+		const json = JSON.stringify(shopInfo);
 		const blob = new Blob([json], {
 			type: "application/json",
 		});
 		const formData = new FormData();
-		formData.append("updateStoreInfoRequest", blob);
+		formData.append("updateShopInfoRequest", blob);
 		formData.append("files", shopImage);
 		// 이미지 변환 안하고 그냥 보내면 됨 (추후 DB 정해지는 대로 수정)
 		axios({
@@ -372,6 +397,7 @@ export default function MarketEdit() {
 											deleteItem={deleteRequest}
 											shopHourRequests={shopHourRequests}
 											setShopHourRequests={setShopHourRequests}
+											setOldHourRequests={setOldHourRequests}
 										/>
 									</div>
 								);
@@ -426,6 +452,7 @@ export default function MarketEdit() {
 									onChange={(event) => {
 										if (event.target.files) {
 											setShopImage((prev) => {
+												console.log(prev);
 												return [...prev, event.target.files];
 											});
 											console.log(shopImage);

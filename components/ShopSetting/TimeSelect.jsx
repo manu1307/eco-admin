@@ -8,6 +8,7 @@ export default function TimeSelect(props) {
 		deleteItem,
 		shopHourRequests,
 		setShopHourRequests,
+		setOldHourRequests,
 	} = props;
 	// console.log(requestData);
 	// console.log(id);
@@ -19,18 +20,31 @@ export default function TimeSelect(props) {
 	const [toTime, setToTime] = useState();
 	const [timeDesc, setTimeDesc] = useState();
 	useEffect(() => {
+		requestData?.shopHourId && setOldHourRequests(requestData);
 		setTimeCode(requestData?.name);
-		// setTimeCode(requestData?.shopHourId);
 		// setTimeCodeName(requestData?.name);
-		// setFromTime(requestData?.fromTime);
-		// setToTime(requestData?.toTime);
+		setFromTime(translateRequestTime(requestData?.fromTime));
+		setToTime(translateRequestTime(requestData?.toTime));
 		setTimeDesc(requestData?.desc);
-	}, [requestData?.name, requestData?.codeId, requestData?.desc]);
+	}, [
+		requestData,
+		setOldHourRequests,
+		requestData?.name,
+		requestData?.codeId,
+		requestData?.desc,
+	]);
+	// 시간 request로 넣어줄 때 변환
 	const translateTime = (data) => {
 		const hour = data.slice(0, 2);
 		const minute = data.slice(-2);
 		console.log(`${hour}${minute}`);
 		return `${hour}${minute}`;
+	};
+	//처음 시간 변환
+	const translateRequestTime = (data) => {
+		const hour = data.slice(0, 2);
+		const minute = data.slice(-2);
+		return `${hour}:${minute}`;
 	};
 	const findCodeItem = (name) => {
 		const foundItem = shopCodeList.find((code) => {
@@ -82,6 +96,7 @@ export default function TimeSelect(props) {
 					<div className='py-2.5 font-extrabold'>~</div>
 					<input
 						type='time'
+						value={toTime}
 						className='bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-48  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
 						onChange={(event) => {
 							setShopHourRequests((prev) => {
@@ -89,6 +104,7 @@ export default function TimeSelect(props) {
 								tmpData[id].toTime = translateTime(event.target.value);
 								return tmpData;
 							});
+							setToTime(event.target.value);
 						}}
 					/>
 				</div>
