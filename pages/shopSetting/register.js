@@ -144,6 +144,7 @@ export default function MarketSetting() {
 			createShopHourRequests: shopHourRequests,
 			createShopHashcodeRequests: hashTagRequests,
 		};
+		console.log(storeInfo);
 		const json = JSON.stringify(storeInfo);
 		const blob = new Blob([json], {
 			type: "application/json",

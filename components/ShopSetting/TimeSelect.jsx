@@ -20,12 +20,14 @@ export default function TimeSelect(props) {
 	const [toTime, setToTime] = useState();
 	const [timeDesc, setTimeDesc] = useState();
 	useEffect(() => {
-		requestData?.shopHourId && setOldHourRequests(requestData);
-		setTimeCode(requestData?.name);
-		// setTimeCodeName(requestData?.name);
-		setFromTime(translateRequestTime(requestData?.fromTime));
-		setToTime(translateRequestTime(requestData?.toTime));
-		setTimeDesc(requestData?.desc);
+		if (requestData) {
+			requestData?.shopHourId && setOldHourRequests(requestData);
+			setTimeCode(requestData?.name);
+			// setTimeCodeName(requestData?.name);
+			setFromTime(translateRequestTime(requestData?.fromTime));
+			setToTime(translateRequestTime(requestData?.toTime));
+			setTimeDesc(requestData?.desc);
+		}
 	}, [
 		requestData,
 		setOldHourRequests,
